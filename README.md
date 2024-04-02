@@ -10,3 +10,5 @@ Les questions éventuelles qu'on pourrait se poser :
 - Le nombre de blessures est-il lié au nombre de match joué ou le championnat joue une plus grosse partie (stéréotype de championnat + physique que d'autres ) 
 - Quel est le profile de buteur le + prolifique (avec des stats sur la taille)
 - Determiner le profil de l'équipe parfaite (possession par exemple ) 
+- la valeur marchande pour chaque poste est corrélé à quoi ? 
+- différences entre championnats et coupes 
