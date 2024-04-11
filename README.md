@@ -25,7 +25,7 @@ Lorsque l'on effectue des requêtes sur une API, il est fréquent d'être limit�
 Le jeu de données nous permet d'obtenir des informations à plusieurs échelles  :
 
 #### À l'échelle des saisons 
-On peut retrouver à l'échelle des saisons des données sur les équipes et les joueurs grâce à la commande `fb_big5_advanced_season_stats()`, par exemple, pour obtenir la possession des joueurs en 2021, on peut utiliser la commande `fb_big5_advanced_season_stats(season_end_year=2021,stat_type="possession",team_or_player="player")`, qui nous renverra le dataframe des joueurs avec les informations suivantes  : 
+On peut retrouver à l'échelle des saisons des données sur les équipes et les joueurs grâce à la méthode `fb_big5_advanced_season_stats()`, par exemple, pour obtenir la possession des joueurs en 2021, on peut utiliser la commande `fb_big5_advanced_season_stats(season_end_year=2021,stat_type="possession",team_or_player="player")`, qui nous renverra le dataframe des joueurs avec les informations suivantes  : 
 - `Squad` : le nom de l'équipe du joueur, donnée nominale
   
 - `Player` : le nom du joueur, donnée nominale
@@ -49,7 +49,7 @@ On peut retrouver à l'échelle des saisons des données sur les équipes et les
 Cette liste n'est pas exhaustive, car il y a en réalité 32 colonnes dans le dataframe, mais cela donne une idée des informations que l'on peut obtenir et surtout de ce que nous allons avoir besoin pour répondre à nos questions.
 
 #### À l'échelle des équipes 
-On peut retrouver à l'échelle des équipes diverses données grâce à la commande `fb_team_match_log_stats(team_urls, stat_type)` qui nous renverra le dataframe des équipes avec les informations suivantes :
+On peut retrouver à l'échelle des équipes diverses données grâce à la méthode `fb_team_match_log_stats(team_urls, stat_type)` qui nous renverra le dataframe des équipes avec les informations suivantes :
 - `Team` : le nom de l'équipe, donnée nominale
    
 - `Date` : la date du match, donnée nominale
@@ -71,7 +71,7 @@ On peut retrouver à l'échelle des équipes diverses données grâce à la comm
 Le reste des données dépend du `stat_type` que l'on choisit, par exemple, si on choisit `stat_type="passing"`, ou `stat_type="defense"`, on aura des informations sur les passes ou la défense de l'équipe, respectivement.
 
 #### À l'échelle des joueurs 
-Enfin, on peut retrouver à l'échelle des joueurs diverses données grâce à la commande `fb_player_season_stats(player_url, stat_type)` qui nous renverra le dataframe des joueurs avec les informations suivantes :
+Enfin, on peut retrouver à l'échelle des joueurs diverses données grâce à la méthode `fb_player_season_stats(player_url, stat_type)` qui nous renverra le dataframe des joueurs avec les informations suivantes :
 
 - `player_name` : le nom du joueur, donnée nominale
 
