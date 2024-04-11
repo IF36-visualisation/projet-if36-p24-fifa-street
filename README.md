@@ -163,9 +163,11 @@ Pour représenter et mettre en relation les données, nous allons utiliser plusi
 Pour répondre à cette question, nous utiliserons deux requêtes. La première nous donnera le nombre de matchs joués, éventuellement accompagné d'un calcul du temps de jeu. Pour des raisons de clarté et de compréhension, nous sélectionnerons probablement les 100 joueurs les plus blessés en utilisant la méthode 'tm_player_injury_history()' et en filtrant sur la somme de la différence entre injured_until et injured_since.
 
 #### <ins>Quel est le profil de buteur le plus prolifique (avec des statistiques sur la taille) ?
-Nous examinerons les meilleurs buteurs des championnats et leurs caractéristiques (physiques, temps de jeu, blessures, etc.) pour trouver la meilleure corrélation. Nous pourrons également créer une carte thermique (heatmap) avec PowerBI sur les origines de ces joueurs en utilisant la méthode `tm_player_bio()`.
+Nous examinerons les meilleurs buteurs des championnats et leurs caractéristiques (physiques, temps de jeu, blessures, etc.) pour trouver la meilleure corrélation. Nous pourrons également créer une carte thermique (heatmap) avec PowerBI (ou avec R) sur les origines de ces joueurs en utilisant la méthode `tm_player_bio()`.
+
 #### <ins>Déterminer le profil de l'équipe parfaite (possession par exemple) 
 Nous analyserons les statistiques des meilleures équipes et les comparerons à celles des équipes moins performantes pour déterminer les caractéristiques d'une équipe parfaite, telles que la possession de balle,nombre de buts moyens encaissés... On utilisera `fb_team_match_log_stats()` pour recuperer tout les matchs et faire des moyennes sur leurs matchs . 
+
 #### <ins>Quelle est la corrélation entre la valeur marchande des joueurs et leurs postes ?
 Nous étudierons la corrélation entre la valeur marchande des joueurs et différents critères spécifiques à leur poste. Par exemple, nous examinerons le nombre de buts pour les attaquants et le nombre d'interceptions pour les défenseurs parmi les joueurs les plus chers. Pour ce faire, nous utiliserons la méthode mentionnée précédemment dans la section "À l'échelle des joueurs".
 
