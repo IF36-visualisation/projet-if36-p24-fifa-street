@@ -1,4 +1,4 @@
-install.packages(c("worldfootballR", "ggplot2", "dplyr"))
+#install.packages(c("worldfootballR", "ggplot2", "dplyr"))
 
 library(worldfootballR)
 library(ggplot2)
@@ -12,17 +12,18 @@ nb_matchs_par_equipe <- list()
 
 nb_blessures_par_ligue <- list()
 
+nb_moyen_intervalle_matc<- list()
 for (i in seq_along(liguesa)) {
   ligue <- liguesa[i]
   ligue_name <- liguesc[i]
   
-  match_urls <- fb_match_urls(country = ligue, gender = "M", season_end_year = 2021, tier = "1st")
+  match_urls <- fb_match_urls(country = ligue, gender = "M", season_end_year = 2023, tier = "1st")
   
   # Calcule nombre  matchs
   nb_matchs <- length(match_urls)
   
   #  URL des équipes de la ligue
-  league_url <- fb_league_urls(country = ligue, gender = "M", season_end_year = 2021, tier = "1st")
+  league_url <- fb_league_urls(country = ligue, gender = "M", season_end_year = 2023, tier = "1st")
   team_urls <- fb_teams_urls(league_url)
   
   # Calcule nombre d'équipes
@@ -60,3 +61,9 @@ ggplot(df, aes(x = nb_blessures_par_ligue, y = nb_matchs_par_equipe, color = lig
   geom_smooth(method = "lm", se = FALSE) +
   labs(x = "Nombre de blessures", y = "Nombre de matchs par équipe", title = "Corrélation entre le nombre de blessures et les matchs dans les ligues majeures") +
   theme_minimal()
+
+
+
+
+
+
