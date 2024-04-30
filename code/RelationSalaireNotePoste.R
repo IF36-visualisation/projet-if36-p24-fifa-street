@@ -1,3 +1,8 @@
+install.packages("worldfootballR")
+
+# Chargement du package worldfootballR
+library(worldfootballR)
+
 #Load data
 man_city_url <- "https://fbref.com/en/squads/b8fd03ef/Manchester-City-Stats"
 man_city_wages <- fb_squad_wages(team_urls = man_city_url)
