@@ -1,5 +1,8 @@
 library(worldfootballR)
 library(readr)
+
+
+#!!! IL FAUT METTRE LE CHEMIN ABSOLUT DU DOSSIER DATA
 setwd("C:/Users/Administrateur/Desktop/ProjetIF36/projet-if36-p24-fifa-street/data")
 
 

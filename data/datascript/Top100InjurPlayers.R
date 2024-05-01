@@ -1,6 +1,16 @@
+if (!requireNamespace("worldfootballR", quietly = TRUE)) {
+  install.packages("worldfootballR")
+}
+
+if (!requireNamespace("readr", quietly = TRUE)) {
+  install.packages("readr")
+}
 library(worldfootballR)
 library(readr)
+
+#!! IL FAUT METTRE LE CHEMIN ABSOLUT DU DOSSIER DATA
 setwd("C:/Users/Administrateur/Desktop/ProjetIF36/projet-if36-p24-fifa-street/data")
+
 
 clubs_list <- list(
   "Arsenal FC",
@@ -61,6 +71,14 @@ print(players_stats_list)
 
 players_stats_df <- do.call(rbind, players_stats_list)
 
-readr::write_csv(players_stats_df, file = "dataset/playersInjuryPL/playersInjuryPL.csv")
 
+
+#readr::write_csv(players_stats_df, file = "dataset/playersInjuryPL/playersInjuryPL.csv")
+ filename <- "dataset/playersInjuryPL/playersInjuryPL.csv"
+ i <- 1
+ while (file.exists(filename)) {
+   i <- i + 1
+   filename <- paste0("dataset/playersInjuryPL/playersInjuryPL", i, ".csv")
+ }
+ readr::write_csv(players_stats_df, file = filename)
 
