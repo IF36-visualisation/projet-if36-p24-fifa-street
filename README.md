@@ -153,24 +153,24 @@ Une fois de plus, cette liste n'est pas exhaustive, mais cela donne une idée de
 
 Nous allons à présent vous présenter les différentes questions que nous nous sommes posées sur le championnat. Pour chacune de ces questions, nous allons vous expliquer comment nous allons y répondre et quelles données nous allons utiliser pour cela. 
 
-#### <ins>Quelles sont les différences entre les 5 premières équipes de chaque championnats ?
+#### <ins>Quelles sont les différences entre les 5 premières équipes de chaque championnats ? (traité par Ewen)
 
 Pour répondre à cette question, nous allons nous concentrer sur les 5 premières équipes de chaque championnat pour voir s'il y a des différences significatives entre elles. Nous allons nous intéresser à des statistiques comme la possession de balle (obtenu avec le `stat_type="possession"`), le nombre de passes réussies (avec `stat_type="passing"`),puis  le nombre de tirs et le nombre de buts marqués (`stat_type="attack"`).
 
 Pour représenter et mettre en relation les données, nous allons utiliser plusieurs graphiques en barres pour comparer les différentes équipes entre elles sur les différentes statistiques. Nous pourrons également utiliser des graphiques en nuages de points pour voir s'il y a une corrélation entre certaines statistiques. Cela nous permettra d'observer quelles statistiques sont les plus importantes pour se démarquer des autres équipes, et si ces statistiques sont inchangées d'un championnat à l'autre.
 
-#### <ins>Le nombre de blessures est-il lié au nombre de match joué ou le championnat joue une plus grosse partie (stéréotype de championnat + physique que d'autres ) 
+#### <ins>Le nombre de blessures est-il lié au nombre de match joué ou le championnat joue une plus grosse partie (stéréotype de championnat + physique que d'autres ) (traité par Ahmed)
 Pour répondre à cette question, nous utiliserons deux requêtes. La première nous donnera le nombre de matchs joués, éventuellement accompagné d'un calcul du temps de jeu. Pour des raisons de clarté et de compréhension, nous sélectionnerons probablement les 100 joueurs les plus blessés en utilisant la méthode 'tm_player_injury_history()' et en filtrant sur la somme de la différence entre injured_until et injured_since.
 
 #### <ins>Quel est le profil de buteur le plus prolifique (avec des statistiques sur la taille) ?
 Nous examinerons les meilleurs buteurs des championnats et leurs caractéristiques (physiques, temps de jeu, blessures, etc.) pour trouver la meilleure corrélation. Nous pourrons également créer une carte thermique (heatmap) avec PowerBI (ou avec R) sur les origines de ces joueurs en utilisant la méthode `tm_player_bio()`.
 
-#### <ins>Déterminer le profil de l'équipe parfaite (possession par exemple) 
+#### <ins>Déterminer le profil de l'équipe parfaite (possession par exemple) (traité par Nassim)
 Nous analyserons les statistiques des meilleures équipes et les comparerons à celles des équipes moins performantes pour déterminer les caractéristiques d'une équipe parfaite, telles que la possession de balle,nombre de buts moyens encaissés... On utilisera `fb_team_match_log_stats()` pour recuperer tout les matchs et faire des moyennes sur leurs matchs . 
 
-#### <ins>Quelle est la corrélation entre la valeur marchande des joueurs et leurs postes ?
+#### <ins>Quelle est la corrélation entre la valeur marchande des joueurs et leurs postes ? (traité par Amine)
 Nous étudierons la corrélation entre la valeur marchande des joueurs et différents critères spécifiques à leur poste. Par exemple, nous examinerons le nombre de buts pour les attaquants et le nombre d'interceptions pour les défenseurs parmi les joueurs les plus chers. Pour ce faire, nous utiliserons la méthode mentionnée précédemment dans la section "À l'échelle des joueurs".
 
-#### <ins>Quelles sont les différences entre les championnats et les coupes ?
+#### <ins>Quelles sont les différences entre les championnats et les coupes ? (traité par Nassim)
 Il existe plusieurs différences entre les championnats et les coupes. Nous pourrions les distinguer en examinant différents aspects tels que le nombre moyen de buts marqués par match ou les performances moyennes des joueurs en coupe par rapport au championnat.
 Par exemple, en utilisant la méthode `fb_player_scouting_report()`, nous pouvons spécifier le championnat comme paramètre et obtenir des retours standard pour analyser ces différences.
