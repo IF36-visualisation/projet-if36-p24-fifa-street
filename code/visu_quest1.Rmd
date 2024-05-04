@@ -1,0 +1,38 @@
+
+```{r}
+library(readr)
+library(dplyr)
+library(ggplot2)
+big5_data_by_team <- read_csv("../data/dataset/big5_data_by_teams/big5_data_by_team.csv",show_col_types = FALSE)
+```  
+On va sélectionner les colonnes qui nous intéressent pour notre analyse. Dans notre cas on va sélectionner les données de 2022 et les données concernant les 5 meilleures équipes de la première League pour cette année, à savoir Manchester City, Liverpool, Chelsea, Tottenham, Arsenal
+Les colonnes concernées sont, "Season_End_Year" et "Squad"
+```{r}
+big5_data_by_team <- big5_data_by_team %>% filter(Season_End_Year == 2022 & Squad %in% c("Manchester City", "Liverpool", "Chelsea", "Tottenham", "Arsenal"))
+```
+Il y a énormément de colonnes à notre disposition, on va donc sélectionner les colonnes qui nous intéressent pour notre analyse.
+On va garder uniquement Squad, Team_or_Opponent, Gls, Poss.y, Touches_Touches, Succ_percent_Dribbles
+```{r}
+big5_data_by_team <- big5_data_by_team %>% select(Squad, Team_or_Opponent, Gls, "_percent_Pressures", Touches_Touches, Succ_percent_Dribbles)
+```
+
+On va  ensuite renommer les colonnes pour plus de clarté
+```{r}
+big5_data_by_team <- big5_data_by_team %>% rename(Equipe = Squad, Buts = Gls, Reussite_pressing = '_percent_Pressures', Touches = Touches_Touches, Pourcentage_de_dribbles_reussis = Succ_percent_Dribbles)
+```
+Team_or_Opponent distingue les match où l'équipe est à domicile ou à l'extérieur. On va donc regrouper les données par équipe et par match à domicile ou à l'extérieur.
+```{r}
+big5_data_by_team <- big5_data_by_team %>% group_by(Equipe) %>% summarise(Buts = sum(Buts), Reussite_pressing = mean(Reussite_pressing), Touches = mean(Touches), Pourcentage_de_dribbles_reussis = mean(Pourcentage_de_dribbles_reussis))
+```
+On peut ensuite faire une première visualisation, avec un barplot qui affiche le nombre de but marqué par chaque équipe
+```{r}
+ggplot(big5_data_by_team, aes(x = Equipe, y = Buts, fill = Equipe)) + geom_bar(stat = "identity") + theme_minimal() + labs(title = "Nombre de buts marqués par équipe", x = "Equipe", y = "Nombre de buts")
+```
+Comme on pouvait s'y attendre, Manchester City, Liverpool et Chelsea, respectivement 1ère, 2ème et 3ème équipe du classement, sont les équipes qui possède le plus de buts. Le nombre de buts est donc directement lié à la position de l'équipe dans la ligue.
+
+
+
+
+
+
+
