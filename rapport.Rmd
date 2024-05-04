@@ -269,14 +269,16 @@ ggplot(big5_data_by_team, aes(x = Equipe, y = Dribbles_reussis, fill = Equipe)) 
 
 
 
-### Introduction Question :**Quelles sont les blessures les plus fréquentes pour les joueurs de Premier League ?**
+
+
+### **Quelles sont les blessures les plus fréquentes pour les joueurs de Premier League ?**
 (traité par Ahmed)
 Dans cette analyse, nous chercherons à identifier les types de blessures les plus courantes et les parties du corps les plus affectées chez les joueurs professionnels,
 en mettant particulièrement l'accent sur les joueurs de Premier League.
 Nous pourrions nous attendre à ce que les blessures aux chevilles, aux genoux et aux adducteurs soient parmi les plus fréquentes.
 
 
-### Graphiques
+### Graphique
 <p align="center">
   <img src="graph/InjuriesCloud_PlPLayers.png" alt="Texte alternatif" style="display: block; margin: auto;">
   Cette visualisation nous montre les blessures les plus récurrentes avec un double encodage pour représenter la fréquence, la taille et la couleur.
@@ -292,30 +294,36 @@ Nous remarquons également l'impact de la crise du COVID-19, qui a réussi à fi
 
 
 
-### Introduction Question : **Le nombre de blessures est-il lié au nombre de match joué ou le championnat joue une plus grosse partie (stéréotype de championnat + physique que d'autres )**
+
+
+
+
+
+### **Le nombre de blessures est-il lié au nombre de match joué ou le championnat joue une plus grosse partie (stéréotype de championnat + physique que d'autres )**
 (traité par Ahmed)
-<font color="red">optionnel dans la deadline du 5 mai</font>
+<font color="red">**optionnel dans la deadline du 5 mai**</font>
 
 Dans cette analyse, nous nous intéressons à la relation entre le nombre de jours entre chaque match et le nombre de blessures dans les ligues majeures de football. Notre question de recherche est de savoir si certains championnats sont plus sujets aux blessures que d'autres en raison de leur nature plus physique supposée .
 Dans l'imaginaire collectif des fans de football, la Premier League a une réputation de championnat plus physique que les autres. On pourrait donc s'attendre à plus de blessures de la part des joueurs de cette ligue.
 
 ### Graphiques
-
 <p align="center">
   <img src="graph/RelationDelaiMatchBlessures.png" alt="Relation entre le nombre moyen de jours entre chaque match et le nombre de blessures">
+    <div style="width: 100%; border: 1px solid #ccc; padding: 10px; margin-top: 10px;">
+  Sur ce graphique, l'axe des abscisses représente le nombre moyen de jours entre chaque match, tandis que l'axe des ordonnées représente le nombre de blessures. Nous observons une tendance générale où les championnats avec moins de jours de repos entre les matchs ont tendance à avoir un nombre de blessures plus élevé.</div>
 </p>
-
-Sur ce graphique, l'axe des abscisses représente le nombre moyen de jours entre chaque match, tandis que l'axe des ordonnées représente le nombre de blessures. Nous observons une tendance générale où les championnats avec moins de jours de repos entre les matchs ont tendance à avoir un nombre de blessures plus élevé.
 
 <p align="center">
   <img src="graph/RelationNbMatch_NbBlessures.png" alt="Relation entre le nombre de matchs par équipe en championnat et le nombre de blessures">
+    <div style="width: 100%; border: 1px solid #ccc; padding: 10px; margin-top: 10px;">
+  Sur ce graphique, l'axe des abscisses représente le nombre de matchs par équipe en championnat, tandis que l'axe des ordonnées représente le nombre de blessures. Nous observons une relation linéaire entre le nombre de matchs et le nombre de blessures, sauf pour la Ligue 1 qui semble être une exception à cette tendance.</div>
 </p>
 
-Sur ce graphique, l'axe des abscisses représente le nombre de matchs par équipe en championnat, tandis que l'axe des ordonnées représente le nombre de blessures. Nous observons une relation linéaire entre le nombre de matchs et le nombre de blessures, sauf pour la Ligue 1 qui semble être une exception à cette tendance.
+
 
 ### Analyse des graphiques
 
-Les graphiques montrent clairement des tendances. Nous constatons presque une relation linéaire entre le nombre de matchs et les blessures, à l'exception de la Ligue 1. Cela confirme l'idée que certains championnats peuvent être plus sujets aux blessures en raison de leur intensité de jeu.
+Les graphiques montrent clairement des tendances. Nous constatons presque une relation linéaire entre le nombre de matchs et les blessures, à l'exception de la Ligue 1. Cela confirme l'idée que certains championnats peuvent être plus sujets aux blessures en raison de leur intensité de matchs.
 
 En ce qui concerne la relation entre le délai entre chaque match et les blessures, nous observons que les délais sont souvent très proches, mais nous remarquons deux extrêmes. La Premier League a le plus grand nombre de blessures avec le moins de temps de repos, tandis que la Ligue 1 a le nombre de blessures le plus bas avec le temps de repos le plus long. Cela suggère que plus une équipe a de temps de repos, moins elle est exposée aux blessures.
 
