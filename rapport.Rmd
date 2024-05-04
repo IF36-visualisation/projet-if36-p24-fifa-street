@@ -2,8 +2,8 @@
 title: "Analyse de la Premier League"
 author: "groupe Fifa street"
 output:
-  pdf_document: default
   html_document: default
+  pdf_document: default
 ---
 
 #Introduction
@@ -269,7 +269,8 @@ ggplot(big5_data_by_team, aes(x = Equipe, y = Dribbles_reussis, fill = Equipe)) 
 
 
 
-## Introduction Question :**Quelles sont les blessures les plus fréquentes pour les joueurs de Premier League ?**(traité par Ahmed)
+### Introduction Question :**Quelles sont les blessures les plus fréquentes pour les joueurs de Premier League ?**
+(traité par Ahmed)
 Dans cette analyse, nous chercherons à identifier les types de blessures les plus courantes et les parties du corps les plus affectées chez les joueurs professionnels,
 en mettant particulièrement l'accent sur les joueurs de Premier League.
 Nous pourrions nous attendre à ce que les blessures aux chevilles, aux genoux et aux adducteurs soient parmi les plus fréquentes.
@@ -291,7 +292,8 @@ Nous remarquons également l'impact de la crise du COVID-19, qui a réussi à fi
 
 
 
-## Introduction Question : **Le nombre de blessures est-il lié au nombre de match joué ou le championnat joue une plus grosse partie (stéréotype de championnat + physique que d'autres )**(traité par Ahmed)
+### Introduction Question : **Le nombre de blessures est-il lié au nombre de match joué ou le championnat joue une plus grosse partie (stéréotype de championnat + physique que d'autres )**
+(traité par Ahmed)
 <font color="red">optionnel dans la deadline du 5 mai</font>
 
 Dans cette analyse, nous nous intéressons à la relation entre le nombre de jours entre chaque match et le nombre de blessures dans les ligues majeures de football. Notre question de recherche est de savoir si certains championnats sont plus sujets aux blessures que d'autres en raison de leur nature plus physique supposée .

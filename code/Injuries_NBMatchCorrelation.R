@@ -17,13 +17,13 @@ for (i in seq_along(liguesa)) {
   ligue <- liguesa[i]
   ligue_name <- liguesc[i]
   
-  match_urls <- fb_match_urls(country = ligue, gender = "M", season_end_year = 2023, tier = "1st")
+  match_urls <- fb_match_urls(country = ligue, gender = "M", season_end_year = 2024, tier = "1st")
   
   # Calcule nombre  matchs
   nb_matchs <- length(match_urls)
   
   #  URL des équipes de la ligue
-  league_url <- fb_league_urls(country = ligue, gender = "M", season_end_year = 2023, tier = "1st")
+  league_url <- fb_league_urls(country = ligue, gender = "M", season_end_year = 2024, tier = "1st")
   team_urls <- fb_teams_urls(league_url)
   
   # Calcule nombre d'équipes
@@ -34,7 +34,6 @@ for (i in seq_along(liguesa)) {
   
   #   données  joueurs blessés dan ligue
   injuries <- tm_league_injuries(country_name = ligue_name)
-  
   # Calculeznombre blessures
   nb_blessures <- nrow(injuries)
   
