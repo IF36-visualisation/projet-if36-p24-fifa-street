@@ -44,3 +44,4 @@ palette <- colorRampPalette(c("blue", "red"))(n_colors)
 
 # Créer le nuage de mots
 wordcloud(names(freq), freq, min.freq = 1, max.words = 200, random.order = FALSE, colors = palette)
+title("Blessures joueurs Premier League")

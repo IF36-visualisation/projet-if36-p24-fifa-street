@@ -52,7 +52,7 @@ df <- data.frame(
 ggplot(df, aes(x = nb_matchs_par_equipe, y = nb_blessures_par_ligue, color = ligue)) +
   geom_point() +
   geom_smooth(method = "lm", se = FALSE) +
-  labs(x = "Nombre de matchs par équipe", y = "Nombre de blessures", title = "Corrélation entre le nombre de matchs et les blessures dans les ligues majeures") +
+  labs(x = "Nombre de matchs par équipe", y = "Nombre de blessures", title = "Relation nombre de matchs et blessures ") +
   theme_minimal()
 
 
@@ -84,7 +84,7 @@ df <- data.frame(
 ggplot(df, aes(x = nb_moyen_intervalle_match, y = nb_blessures_par_ligue, color = ligue)) +
   geom_point() +
   geom_smooth(method = "lm", se = FALSE) +
-  labs(x = "Nombre moyen de jours entre chaque match", y = "Nombre de blessures", title = "Corrélation entre le nombre moyen de jours entre chaque match et les blessures dans les ligues majeures") +
+  labs(x = "Nombre moyen de jours entre chaque match", y = "Nombre de blessures", title = "Relation delai  matchs et blessures") +
   theme_minimal()
 
 

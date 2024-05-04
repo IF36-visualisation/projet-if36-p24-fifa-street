@@ -1,12 +1,10 @@
-
 ---
 title: "Analyse de la Premier League"
-author: "groupe Fifa street
-
+author: "groupe Fifa street"
 output: html_document
 ---
 
-# Introduction
+#Introduction
 
 Nous avons décidé d'orienter notre projet sur la Premier League, qui est la première division de football en Angleterre. La Premier League fait partie des 5 grands championnats avec la Ligue 1 (France), la Liga (Espagne), la Bundesliga (Allemagne) et la Serie A (Italie).
 
@@ -182,4 +180,25 @@ Il existe plusieurs différences entre les championnats et les coupes. Nous pour
 
 
 **#Réponses aux questions**
+
+**Quelles sont les blessures les plus fréquentes pour les joueurs de Premier League ?**
+1 Exposer la question que l’on se pose ou le problème étudié et l’éventuelle réponse que l’on imagine trouver.
+2 Insérer la ou les visualisations adaptées, en prenant soin de mettre sur chaque graphique les informations nécessaires pour le comprendre (légende, titre, labels des axes etc).
+<p align="center">
+  <img src="graph/InjuriesCloud_PlPLayers.png" alt="Texte alternatif" style="display: block; margin: auto;">
+</p>
+
+
+3 Interpréter les graphiques : répondent-ils à la question ? Si oui par quelle réponse ? Si non pourquoi ? Cela amène-t-il à d’autres questions ? Dans le dernier cas, on recommence le processus.
+**Le nombre de blessures est-il lié au nombre de match joué ou le championnat joue une plus grosse partie (stéréotype de championnat + physique que d'autres )**
+1 Exposer la question que l’on se pose ou le problème étudié et l’éventuelle réponse que l’on imagine trouver.
+2 Insérer la ou les visualisations adaptées, en prenant soin de mettre sur chaque graphique les informations nécessaires pour le comprendre (légende, titre, labels des axes etc).
+<p align="center">
+<img src="graph/RelationDelaiMatchBlessures.png" alt="Texte alternatif" style="display: block; margin: auto;">
+</p>
+<p align="center">
+<img src="graph/RelationNbMatch_NbBlessures.png" alt="Texte alternatif" style="display: block; margin: auto;">
+</p>
+
+3 Interpréter les graphiques : répondent-ils à la question ? Si oui par quelle réponse ? Si non pourquoi ? Cela amène-t-il à d’autres questions ? Dans le dernier cas, on recommence le processus.
 
