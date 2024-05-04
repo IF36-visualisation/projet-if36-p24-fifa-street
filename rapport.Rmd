@@ -164,6 +164,10 @@ Pour représenter et mettre en relation les données, nous allons utiliser plusi
 **Le nombre de blessures est-il lié au nombre de match joué ou le championnat joue une plus grosse partie (stéréotype de championnat + physique que d'autres ) (traité par Ahmed)**
 Pour répondre à cette question, nous utiliserons deux requêtes. La première nous donnera le nombre de matchs joués, éventuellement accompagné d'un calcul du temps de jeu. Pour des raisons de clarté et de compréhension, nous sélectionnerons probablement les 100 joueurs les plus blessés en utilisant la méthode 'tm_player_injury_history()' et en filtrant sur la somme de la différence entre injured_until et injured_since.
 
+**Quelles sont les blessures les plus fréquentes pour les joueurs de Premier League ? (traitée par Ahmed)**
+Nous récupérerons les blessures via tm_player_injury_history, qui prend en paramètre un player_url de Transfermarkt. Nous regarderons donc les blessures de tous les joueurs en filtrant sur les joueurs de PL.
+Un nuage de mots serait bien pour représenter la répartition. . 
+
 **Quel est le profil de buteur le plus prolifique (avec des statistiques sur la taille) ?**
 Nous examinerons les meilleurs buteurs des championnats et leurs caractéristiques (physiques, temps de jeu, blessures, etc.) pour trouver la meilleure corrélation. Nous pourrons également créer une carte thermique (heatmap) avec PowerBI (ou avec R) sur les origines de ces joueurs en utilisant la méthode tm_player_bio().
 
