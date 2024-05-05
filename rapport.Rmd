@@ -304,6 +304,11 @@ Quant au poste du joueur, certains favorisent-ils la rémunération ?
 
 **Chargement des données** :
 
+```{r}
+# Chargement du package worldfootballR
+library(worldfootballR)
+```
+
 Nous avons chargé les données sur les salaires des joueurs de Manchester City à partir du site FBref.
 Les données ont été stockées dans un dataframe nommé `man_city_wages`.
 ```{r, eval=FALSE}
@@ -318,7 +323,7 @@ man_city_wages <- fb_squad_wages(team_urls = man_city_url)
 - `ggplot2` : pour la création de graphiques
 - `scales` : pour la mise en forme des échelles sur les graphiques
 
-```{r, eval=FALSE}
+```{r}
 # Charger les bibliothèques nécessaires
 library(dplyr)
 library(ggplot2)
@@ -414,7 +419,7 @@ man_city_wages <- select(man_city_wages, -Url, -Notes, -AnnualWageGBP, -AnnualWa
 
 Cela nous permet d'avoir un dataframe complet comprenant les salaires annuels, les postes et les notes des joueurs de Manchester City.
 
-### Analyse du graphique
+### Graphique
 
 Nous avons créé un graphique pour explorer la relation entre les salaires annuels, les notes et les postes des joueurs de Manchester City.
 
@@ -447,13 +452,6 @@ ggplot(man_city_wages, aes(x = Note, y = AnnualWageEUR, shape = Groupe_poste, co
         legend.direction = "horizontal",
         legend.key.size = unit(1.5, "lines"))
 ```
-
-### Graphique
-<p align="center">
-  <img src="graph/RelationSalaireNote.png" alt="Relation entre les salaires annuels, les notes et les postes des joueurs de Manchester City">
-    <div style="width: 100%; border: 1px solid #ccc; padding: 10px; margin-top: 10px;">
-  Ce graphique illustre la relation entre les salaires annuels, les notes et les postes des joueurs de Manchester City. L'axe des abscisses représente les notes des joueurs, tandis que l'axe des ordonnées représente les salaires annuels en euros. Les points sont colorés et formés en fonction des postes des joueurs. On observe clairement une corrélation positive entre les salaires et les notes des joueurs, avec une tendance à la rémunération plus élevée pour les joueurs mieux notés. De plus, les postes des milieux de terrain et des attaquants semblent être mieux rémunérés, tandis que les gardiens de but ont des salaires et des notes relativement similaires.</div>
-</p>
 
 **Analyse finale** :
 
