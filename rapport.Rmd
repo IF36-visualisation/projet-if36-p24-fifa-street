@@ -669,6 +669,57 @@ Cette analyse confirme que la possession de balle, les buts marqués, et les but
 - Quel est l'impact de la stratégie défensive sur le nombre de buts encaissés ?
 - Dans quelle mesure la possession de balle influence-t-elle le résultat des matchs dans différentes conditions météorologiques ou contre des équipes spécifiquement défensives ?
 
+### **Quelles sont les différences entre les championnats et les coupes ?**
+(traitée par Nassim)
 
+Dans cette section, nous explorons les différences entre les compétitions de championnat, comme la Premier League, et les compétitions en coupe, telles que la FA Cup. Une des métriques que nous examinons est le nombre moyen de buts marqués par match, ce qui pourrait indiquer une approche stratégique différente due à la nature de chaque type de compétition. On pourrait s'attendre à ce que les matchs de coupe, qui sont souvent des affrontements à élimination directe, encouragent un jeu plus agressif et potentiellement plus de buts, tandis que les championnats pourraient favoriser une approche plus mesurée et stratégique sur la durée d'une saison.
+
+Traitement des données :
+Nous avons utilisé la bibliothèque worldfootballR pour extraire les résultats des matchs des équipes participant à la FA Cup et à la Premier League pour la saison 2022-2023. Nous avons ensuite nettoyé et transformé ces données pour en faciliter l'analyse. Voici le code utilisé pour obtenir ces données et calculer les moyennes de buts marqués :
+
+```{r}
+library(worldfootballR)
+library(dplyr)
+library(ggplot2)
+
+# Extraction des URLs des équipes pour la FA Cup et la Premier League
+fa_cup_url <- "https://fbref.com/en/comps/514/2022-2023/2022-2023-FA-Cup-Stats"
+fa_cup_team_urls <- fb_teams_urls(fa_cup_url)
+pl_team_urls <- fb_teams_urls("https://fbref.com/en/comps/9/2022-2023/2022-2023-Premier-League-Stats")
+
+# Fonctions pour obtenir les résultats des matchs
+get_fa_cup_team_results <- function(team_url) {
+  results <- fb_team_match_results(team_url)
+  results %>% mutate(Team = gsub(".*/", "", team_url), Team = gsub("-Stats", "", Team),
+                    Competition = "FA Cup", GF = as.numeric(GF), GA = as.numeric(GA)) %>%
+    select(Team, Date, Opponent, Result, Venue, GF, GA, Comp = Competition)
+}
+```
+
+### Visualisation des moyennes de buts marqués
+
+Nous avons créé un graphique pour visualiser les différences entre la moyenne des buts marqués par match dans la FA Cup et dans la Premier League :
+
+```{r}
+ggplot(average_goals, aes(x = Comp, y = AverageGoals, fill = Comp)) +
+  geom_col() +
+  labs(title = "Moyenne des buts marqués par match en FA Cup vs Premier League",
+       x = "Compétition",
+       y = "Moyenne des buts marqués par match") +
+  theme_minimal() +
+  theme(legend.position = "none")
+```
+
+### Interprétation et conclusion
+
+L'analyse montre que le nombre moyen de buts par match diffère entre les compétitions de la FA Cup et de la Premier League. Cette information pourrait suggérer différentes approches tactiques entre les matchs de coupe et de championnat. Par exemple, les équipes pourraient adopter des stratégies plus offensives ou défensives selon l'importance ou le format du match.
+
+### Questions pour approfondir l'analyse
+
+Cette observation initiale mène à plusieurs questions intéressantes pour des recherches futures :
+
+- Comment les styles de jeu diffèrent-ils entre les matchs de coupe et de championnat au niveau des équipes individuelles ?
+- Y a-t-il une corrélation entre la fréquence des changements de joueurs et les performances dans les matchs de coupe par rapport au championnat ?
+- Quel est l'impact de la pression des matchs à élimination directe sur les performances des équipes en termes de buts marqués et encaissés ?
 
 
