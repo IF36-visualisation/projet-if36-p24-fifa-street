@@ -309,14 +309,6 @@ Quant au poste du joueur, certains favorisent-ils la rémunération ?
 library(worldfootballR)
 ```
 
-Nous avons chargé les données sur les salaires des joueurs de Manchester City à partir du site FBref.
-Les données ont été stockées dans un dataframe nommé `man_city_wages`.
-```{r, eval=FALSE}
-# Importation des données des joueurs à partir de l'URL spécifiée
-man_city_url <- "https://fbref.com/en/squads/b8fd03ef/Manchester-City-Stats"
-man_city_wages <- fb_squad_wages(team_urls = man_city_url)
-```
-
 **Chargement des bibliothèques nécessaires** :
 
 - `dplyr et tibble` : pour la manipulation des données
@@ -330,6 +322,15 @@ library(ggplot2)
 library(scales)
 library(tibble)
 ```
+
+Nous avons chargé les données sur les salaires des joueurs de Manchester City à partir du site FBref.
+Les données ont été stockées dans un dataframe nommé `man_city_wages`.
+```{r}
+# Importation des données des joueurs à partir de l'URL spécifiée
+man_city_url <- "https://fbref.com/en/squads/b8fd03ef/Manchester-City-Stats"
+man_city_wages <- fb_squad_wages(team_urls = man_city_url)
+```
+
 
 **Traitement des données** :
 
