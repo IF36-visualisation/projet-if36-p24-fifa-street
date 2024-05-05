@@ -428,10 +428,6 @@ Nous avons créé un graphique pour explorer la relation entre les salaires annu
 - Le titre du graphique est "Relation entre les salaires annuels, les notes et les postes des joueurs de Manchester City".
 - Les étiquettes des axes sont "Note" pour l'axe des abscisses et "Salaire annuel (en euros)" pour l'axe des ordonnées.
 
-**Analyse** :
-
-L'analyse révèle une corrélation claire entre les notes des joueurs et leurs salaires à Manchester City. Les joueurs mieux notés ont tendance à percevoir des salaires plus élevés, mettant en lumière l'impact des performances individuelles sur la rémunération. De plus, les attaquants et les milieux de terrain sont les mieux rémunérés, soulignant l'importance de ces postes dans le jeu. Les gardiens de but présentent des notes et des salaires similaires, reflétant une certaine équité dans la rémunération de ce poste. Enfin, cette analyse met en évidence l'accent mis sur l'offensive dans le football professionnel, où les attaquants sont souvent les mieux notés et rémunérés.
-
 ```{r}
 # Visualisation : Comparaison des salaires annuels des joueurs de Manchester City en fonction des notes et des postes
 ggplot(man_city_wages, aes(x = Note, y = AnnualWageEUR, shape = Groupe_poste, color = Groupe_poste)) +
@@ -458,6 +454,12 @@ ggplot(man_city_wages, aes(x = Note, y = AnnualWageEUR, shape = Groupe_poste, co
     <div style="width: 100%; border: 1px solid #ccc; padding: 10px; margin-top: 10px;">
   Ce graphique illustre la relation entre les salaires annuels, les notes et les postes des joueurs de Manchester City. L'axe des abscisses représente les notes des joueurs, tandis que l'axe des ordonnées représente les salaires annuels en euros. Les points sont colorés et formés en fonction des postes des joueurs. On observe clairement une corrélation positive entre les salaires et les notes des joueurs, avec une tendance à la rémunération plus élevée pour les joueurs mieux notés. De plus, les postes des milieux de terrain et des attaquants semblent être mieux rémunérés, tandis que les gardiens de but ont des salaires et des notes relativement similaires.</div>
 </p>
+
+**Analyse finale** :
+
+L'analyse révèle une corrélation claire entre les notes des joueurs et leurs salaires à Manchester City. Les joueurs mieux notés ont tendance à percevoir des salaires plus élevés, mettant en lumière l'impact des performances individuelles sur la rémunération. De plus, les attaquants et les milieux de terrain sont les mieux rémunérés, soulignant l'importance de ces postes dans le jeu. Les gardiens de but présentent des notes et des salaires similaires, reflétant une certaine équité dans la rémunération de ce poste. Enfin, cette analyse met en évidence l'accent mis sur l'offensive dans le football professionnel, où les attaquants sont souvent les mieux notés et rémunérés.
+
+
 ### **Quelles sont les blessures les plus fréquentes pour les joueurs de Premier League ?**
 
 (traité par Ahmed)
@@ -517,14 +519,6 @@ players_stats_df <- do.call(rbind, players_stats_list)
 Les résultats confirment nos attentes, avec comme top 3 des blessures les plus récurrentes : en premier, les adducteurs, suivis des genoux, puis des chevilles.
 Cette observation est logique étant donné que le football de haut niveau exerce une pression particulière sur certains muscles et articulations.
 Nous remarquons également l'impact de la crise du COVID-19, qui a réussi à figurer parmi les blessures les plus récurrentes, bien que son impact ait été de courte durée dans les rapports de blessures  (avant la suspension du championnat).
-
-
-
-
-
-
-
-
 
 
 ### **Le nombre de blessures est-il lié au nombre de match joué ou le championnat joue une plus grosse partie (stéréotype de championnat + physique que d'autres )**
