@@ -305,6 +305,45 @@ Dans cette analyse, nous chercherons à identifier les types de blessures les pl
 en mettant particulièrement l'accent sur les joueurs de Premier League.
 Nous pourrions nous attendre à ce que les blessures aux chevilles, aux genoux et aux adducteurs soient parmi les plus fréquentes.
 
+**Traitement des données** :
+Dans le cadre de notre analyse des blessures des joueurs de Premier League, nous avons collecté des données à partir de différentes sources. Tout d'abord, nous avons créé une liste de tous les clubs de Premier League, "clubs_list", contenant 26 clubs.
+
+Ensuite, nous avons importé les données relatives aux joueurs à partir du fichier CSV "players.csv" en utilisant la fonction readr::read_csv().
+```{r, eval=FALSE}
+players <- readr::read_csv("dataset/playerslinkALL/players.csv")
+colnames(players)
+```
+Pour obtenir les statistiques de blessures de chaque joueur, nous avons utilisé une fonction personnalisée, tm_player_injury_history(), qui prend l'URL du profil du joueur sur le site web de Transfermarkt comme argument. Nous avons itéré sur chaque ligne de notre jeu de données "players" en utilisant une boucle for, et pour chaque joueur, nous avons récupéré ses statistiques de blessures en utilisant cette fonction.
+```{r, eval=FALSE}
+players_stats_list <- list()
+
+for (i in 1:nrow(players)) {
+  player_url <- players$UrlTmarkt[i]
+  stat <- tm_player_injury_history(player_url)
+  if (any(!is.na(stat$club))) {
+    print("club")
+    found <- FALSE
+    clubs <- strsplit(stat$club, ", ")[[1]]
+    for (club in clubs) {
+      found <- grepl(club, clubs_list, ignore.case = TRUE)
+      if (any(found)) {
+        print("en PL")
+        players_stats_list[[i]] <- stat
+        break
+      } else {
+        print("pas en PL ")
+      }
+    }
+  }
+}
+
+```
+Comme un joueur peut avoir joué pour plusieurs clubs au cours de sa carrière, nous avons vérifié s'il a joué pour un club de Premier League en comparant le nom du club dans les statistiques de blessures avec notre liste de clubs de Premier League. Nous avons utilisé la fonction strsplit() pour diviser la chaîne de caractères contenant les noms des clubs en un vecteur, puis nous avons itéré sur chaque club en utilisant une boucle for. Nous avons utilisé la fonction grepl() pour vérifier si le nom du club est dans notre liste de clubs de Premier League, en ignorant la casse. Si le joueur a joué pour un club de Premier League, nous avons ajouté ses statistiques de blessures à notre liste "players_stats_list".
+```{r, eval=FALSE}
+players_stats_df <- do.call(rbind, players_stats_list)
+
+```
+
 
 ### Graphique
 <p align="center">

@@ -51,7 +51,7 @@ for (i in 1:nrow(players)) {
   player_url <- players$UrlTmarkt[i]
   stat <- tm_player_injury_history(player_url)
   if (any(!is.na(stat$club))) {
-    print("carre")
+    print("club")
     found <- FALSE
     clubs <- strsplit(stat$club, ", ")[[1]]
     for (club in clubs) {
@@ -61,7 +61,7 @@ for (i in 1:nrow(players)) {
         players_stats_list[[i]] <- stat
         break
       } else {
-        print("zeubio jdevoisn foiu")
+        print("pas en PL ")
       }
     }
   }
