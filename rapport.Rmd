@@ -202,7 +202,7 @@ Avant de commencer, on peut déjà faire plusieurs suppositions :
 
 - On s'attend aussi à avoir des données relativement proches, et pas une équipe qui écrase toute les autres, car bien qu'une équipe soit bas dans le classement, les joueurs concernés restent des professionnels.
 
-Nous utiliserons des données récupérées sur le sit **Fbref**, stockées dans un csv. Les données sont les statistiques de chaque équipes pour chaque saison (Nombre de buts, nombre de touches, etc...)
+Nous utiliserons des données récupérées sur le site **Fbref**, stockées dans un csv. Les données sont les statistiques de chaque équipes pour chaque saison (Nombre de buts, nombre de touches, etc...)
 
 ```{r, warning=FALSE,message=FALSE}
 library(readr)
@@ -294,8 +294,56 @@ On constate aussi que le nombre de touches est un paramètre plus important, et 
 
 Cela peut s'expliquer par le fait que la Ligue 1 est un championnat moins offensif que la Premier League, et que la possession de balle est donc un paramètre plus important pour différencier les équipes entre elles.
 
+### **Analyse de la relation entre les salaires, les notes et les postes des joueurs de Manchester City**
 
+Dans cette partie, nous explorons la relation entre les salaires annuels, les notes des joueurs et leurs postes au sein de l'équipe de Manchester City pour la saison 2023-2024.
+On peut supposer que les salaires seront d'autant plus élevées que les performances du joueurs sont bonnes (notes élevées), nous allons vérifier cela. 
+Quant au poste du joueur, certains favorisent-ils la rémunération ?
 
+**Chargement des données** :
+
+Nous avons chargé les données sur les salaires des joueurs de Manchester City à partir du site FBref.
+Les données ont été stockées dans un dataframe nommé `man_city_wages`.
+```{r, eval=FALSE}
+# Importation des données des joueurs à partir de l'URL spécifiée
+man_city_url <- "https://fbref.com/en/squads/b8fd03ef/Manchester-City-Stats"
+man_city_wages <- fb_squad_wages(team_urls = man_city_url)
+```
+
+**Chargement des bibliothèques nécessaires** :
+
+- `dplyr` : pour la manipulation des données
+- `ggplot2` : pour la création de graphiques
+- `scales` : pour la mise en forme des échelles sur les graphiques
+```{r, eval=FALSE}
+# Charger les bibliothèques nécessaires
+library(dplyr)
+library(ggplot2)
+library(scales)
+```
+
+**Traitement des données** :
+
+Pour mieux analyser les données, nous avons recodé les postes des joueurs en de nouveaux groupes en fonction de leur position sur le terrain. Voici la logique derrière ce recodage :
+- Les joueurs occupant les postes "FW" (attaquant), "FW,MF" (attaquant ou milieu) et "MF,FW" (milieu ou attaquant) ont été regroupés sous la catégorie "Attaquant".
+- Ceux occupant les postes "MF" (milieu) et "DF,MF" (défenseur ou milieu) ont été regroupés sous la catégorie "Milieu".
+- Les joueurs occupant les postes "DF" (défenseur), "DF,FW" (défenseur ou attaquant), "RB" (arrière droit) et "AM" (ailier) ont été regroupés sous la catégorie "Défenseur".
+- Les gardiens de but, identifiés par le poste "GK", ont été regroupés dans la catégorie "Gardien de but".
+- Les joueurs occupant d'autres postes ont été regroupés dans la catégorie "Autre".
+
+Cette reclassification nous permettra d'analyser plus efficacement les données en regroupant les joueurs en fonction de leur rôle principal sur le terrain.
+
+```{r}
+# Recoder les postes en nouveaux groupes
+man_city_wages <- man_city_wages %>%
+  mutate(Groupe_poste = case_when(
+    Pos %in% c("FW", "FW,MF", "MF,FW") ~ "Attaquant",
+    Pos %in% c("MF", "DF,MF") ~ "Milieu",
+    Pos %in% c("DF", "DF,FW", "RB", "AM") ~ "Défenseur",
+    Pos == "GK" ~ "Gardien de but",
+    TRUE ~ "Autre"
+  ))
+```
 
 ### **Quelles sont les blessures les plus fréquentes pour les joueurs de Premier League ?**
 
@@ -401,7 +449,7 @@ En conclusion, ces observations soulignent l'importance du repos entre les match
 ### **Déterminer le profil de l'équipe parfaite (possession par exemple)**
 (traité par Nassim)
 
-Dans cette section de notre rapport, nous allons tenter de définir les caractéristiques clés qui semblent contribuer au succès des équipes dans leurs championnats respectifs. Nous posons l'hypothèse que des attributs tels que la possession de balle, le nombre de buts marqués, et le nombre de buts encaissés sont des facteurs déterminants dans le succès des équipes.
+Dans cette section du rapport, nous allons tenter de définir les caractéristiques clés qui semblent contribuer au succès des équipes dans leurs championnats respectifs. Nous posons l'hypothèse que des attributs tels que la possession de balle, le nombre de buts marqués, et le nombre de buts encaissés sont des facteurs déterminants dans le succès des équipes.
 
 **Traitement des données** :
 Nous avons collecté les données des cinq grandes ligues de football (Premier League, La Liga, Serie A, Bundesliga, Ligue 1) pour la saison en cours, en se concentrant sur les statistiques clés mentionnées. Les données ont été extraites à l'aide de fonctions spécialisées permettant de récupérer les statistiques avancées de possession, de buts marqués, et de buts encaissés des équipes. Voici une vue d'ensemble du processus de préparation des données:
