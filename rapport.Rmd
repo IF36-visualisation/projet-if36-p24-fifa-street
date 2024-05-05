@@ -398,4 +398,122 @@ Cependant, la Bundesliga se distingue en ayant un bon temps de repos mais un nom
 
 En conclusion, ces observations soulignent l'importance du repos entre les matchs dans la prévention des blessures, mais elles soulèvent également d'autres questions sur les facteurs influençant le nombre de blessures dans le football professionnel car le repos n'étant pas l'indice absolu . On pourrait donc se demander quels sont ces autres indices ?
 
+### **Déterminer le profil de l'équipe parfaite (possession par exemple)**
+(traité par Nassim)
+
+Dans cette section de notre rapport, nous allons tenter de définir les caractéristiques clés qui semblent contribuer au succès des équipes dans leurs championnats respectifs. Nous posons l'hypothèse que des attributs tels que la possession de balle, le nombre de buts marqués, et le nombre de buts encaissés sont des facteurs déterminants dans le succès des équipes.
+
+**Traitement des données** :
+Nous avons collecté les données des cinq grandes ligues de football (Premier League, La Liga, Serie A, Bundesliga, Ligue 1) pour la saison en cours, en se concentrant sur les statistiques clés mentionnées. Les données ont été extraites à l'aide de fonctions spécialisées permettant de récupérer les statistiques avancées de possession, de buts marqués, et de buts encaissés des équipes. Voici une vue d'ensemble du processus de préparation des données:
+
+```{r}
+library(dplyr)
+library(ggplot2)
+library(fbref)
+
+# Extraire les données des grandes ligues pour la saison 2023
+big5_stats <- fb_big5_advanced_season_stats(season_end_year = 2023, stat_type = "standard", team_or_player = "team")
+big5_possession <- fb_big5_advanced_season_stats(season_end_year = 2023, stat_type = "possession", team_or_player = "team")
+
+
+# Préparation des sous-ensembles de données
+meilleures_possessions <- big5_possession %>%
+  slice_max(order_by = Poss, n = 20) %>%
+  select(Equipe = Squad, Competition = Comp, Possession = Poss)
+
+buts_mis_equipe <- big5_stats %>%
+  filter(Team_or_Opponent == "team") %>%
+  slice_max(order_by = Gls, n = 20) %>%
+  select(Equipe = Squad, Competition = Comp, Buts_mis = Gls)
+
+buts_encaisses_adversaires <- big5_stats %>%
+  filter(Team_or_Opponent == "opponent") %>%
+  arrange(desc(Gls)) %>%
+  slice_tail(n = 20) %>%
+  select(Equipe = Squad, Competition = Comp, Buts_Encaisses = Gls)
+```
+
+### Visualisation des données
+
+Nous allons maintenant visualiser les données pour mieux comprendre les tendances.
+
+#### Équipes avec le plus de possession
+<p>
+<img src="Graph/possession_equipe.png" alt="Top 10 des équipes avec le plus de possession" style="width:100%;">
+<em>Figure 1: Top 10 des équipes avec le plus de possession. Ce graphique montre les équipes qui dominent en termes de contrôle du ballon dans leur ligue respective.</em>
+</p>
+
+#### Équipes avec le plus de victoires
+<p>
+<img src="Graph/equipe_victoire_nb.png" alt="Top 10 des équipes avec le plus de victoires" style="width:100%;">
+<em>Figure 2: Top 10 des équipes avec le plus de victoires. Ce graphique illustre les équipes qui ont accumulé le plus grand nombre de victoires durant la saison.</em>
+</p>
+
+#### Équipes avec le plus de buts marqués
+<p>
+<img src="Graph/buts_mis.png" alt="Top 10 des équipes avec le plus de buts marqués" style="width:100%;">
+<em>Figure 3: Top 10 des équipes avec le plus de buts marqués. Ce graphique démontre les capacités offensives des équipes les plus performantes.</em>
+</p>
+
+#### Équipes avec le moins de buts encaissés
+<p>
+<img src="Graph/buts_encaisses.png" alt="Top 20 des équipes avec le moins de buts encaissés" style="width:100%;">
+<em>Figure 4: Top 20 des équipes avec le moins de buts encaissés. Ce graphique met en lumière les équipes avec les meilleures performances défensives.</em>
+</p>
+
+#### 1. Équipes avec le plus de possession
+```{r}
+# Visualisation des meilleures possessions
+ggplot(meilleures_possessions, aes(x = Possession, y = reorder(Equipe, Possession), fill = Competition)) +
+  geom_bar(stat = "identity") +
+  labs(title = "Top 20 des équipes avec le plus de possession en 2023",
+       x = "Possession (%)",
+       y = "") +
+  scale_x_continuous(limits = c(0, 100), breaks = seq(0, 100, by = 20)) +
+  scale_fill_brewer(palette = "Set2", name = "Compétition") +
+  theme_minimal() +
+  theme(legend.position = "right")
+```
+
+#### 2. Équipes avec le plus de buts marqués
+```{r}
+# Visualisation des buts marqués
+ggplot(buts_mis_equipe, aes(x = Buts_mis, y = reorder(Equipe, Buts_mis), fill = Competition)) +
+  geom_bar(stat = "identity") +
+  labs(title = "Top 20 des équipes avec le plus de buts marqués en 2023",
+       x = "Buts marqués",
+       y = "") +
+  scale_x_continuous(limits = c(0, 100), breaks = seq(0, 100, by = 20)) +
+  scale_fill_brewer(palette = "Set2", name = "Compétition") +
+  theme_minimal() +
+  theme(legend.position = "right")
+```
+
+#### 3. Équipes avec le moins de buts encaissés
+```{r}
+# Visualisation des buts encaissés
+ggplot(buts_encaisses_adversaires, aes(x = Buts_Encaisses, y = reorder(Equipe, Buts_Encaisses), fill = Competition)) +
+  geom_bar(stat = "identity") +
+  labs(title = "Top 20 des équipes avec le moins de buts encaissés en 2023",
+       x = "Buts encaissés",
+       y = "") +
+  scale_x_continuous(limits = c(0, 100), breaks = seq(0, 100, by = 20)) +
+  scale_fill_brewer(palette = "Set2", name = "Compétition") +
+  theme_minimal() +
+  theme(legend.position = "right")
+```
+
+### Interprétation des graphiques
+
+Les visualisations montrent clairement que les équipes qui dominent leurs championnats tendent à exceller dans au moins deux des trois catégories suivantes: possession de balle, buts marqués, et buts encaissés. Cette observation corrobore notre hypothèse initiale selon laquelle ces facteurs sont cruciaux pour le succès. Les équipes ayant la plus grande possession tendent également à être celles qui marquent le plus de buts, soulignant l'importance du contrôle du jeu.
+
+### Conclusion et pistes de réflexion
+
+Cette analyse confirme que la possession de balle, les buts marqués, et les buts encaissés sont des indicateurs clés du succès d'une équipe dans son championnat. Cependant, cela soulève d'autres questions intéressantes pour des recherches futures :
+
+- Quel est l'impact de la stratégie défensive sur le nombre de buts encaissés ?
+- Dans quelle mesure la possession de balle influence-t-elle le résultat des matchs dans différentes conditions météorologiques ou contre des équipes spécifiquement défensives ?
+
+
+
 
