@@ -553,263 +553,290 @@ Cependant, la Bundesliga se distingue en ayant un bon temps de repos mais un nom
 En conclusion, ces observations soulignent l'importance du repos entre les matchs dans la prévention des blessures, mais elles soulèvent également d'autres questions sur les facteurs influençant le nombre de blessures dans le football professionnel car le repos n'étant pas l'indice absolu . On pourrait donc se demander quels sont ces autres indices ?
 
 ### **Déterminer le profil de l'équipe parfaite (possession par exemple)**
-(traité par Nassim)
-
-Dans cette section du rapport, nous allons tenter de définir les caractéristiques clés qui semblent contribuer au succès des équipes dans leurs championnats respectifs. Nous posons l'hypothèse que des attributs tels que la possession de balle, le nombre de buts marqués, et le nombre de buts encaissés sont des facteurs déterminants dans le succès des équipes.
-
-**Traitement des données** :
-Nous avons collecté les données des cinq grandes ligues de football (Premier League, La Liga, Serie A, Bundesliga, Ligue 1) pour la saison en cours, en se concentrant sur les statistiques clés mentionnées. Les données ont été extraites à l'aide de fonctions spécialisées permettant de récupérer les statistiques avancées de possession, de buts marqués, et de buts encaissés des équipes. Voici une vue d'ensemble du processus de préparation des données:
-
-```{r}
-library(worldfootballR)
-library(dplyr)
-library(ggplot2)
-
-# Extraire les données des grandes ligues pour la saison 2023
-big5_stats <- fb_big5_advanced_season_stats(season_end_year = 2023, stat_type = "standard", team_or_player = "team")
-big5_possession <- fb_big5_advanced_season_stats(season_end_year = 2023, stat_type = "possession", team_or_player = "team")
-
-
-# Préparation des sous-ensembles de données
-meilleures_possessions <- big5_possession %>%
-  slice_max(order_by = Poss, n = 20) %>%
-  select(Equipe = Squad, Competition = Comp, Possession = Poss)
-
-buts_mis_equipe <- big5_stats %>%
-  filter(Team_or_Opponent == "team") %>%
-  slice_max(order_by = Gls, n = 20) %>%
-  select(Equipe = Squad, Competition = Comp, Buts_mis = Gls)
-
-buts_encaisses_adversaires <- big5_stats %>%
-  filter(Team_or_Opponent == "opponent") %>%
-  arrange(desc(Gls)) %>%
-  slice_tail(n = 20) %>%
-  select(Equipe = Squad, Competition = Comp, Buts_Encaisses = Gls)
-```
-
-### Visualisation des données
-
-Nous allons maintenant visualiser les données pour mieux comprendre les tendances.
-
-#### Équipes avec le plus de possession
-<p>
-<img src="Graph/possession_equipe.png" alt="Top 10 des équipes avec le plus de possession" style="width:100%;">
-<em>Figure 1: Top 10 des équipes avec le plus de possession. Ce graphique montre les équipes qui dominent en termes de contrôle du ballon dans leur ligue respective.</em>
-</p>
-
-#### Équipes avec le plus de victoires
-<p>
-<img src="Graph/equipe_victoire_nb.png" alt="Top 10 des équipes avec le plus de victoires" style="width:100%;">
-<em>Figure 2: Top 10 des équipes avec le plus de victoires. Ce graphique illustre les équipes qui ont accumulé le plus grand nombre de victoires durant la saison.</em>
-</p>
-
-#### Équipes avec le plus de buts marqués
-<p>
-<img src="Graph/buts_mis.png" alt="Top 10 des équipes avec le plus de buts marqués" style="width:100%;">
-<em>Figure 3: Top 10 des équipes avec le plus de buts marqués. Ce graphique démontre les capacités offensives des équipes les plus performantes.</em>
-</p>
-
-#### Équipes avec le moins de buts encaissés
-<p>
-<img src="Graph/buts_encaisses.png" alt="Top 20 des équipes avec le moins de buts encaissés" style="width:100%;">
-<em>Figure 4: Top 20 des équipes avec le moins de buts encaissés. Ce graphique met en lumière les équipes avec les meilleures performances défensives.</em>
-</p>
-
-#### 1. Équipes avec le plus de possession
-```{r}
-library(worldfootballR)
-library(dplyr)
-library(ggplot2)
-
-# Extraire les données des grandes ligues pour la saison 2023
-big5_stats <- fb_big5_advanced_season_stats(season_end_year = 2023, stat_type = "standard", team_or_player = "team")
-big5_possession <- fb_big5_advanced_season_stats(season_end_year = 2023, stat_type = "possession", team_or_player = "team")
-
-# Préparation des données
-meilleures_possessions <- big5_possession %>%
-  slice_max(order_by = Poss, n = 20) %>%
-  select(Equipe = Squad, Competition = Comp, Possession = Poss)
-
-buts_encaisses_adversaires <- big5_stats %>%
-  filter(Team_or_Opponent == "opponent") %>%
-  arrange(desc(Gls)) %>%
-  slice_tail(n = 20) %>%
-  select(Equipe = Squad, Competition = Comp, Buts_Encaisses = Gls)
-
-buts_mis_equipe <- big5_stats %>%
-  filter(Team_or_Opponent == "team") %>%
-  slice_max(order_by = Gls, n = 20) %>%
-  select(Equipe = Squad, Competition = Comp, Buts_mis = Gls)
-
-# Visualisation des meilleures possessions
-ggplot(meilleures_possessions, aes(x = Possession, y = reorder(Equipe, Possession), fill = Competition)) +
-  geom_bar(stat = "identity") +
-  labs(title = "Top 20 des équipes avec le plus de possession en 2023",
-       x = "Possession (%)",
-       y = "") +
-  scale_x_continuous(limits = c(0, 100), breaks = seq(0, 100, by = 20)) +
-  scale_fill_brewer(palette = "Set2", name = "Compétition") +
-  theme_minimal() +
-  theme(legend.position = "right")
-```
-
-#### 2. Équipes avec le plus de buts marqués
-```{r}
-library(worldfootballR)
-library(dplyr)
-library(ggplot2)
-
-# Extraire les données des grandes ligues pour la saison 2023
-big5_stats <- fb_big5_advanced_season_stats(season_end_year = 2023, stat_type = "standard", team_or_player = "team")
-big5_possession <- fb_big5_advanced_season_stats(season_end_year = 2023, stat_type = "possession", team_or_player = "team")
-
-# Préparation des données
-meilleures_possessions <- big5_possession %>%
-  slice_max(order_by = Poss, n = 20) %>%
-  select(Equipe = Squad, Competition = Comp, Possession = Poss)
-
-buts_encaisses_adversaires <- big5_stats %>%
-  filter(Team_or_Opponent == "opponent") %>%
-  arrange(desc(Gls)) %>%
-  slice_tail(n = 20) %>%
-  select(Equipe = Squad, Competition = Comp, Buts_Encaisses = Gls)
-
-buts_mis_equipe <- big5_stats %>%
-  filter(Team_or_Opponent == "team") %>%
-  slice_max(order_by = Gls, n = 20) %>%
-  select(Equipe = Squad, Competition = Comp, Buts_mis = Gls)
-
-# Visualisation des buts marqués
-ggplot(buts_mis_equipe, aes(x = Buts_mis, y = reorder(Equipe, Buts_mis), fill = Competition)) +
-  geom_bar(stat = "identity") +
-  labs(title = "Top 20 des équipes avec le plus de buts marqués en 2023",
-       x = "Buts marqués",
-       y = "") +
-  scale_x_continuous(limits = c(0, 100), breaks = seq(0, 100, by = 20)) +
-  scale_fill_brewer(palette = "Set2", name = "Compétition") +
-  theme_minimal() +
-  theme(legend.position = "right")
-```
-
-#### 3. Équipes avec le moins de buts encaissés
-```{r}
-library(worldfootballR)
-library(dplyr)
-library(ggplot2)
-
-# Extraire les données des grandes ligues pour la saison 2023
-big5_stats <- fb_big5_advanced_season_stats(season_end_year = 2023, stat_type = "standard", team_or_player = "team")
-big5_possession <- fb_big5_advanced_season_stats(season_end_year = 2023, stat_type = "possession", team_or_player = "team")
-
-# Préparation des données
-meilleures_possessions <- big5_possession %>%
-  slice_max(order_by = Poss, n = 20) %>%
-  select(Equipe = Squad, Competition = Comp, Possession = Poss)
-
-buts_encaisses_adversaires <- big5_stats %>%
-  filter(Team_or_Opponent == "opponent") %>%
-  arrange(desc(Gls)) %>%
-  slice_tail(n = 20) %>%
-  select(Equipe = Squad, Competition = Comp, Buts_Encaisses = Gls)
-
-buts_mis_equipe <- big5_stats %>%
-  filter(Team_or_Opponent == "team") %>%
-  slice_max(order_by = Gls, n = 20) %>%
-  select(Equipe = Squad, Competition = Comp, Buts_mis = Gls)
-
-# Visualisation des buts encaissés
-ggplot(buts_encaisses_adversaires, aes(x = Buts_Encaisses, y = reorder(Equipe, Buts_Encaisses), fill = Competition)) +
-  geom_bar(stat = "identity") +
-  labs(title = "Top 20 des équipes avec le moins de buts encaissés en 2023",
-       x = "Buts encaissés",
-       y = "") +
-  scale_x_continuous(limits = c(0, 100), breaks = seq(0, 100, by = 20)) +
-  scale_fill_brewer(palette = "Set2", name = "Compétition") +
-  theme_minimal() +
-  theme(legend.position = "right")
-```
-
-#### 4. Équipes avec le plus de victoires
-```{r}
-library(worldfootballR)
-library(dplyr)
-library(ggplot2)
-
-# Extraire les données des grandes ligues pour la saison 2023
-big5_stats <- fb_big5_advanced_season_stats(season_end_year = 2023, stat_type = "standard", team_or_player = "team")
-big5_possession <- fb_big5_advanced_season_stats(season_end_year = 2023, stat_type = "possession", team_or_player = "team")
-
-# Préparation des données
-meilleures_possessions <- big5_possession %>%
-  slice_max(order_by = Poss, n = 20) %>%
-  select(Equipe = Squad, Competition = Comp, Possession = Poss)
-
-# Fonction pour extraire et compter les victoires d'une équipe
-get_wins <- function(team_url) {
-  results <- fb_team_match_results(team_url)
-  wins <- nrow(results[results$Result == "W",])
-  league <- results$Comp[1]  # Prendre le nom de la compétition
-  team_name <- gsub(".*/", "", team_url)  # Extraire le nom de l'équipe de l'URL
-  team_name <- gsub("-Stats", "", team_name)  # Nettoyer le nom de l'équipe
-  
-  # Standardiser les noms des ligues
-  league <- gsub(" Stats", "", league)
-  league <- ifelse(league == "DFL-Supercup", "Bundesliga", league)
-  league <- ifelse(league == "Community Shield", "Premier League", league)
-  league <- ifelse(league == "DFB-Pokal", "Bundesliga", league)
-  
-  data.frame(Team = team_name, Wins = wins, League = league)
+(traité par nassim)
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+if (!require("worldfootballR")) {
+  if (!require("devtools")) install.packages("devtools")
+  devtools::install_github("JaseZiv/worldfootballR")
 }
+library(worldfootballR)
+library(dplyr)
+library(ggplot2)
+library(rvest)
+library(xml2)
+```
 
-# Liste des URL des ligues des Big 5
-league_urls <- c(
-  "https://fbref.com/en/comps/9/Premier-League-Stats",
-  "https://fbref.com/en/comps/12/La-Liga-Stats",
-  "https://fbref.com/en/comps/13/Ligue-1-Stats",
-  "https://fbref.com/en/comps/20/Bundesliga-Stats",
-  "https://fbref.com/en/comps/11/Serie-A-Stats"
+# Introduction
+
+La possession de balle est souvent citée comme un indicateur clé de la performance d'une équipe de football. Les équipes qui dominent la possession sont souvent perçues comme ayant un meilleur contrôle du jeu, une défense plus solide et une attaque plus efficace. Ce rapport vise à analyser en profondeur l'impact de la possession de balle sur les performances des équipes à travers cinq graphiques distincts, et à déterminer le profil de l'équipe parfaite en termes de possession de balle.
+
+# Question de Recherche
+
+**Question :** Déterminer le profil de l'équipe parfaite en termes de possession de balle.
+
+# Hypothèses
+
+1. **Hypothèse 1 :** Les équipes avec une plus grande possession de balle ont tendance à marquer plus de buts par match.
+2. **Hypothèse 2 :** Les équipes qui dominent en possession de balle sont plus efficaces dans la création d'occasions de but.
+3. **Hypothèse 3 :** La possession de balle est liée à la capacité d'une équipe à contrôler le jeu.
+
+# Analyse des Graphiques
+
+Nous avons analysé cinq graphiques pour vérifier les hypothèses et déterminer le profil de l'équipe parfaite en termes de possession de balle.
+
+## Graphique 1 : Statistiques des Équipes Championnes des 5 Grandes Ligues (2023)
+
+Ce graphique en barres affiche le pourcentage de possession, les buts marqués (Buts mis) et les buts encaissés (Buts pris) des équipes championnes des cinq grandes ligues européennes en 2023. Les ligues sont codées par couleur, et les équipes sont listées comme suit :
+
+- **Paris S-G (Ligue 1)**
+    - Buts marqués : 86
+    - Buts encaissés : 39
+    - Possession : 60.7%
+
+- **Napoli (Serie A)**
+    - Buts marqués : 75
+    - Buts encaissés : 28
+    - Possession : 61.8%
+
+- **Bayern Munich (Bundesliga)**
+    - Buts marqués : 90
+    - Buts encaissés : 38
+    - Possession : 64.2%
+
+- **Barcelona (La Liga)**
+    - Buts marqués : 69
+    - Buts encaissés : 17
+    - Possession : 64.3%
+
+- **Manchester City (Premier League)**
+    - Buts marqués : 92
+    - Buts encaissés : 32
+    - Possession : 64.7%
+
+```{r}
+champions <- data.frame(
+  équipe = c("Paris S-G", "Napoli", "Bayern Munich", "Barcelona", "Manchester City"),
+  buts_mis = c(86, 75, 90, 69, 92),
+  buts_pris = c(39, 28, 38, 17, 32),
+  possession = c(60.7, 61.8, 64.2, 64.3, 64.7),
+  compétition = c("Ligue 1", "Serie A", "Bundesliga", "La Liga", "Premier League")
 )
 
-# Extraire les URLs des équipes pour chaque ligue
-team_urls <- unlist(lapply(league_urls, fb_teams_urls))
-
-# Appliquer la fonction get_wins à chaque URL d'équipe
-team_wins <- do.call(rbind, lapply(team_urls, get_wins))
-
-# Sélectionner les 20 meilleures équipes par nombre de victoires
-top_teams <- team_wins %>%
-  top_n(20, Wins) %>%
-  arrange(Wins)  # Ordonner par victoires croissantes
-
-# Création d'une visualisation - Diagramme en nuage de points
-ggplot(top_teams, aes(x = Wins, y = reorder(Team, Wins), color = League)) +
-  geom_point(size = 5) +
-  labs(title = "Top 20 des équipes avec le plus de victoires dans les 5 ligues",
-       x = "Nombre de Victoires",
-       y = "") +
-  scale_x_continuous(limits = c(0, max(top_teams$Wins) + 5)) +
-  theme_minimal() +
-  theme(
-    legend.position = "right",
-    panel.grid.major.y = element_blank(),
-    panel.grid.minor.y = element_blank(),
-    axis.title.y = element_blank()
-  ) +
-  scale_color_brewer(palette = "Set2", name = "Ligue")
-
+ggplot(champions, aes(x = équipe, y = possession, fill = compétition)) +
+  geom_bar(stat = "identity") +
+  geom_text(aes(label = paste("Buts mis: ", buts_mis, "\nButs pris: ", buts_pris, "\nPossession: ", possession, "%")), 
+            hjust = 0.5, color = "black", position = position_stack(vjust = 0.5)) +
+  labs(title = "Statistiques des équipes championnes des 5 grandes ligues (2023)",
+       subtitle = "Inclut la possession, les buts marqués et les buts encaissés",
+       x = "Équipe",
+       y = "Possession (%)")
 ```
 
+## Graphique 2 : Contraste Entre les 10 Meilleures et les 10 Pires Équipes en Termes de Buts Marqués par Possession
 
-### Interprétation des graphiques
+Ce graphique en barres montre le ratio de buts marqués par possession pour les 10 meilleures et 10 pires équipes. Les 10 meilleures équipes sont :
 
-Les visualisations montrent clairement que les équipes qui dominent leurs championnats tendent à exceller dans au moins deux des trois catégories suivantes: possession de balle, buts marqués, et buts encaissés. Cette observation corrobore notre hypothèse initiale selon laquelle ces facteurs sont cruciaux pour le succès. Les équipes ayant la plus grande possession tendent également à être celles qui marquent le plus de buts, soulignant l'importance du contrôle du jeu.
+- **Monaco (Ligue 1)**
+    - Ratio : 1.43
 
-### Conclusion et pistes de réflexion
+- **Manchester City (Premier League)**
+    - Ratio : 1.42
 
-Cette analyse confirme que la possession de balle, les buts marqués, et les buts encaissés sont des indicateurs clés du succès d'une équipe dans son championnat. Cependant, cela soulève d'autres questions intéressantes pour des recherches futures :
+- **Paris S-G (Ligue 1)**
+    - Ratio : 1.42
 
-- Quel est l'impact de la stratégie défensive sur le nombre de buts encaissés ?
-- Dans quelle mesure la possession de balle influence-t-elle le résultat des matchs dans différentes conditions météorologiques ou contre des équipes spécifiquement défensives ?
+- **Arsenal (Premier League)**
+    - Ratio : 1.42
+
+- **Bayern Munich (Bundesliga)**
+    - Ratio : 1.40
+
+- **Montpellier (Ligue 1)**
+    - Ratio : 1.40
+
+- **Dortmund (Bundesliga)**
+    - Ratio : 1.39
+
+- **Tottenham (Premier League)**
+    - Ratio : 1.36
+
+- **Atlético Madrid (La Liga)**
+    - Ratio : 1.34
+
+- **Atalanta (Serie A)**
+    - Ratio : 1.28
+
+Les 10 pires équipes sont :
+
+- **Schalke 04 (Bundesliga)**
+    - Ratio : 0.70
+
+- **Cádiz (La Liga)**
+    - Ratio : 0.69
+
+- **Angers (Ligue 1)**
+    - Ratio : 0.66
+
+- **Elche (La Liga)**
+    - Ratio : 0.66
+
+- **Valladolid (La Liga)**
+    - Ratio : 0.66
+
+- **Chelsea (Premier League)**
+    - Ratio : 0.63
+
+- **Spezia (Serie A)**
+    - Ratio : 0.61
+
+- **Wolves (Premier League)**
+    - Ratio : 0.56
+
+- **Ajaccio (Ligue 1)**
+    - Ratio : 0.51
+
+- **Sampdoria (Serie A)**
+    - Ratio : 0.50
+
+```{r}
+top_bottom_teams <- data.frame(
+  équipe = c("Monaco", "Manchester City", "Paris S-G", "Arsenal", "Bayern Munich", "Montpellier", "Dortmund", 
+             "Tottenham", "Atlético Madrid", "Atalanta", "Schalke 04", "Cádiz", "Angers", "Elche", "Valladolid", 
+             "Chelsea", "Spezia", "Wolves", "Ajaccio", "Sampdoria"),
+  ratio = c(1.43, 1.42, 1.42, 1.42, 1.40, 1.40, 1.39, 1.36, 1.34, 1.28, 0.70, 0.69, 0.66, 0.66, 0.66, 0.63, 
+            0.61, 0.56, 0.51, 0.50),
+  groupe = c(rep("Top 10", 10), rep("Bottom 10", 10)),
+  ligue = c("Ligue 1", "Premier League", "Ligue 1", "Premier League", "Bundesliga", "Ligue 1", "Bundesliga", 
+            "Premier League", "La Liga", "Serie A", "Bundesliga", "La Liga", "Ligue 1", "La Liga", "La Liga", 
+            "Premier League", "Serie A", "Premier League", "Ligue 1", "Serie A")
+)
+
+ggplot(top_bottom_teams, aes(x = reorder(équipe, -ratio), y = ratio, fill = groupe)) +
+  geom_bar(stat = "identity") +
+  geom_text(aes(label = ratio), vjust = -0.5, color = "black") +
+  labs(title = "Contraste entre les 10 meilleures et les 10 pires équipes en termes de buts marqués par possession",
+       x = "Équipe",
+       y = "Ratio de buts par possession") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+## Graphique 3 : Top et Bottom 10 Équipes en Termes de Possession en 2023
+
+Ce graphique en barres affiche le pourcentage de possession des 10 meilleures et 10 pires équipes, ainsi que leurs buts par match. Les 10 meilleures équipes en possession sont :
+
+- **Manchester City (Premier League)**
+    - Possession : 64.7%
+    - Buts par match : 2.42
+
+- **Barcelona (La Liga)**
+    - Possession : 64.3%
+   
+
+ - Buts par match : 1.82
+
+- **Bayern Munich (Bundesliga)**
+    - Possession : 64.2%
+    - Buts par match : 2.37
+
+- **Napoli (Serie A)**
+    - Possession : 61.8%
+    - Buts par match : 1.97
+
+- **Real Madrid (La Liga)**
+    - Possession : 61.0%
+    - Buts par match : 1.92
+
+- **Liverpool (Premier League)**
+    - Possession : 60.8%
+    - Buts par match : 1.87
+
+- **Paris S-G (Ligue 1)**
+    - Possession : 60.7%
+    - Buts par match : 2.26
+
+```{r}
+top_teams_possession <- data.frame(
+  équipe = c("Manchester City", "Barcelona", "Bayern Munich", "Napoli", "Real Madrid", "Liverpool", "Paris S-G"),
+  possession = c(64.7, 64.3, 64.2, 61.8, 61.0, 60.8, 60.7),
+  buts_par_match = c(2.42, 1.82, 2.37, 1.97, 1.92, 1.87, 2.26)
+)
+
+ggplot(top_teams_possession, aes(x = reorder(équipe, -possession), y = possession, fill = équipe)) +
+  geom_bar(stat = "identity") +
+  geom_text(aes(label = paste("Possession: ", possession, "%\nButs/match: ", buts_par_match)), 
+            vjust = -0.5, color = "black") +
+  labs(title = "Top 10 équipes en termes de possession en 2023",
+       x = "Équipe",
+       y = "Possession (%)") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+## Graphique 4 : Relation entre la Possession et les Buts Encaissés
+
+Ce graphique en nuages de points montre la relation entre le pourcentage de possession et les buts encaissés (buts pris).
+
+```{r}
+# Extraire les données des grandes ligues pour la saison 2023
+big5_stats <- fb_big5_advanced_season_stats(season_end_year = 2023, stat_type = "standard", team_or_player = "team")
+big5_possession <- fb_big5_advanced_season_stats(season_end_year = 2023, stat_type = "possession", team_or_player = "team")
+
+# Séparer les buts marqués et encaissés
+buts_marques <- big5_stats %>%
+  filter(Team_or_Opponent == "team") %>%
+  select(Squad, Comp, Gls)
+
+buts_encaisses <- big5_stats %>%
+  filter(Team_or_Opponent == "opponent") %>%
+  select(Squad, Comp, GA = Gls)  # Renommer Gls en GA pour clarté
+
+# Fusionner les données de possession avec les données de buts marqués et encaissés
+data <- big5_possession %>%
+  inner_join(buts_marques, by = c("Squad", "Comp")) %>%
+  inner_join(buts_encaisses, by = c("Squad", "Comp"))
+
+# Visualisation de la corrélation entre la possession et les buts encaissés
+ggplot(data, aes(x = Poss, y = GA)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = TRUE, color = "red") +
+  labs(title = "Relation entre la possession et les buts encaissés",
+       x = "Possession (%)",
+       y = "Buts encaissés") +
+  theme_minimal()
+```
+
+## Graphique 5 : Relation entre la Possession et les Buts Marqués
+
+Ce graphique en nuages de points illustre la relation entre le pourcentage de possession et les buts marqués (buts mis).
+
+```{r}
+# Visualisation de la corrélation entre la possession et les buts marqués
+ggplot(data, aes(x = Poss, y = Gls)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = TRUE, color = "blue") +
+  labs(title = "Relation entre la possession et les buts marqués",
+       x = "Possession (%)",
+       y = "Buts marqués") +
+  theme_minimal()
+```
+
+# Vérification des Hypothèses
+
+## Hypothèse 1 : Les équipes avec une plus grande possession de balle ont tendance à marquer plus de buts par match.
+
+- **Vérification :** Le graphique 5 confirme clairement cette hypothèse. La corrélation positive entre la possession et les buts marqués montre que les équipes qui dominent en possession marquent plus de buts.
+
+## Hypothèse 2 : Les équipes qui dominent en possession de balle sont plus efficaces dans la création d'occasions de but.
+
+- **Vérification :** Les graphiques 2 et 3 confirment cette hypothèse. La corrélation positive entre la possession et le nombre de buts par match montre que les équipes avec une plus grande possession créent plus d'occasions de but et sont plus précises dans leurs tentatives.
+
+## Hypothèse 3 : La possession de balle est liée à la capacité d'une équipe à contrôler le jeu.
+
+- **Vérification :** Les graphiques 1 et 3 supportent cette hypothèse. Une plus grande possession de balle est associée à un meilleur contrôle du jeu, comme en témoigne la possession élevée et le nombre élevé de buts marqués par les meilleures équipes.
+
+# Conclusion
+
+L'analyse des données et des graphiques montre que la possession de balle est un facteur crucial pour la performance globale d'une équipe de football. Les équipes qui dominent la possession de balle tendent à marquer plus de buts et à en concéder moins, ce qui leur permet de mieux contrôler le jeu et d'obtenir de meilleurs résultats. Le profil de l'équipe parfaite en termes de possession de balle serait donc une équipe qui maintient une possession élevée, réussit un grand nombre de passes et crée de nombreuses occasions de but.
 
 ### **Quelles sont les différences entre les championnats et les coupes ?**
 (traitée par Nassim)
