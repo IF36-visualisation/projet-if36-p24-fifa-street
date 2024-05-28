@@ -893,6 +893,266 @@ get_fa_cup_team_results <- function(team_url) {
   return(results)
 }
 
+
+### **Quelles sont les différences entre les championnats et les coupes ?**
+(traitée par Nassim)
+
+## Hypothèse
+
+Notre hypothèse est que dans les coupes, où les matchs se jouent généralement en élimination directe, les équipes adoptent une approche plus prudente et tactique pour mieux gérer le match et minimiser les risques. Cela peut se traduire par des performances différentes par rapport aux championnats où les équipes ont une saison entière pour s'adapter et se projeter. En particulier, nous nous attendons à ce qu'il y ait moins de buts par match en coupe.
+
+# Analyse des Données
+
+## Moyenne des Buts par Match
+
+```{r}
+avg_goals <- data.frame(
+  Competition = c("FA Cup", "Premier League"),
+  AvgGoals = c(1.77, 1.37)
+)
+
+ggplot(avg_goals, aes(x = Competition, y = AvgGoals, fill = Competition)) +
+  geom_bar(stat = "identity") +
+  geom_text(aes(label = paste0(AvgGoals, " buts/match")), vjust = -0.5) +
+  labs(title = "Nombre moyen de buts par match selon la compétition",
+       x = "Compétition", y = "Nombre moyen de buts par match") +
+  scale_fill_manual(values = c("FA Cup" = "blue", "Premier League" = "red")) +
+  theme_minimal()
+```
+
+### Analyse des Résultats
+
+Les données montrent que la FA Cup a une moyenne de 1,77 buts par match contre 1,37 pour la Premier League. Ce résultat est surprenant et contredit notre hypothèse initiale selon laquelle il y aurait moins de buts en coupe. 
+
+#### Hypothèses et Explications
+
+1. **Nature des Adversaires** : En FA Cup, les équipes de Premier League peuvent rencontrer des équipes de divisions inférieures, ce qui pourrait conduire à un nombre plus élevé de buts en raison de la différence de niveau.
+2. **Approche Offensif** : Les équipes peuvent adopter une approche plus offensive en FA Cup pour éviter les prolongations et les tirs au but, ce qui peut résulter en plus de buts marqués.
+3. **Moins de Pression** : Les équipes de Premier League peuvent jouer avec moins de pression en FA Cup, sachant que cette compétition n'affecte pas leur classement en championnat, ce qui pourrait libérer les attaquants.
+
+## Pourcentage d'Arrêts
+
+```{r}
+avg_saves <- data.frame(
+  Competition = c("FA Cup", "Premier League"),
+  AvgSavePercentage = c(61.68, 66.23)
+)
+
+ggplot(avg_saves, aes(x = Competition, y = AvgSavePercentage, fill = Competition)) +
+  geom_bar(stat = "identity") +
+  geom_text(aes(label = paste0(AvgSavePercentage, " %")), vjust = -0.5) +
+  labs(title = "Pourcentage d'arrêts selon la compétition",
+       x = "Compétition", y = "Pourcentage d'arrêts") +
+  scale_fill_manual(values = c("FA Cup" = "blue", "Premier League" = "red")) +
+  theme_minimal()
+```
+
+### Analyse des Résultats
+
+Le pourcentage d'arrêts est légèrement supérieur en Premier League (66,23 %) par rapport à la FA Cup (61,68 %). Cette différence peut être significative lorsqu'elle est examinée en parallèle avec le nombre de buts concédés par match dans chaque compétition. En Premier League, où les équipes ont un pourcentage d'arrêts plus élevé, le nombre moyen de buts concédés par match est en moyenne plus bas (1,37) par rapport à la FA Cup (1,77).Cela suggère que les équipes de Premier League ont une meilleure efficacité défensive, ce qui se traduit par un pourcentage d'arrêts plus élevé et un nombre de buts concédés plus faible par match. En revanche, en FA Cup, où le pourcentage d'arrêts est légèrement inférieur, les équipes ont tendance à concéder plus de buts par match.
+#### Hypothèses et Explications
+
+1. **Niveau de Compétition** : En Premier League, les gardiens affrontent régulièrement des attaquants de haut niveau, ce qui peut les rendre plus performants sur la durée.
+2. **Rotation des Gardiens** : En FA Cup, certaines équipes utilisent leurs gardiens remplaçants, ce qui pourrait expliquer un pourcentage d'arrêts légèrement inférieur.
+3. **Style de Jeu** : Les matchs de coupe peuvent être plus ouverts avec des attaques fréquentes, ce qui peut rendre le travail des gardiens plus difficile.
+
+## Pourcentage de Clean Sheets
+
+```{r}
+avg_cleansheet <- data.frame(
+  Competition = c("FA Cup", "Premier League"),
+  AvgCleanSheetPercentage = c(20.66, 30.74)
+)
+
+ggplot(avg_cleansheet, aes(x = Competition, y = AvgCleanSheetPercentage, fill = Competition)) +
+  geom_bar(stat = "identity") +
+  geom_text(aes(label = paste0(AvgCleanSheetPercentage, " %")), vjust = -0.5) +
+  labs(title = "Pourcentage de clean sheets selon la compétition",
+       x = "Compétition", y = "Pourcentage de clean sheets") +
+  scale_fill_manual(values = c("FA Cup" = "blue", "Premier League" = "red")) +
+  theme_minimal()
+```
+
+### Analyse des Résultats
+
+En Premier League, le pourcentage de clean sheets est de 30,74 %, tandis qu'en FA Cup, il est de 20,66 %. Cette différence indique que les équipes ont tendance à garder leur cage inviolée plus souvent en Premier League qu'en FA Cup.
+
+Cette observation est cohérente avec le nombre moyen de buts par match dans chaque compétition. En Premier League, où les équipes ont un pourcentage de clean sheets plus élevé, le nombre moyen de buts concédés par match est en moyenne plus bas (1,37) par rapport à la FA Cup (1,77). Cela suggère que les équipes de Premier League ont une meilleure efficacité défensive, ce qui se traduit par un nombre de buts concédés plus faible et donc un pourcentage de clean sheets plus élevé.
+
+#### Hypothèses et Explications
+
+1. **Importance des Matchs** : En Premier League, chaque match compte pour le classement final, ce qui pousse les équipes à être plus défensives pour éviter les buts.
+2. **Adversaires Variés en Coupe** : En FA Cup, les équipes de Premier League affrontent parfois des équipes de divisions inférieures qui peuvent adopter des tactiques très offensives dans l'espoir de créer une surprise.
+3. **Gestion de l'Équipe** : Les équipes de Premier League peuvent être plus conservatrices dans leur gestion défensive au long de la saison, tandis qu'en coupe, elles peuvent prendre plus de risques.
+
+## Performance des Équipes Sélectionnées
+
+### Nombre Moyen de Buts par Match
+
+```{r}
+team_goals <- data.frame(
+  Team = rep(c("Fulham", "Manchester City", "Southampton"), each = 2),
+  Competition = rep(c("FA Cup", "Premier League"), 3),
+  AvgGoals = c(1.8, 1.37, 3.17, 2.42, 1.67, 0.95)
+)
+
+ggplot(team_goals, aes(x = Competition, y = AvgGoals, fill = Team)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  geom_text(aes(label = paste0(AvgGoals, " buts/match")), position = position_dodge(width = 0.9), vjust = -0.5) +
+  labs(title = "Nombre moyen de buts par match pour Fulham, Manchester City et Southampton selon la compétition",
+       x = "Compétition", y = "Nombre moyen de buts par match") +
+  scale_fill_manual(values = c("Fulham" = "black", "Manchester City" = "skyblue", "Southampton" = "red")) +
+  theme_minimal()
+```
+
+### Analyse des Résultats
+
+Les résultats montrent des variations significatives entre les compétitions pour les équipes sélectionnées. Par exemple, Manchester City marque en moyenne 3,17 buts par match en FA Cup contre 2,42 en Premier League.
+
+#### Hypothèses et Explications
+
+1. **Différences de Niveau des Adversaires** : Manchester City peut affronter des équipes plus faibles en FA Cup, ce qui se traduit par un plus grand nombre de buts.
+2. **Motivation en Coupe** : Les équipes de bas de tableau comme Southampton peuvent adopter une stratégie plus offensive en FA Cup pour essayer de compenser leur manque de succès en championnat.
+3. **Tactiques et Sélection des Joueurs** : Les équipes peuvent expérimenter différentes formations et donner du temps de jeu à des attaquants supplémentaires en FA Cup.
+
+### Pourcentage d'Arrêts
+
+```{r}
+team_saves <- data.frame(
+  Team = rep(c("Fulham", "Manchester City", "Southampton"), each = 2),
+  Competition = rep(c("FA Cup", "Premier League"), 3),
+  SavePercentage = c(80.8, 76.5, 100, 67.4, 75, 52.7)
+)
+
+ggplot(team_saves, aes(x = Competition, y = SavePercentage, fill = Team)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  geom_text(aes(label = paste0(SavePercentage, " %")), position = position_dodge(width = 0.9), vjust = -0.5) +
+  labs(title = "Pourcentage d'arrêts pour Fulham, Manchester City et Southampton selon la compétition",
+       x = "Compétition", y = "Pourcentage d'arrêts") +
+  scale_fill_manual(values = c("Fulham" = "black", "Manchester City" = "skyblue", "Southampton" = "red")) +
+  theme_minimal()
+```
+
+### Analyse des Résultats
+
+Les pourcentages d'arrêts varient également significativement entre les compétitions pour les équipes sélectionnées. Par exemple, Manchester City affiche un pourcentage d'arrêts de 100 % en FA Cup, contre 67,4 % en Premier League. Cette différence est intéressante à examiner en relation avec le nombre de buts marqués par Manchester City dans chaque compétition. En FA Cup, où Manchester City affiche un pourcentage d'arrêts de 100 %, ils ont également marqué en moyenne 3,17 buts par match. En revanche, en Premier League, où leur pourcentage d'arrêts est de 67,4 %, ils ont marqué en moyenne 2,42 buts par match. Cette corrélation suggère que lorsque Manchester City est plus efficace dans ses arrêts en FA Cup, cela peut potentiellement libérer leur potentiel offensif, conduisant ainsi à un plus grand nombre de buts marqués par match. En revanche, une efficacité réduite dans les arrêts en Premier League peut être associée à une pression défensive accrue, ce qui peut affecter leurs performances offensives.
+
+#### Hypothèses et Explications
+
+1. **Rotation des Gardiens** : Les équipes peuvent utiliser des gardiens remplaçants en FA Cup, ce qui peut entraîner des performances variables.
+2. **Approche Tactique** : Les équipes peuvent adapter leur stratégie en fonction du niveau de l'adversaire et de l'importance du match, ce qui peut influencer le pourcentage d'arrêts.
+3. **Fatigue et Concentration** : La fatigue accumulée au cours de la saison peut affecter la concentration des gardiens en championnat, ce qui peut se traduire par un pourcentage d'arrêts plus faible.
+
+### Pourcentage de Clean Sheets
+
+```{r}
+team_cleansheets <- data.frame(
+  Team = rep(c("Fulham", "Manchester City", "Southampton"), each = 2),
+  Competition = rep(c("FA Cup", "Premier League"), 3),
+  CleanSheetPercentage = c(13.5, 11.7, 13, 15.53, 14, 10.87)
+)
+
+ggplot(team_cleansheets, aes(x = Competition, y = CleanSheetPercentage, fill = Team)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  geom_text(aes(label = paste0(CleanSheetPercentage, " %")), position = position_dodge(width = 0.9), vjust = -0.5) +
+  labs(title = "Pourcentage de clean sheets pour Fulham, Manchester City et Southampton selon la compétition",
+       x = "Compétition", y = "Pourcentage de clean sheets") +
+  scale_fill_manual(values = c("Fulham" = "black", "Manchester City" = "skyblue", "Southampton" = "red")) +
+  theme_minimal()
+```
+
+
+
+### Nombre Moyen de Tirs par Match
+
+En moyenne, les équipes ont pris plus de tirs par match en FA Cup (13,5) que en Premier League (11,7), ce qui correspond également à un nombre de tirs cadrés par match plus élevé en FA Cup (4,4) par rapport à la Premier League (4,1). Cette tendance suggère une approche plus offensive adoptée en coupe, où les équipes cherchent à marquer rapidement pour éviter les prolongations ou les tirs au but. La différence dans le nombre de tirs peut également refléter la variabilité du niveau des adversaires en FA Cup, où les équipes de divisions inférieures peuvent être plus ouvertes en attaque, offrant ainsi plus d'opportunités de tirs aux équipes de Premier League.En moyenne, les équipes ont marqué plus de buts par match en FA Cup (1,77) que en Premier League (1,37), ce qui suggère une tendance offensive plus prononcée dans cette compétition. Cette observation est cohérente avec le fait que les équipes en FA Cup prennent également plus de tirs par match, ce qui indique une approche plus offensive et une volonté de marquer des buts.
+
+```{r}
+avg_shots <- data.frame(
+  Competition = c("FA Cup", "Premier League"),
+  AvgShots = c(13.5, 11.7)
+)
+
+ggplot(avg_shots, aes(x = Competition, y = AvgShots, fill = Competition)) +
+  geom_bar(stat = "identity") +
+  geom_text(aes(label = AvgShots), vjust = -0.5) +
+  labs(title = "Nombre moyen de tirs par match selon la compétition",
+       x = "Compétition", y = "Nombre moyen de tirs par match") +
+  scale_fill_manual(values = c("FA Cup" = "blue", "Premier League" = "red")) +
+  theme_minimal()
+```
+
+### Nombre Moyen de Tirs Cadrés par Match
+
+Le nombre moyen de tirs cadrés par match est également plus élevé en FA Cup (4,4) par rapport à la Premier League (4,1). Cette tendance est intéressante à observer, d'autant plus que le nombre moyen de buts par match est également plus élevé en FA Cup (1,77) par rapport à la Premier League (1,37). Cela suggère que les équipes en coupe ont non seulement tendance à cibler plus souvent le but adverse avec leurs tirs, mais aussi qu'elles réussissent à convertir ces occasions en buts à un taux légèrement plus élevé que lors des matchs de championnat. Ces observations soulignent l'importance de la précision des tirs et de l'efficacité offensive dans les matchs de coupe, où chaque occasion peut avoir un impact significatif sur le résultat final.
+
+```{r}
+avg_shots_on_target <- data.frame(
+  Competition = c("FA Cup", "Premier League"),
+  AvgShotsOnTarget = c(4.4, 4.1)
+)
+
+ggplot(avg_shots_on_target, aes(x = Competition, y = AvgShotsOnTarget, fill = Competition)) +
+  geom_bar(stat = "identity") +
+  geom_text(aes(label = AvgShotsOnTarget), vjust = -0.5) +
+  labs(title = "Nombre moyen de tirs cadrés par match selon la compétition",
+       x = "Compétition", y = "Nombre moyen de tirs cadrés par match") +
+  scale_fill_manual(values = c("FA Cup" = "blue", "Premier League" = "red")) +
+  theme_minimal()
+```
+
+### Conclusion
+
+En incluant le nombre moyen de tirs cadrés par match dans notre analyse, nous avons observé une corrélation plus forte entre les tirs, les tirs cadrés et les arrêts des gardiens. Les équipes qui prennent plus de tirs et les ciblent plus souvent parviennent à mettre davantage de pression sur les gardiens adverses, ce qui réduit leur efficacité globale. Ces observations soulignent l'importance de la qualité des tirs et de la défense dans le déroulement des matchs de football, et soulignent la nécessité pour les équipes de trouver un équilibre entre l'attaque et la défense pour réussir dans différentes compétitions.
+
+
+### Ratio Buts/Tirs
+
+Le ratio buts/tirs est un indicateur important de l'efficacité des équipes à convertir leurs occasions en buts. En comparant la FA Cup et la Premier League, nous pouvons observer comment ce ratio varie selon la compétition.
+
+```{r}
+goal_to_shot_ratio <- data.frame(
+  Competition = c("FA Cup", "Premier League"),
+  GoalToShotRatio = c(0.105, 0.1)
+)
+
+ggplot(goal_to_shot_ratio, aes(x = Competition, y = GoalToShotRatio, fill = Competition)) +
+  geom_bar(stat = "identity") +
+  geom_text(aes(label = GoalToShotRatio), vjust = -0.5) +
+  labs(title = "Ratio Buts/Tirs selon la compétition",
+       x = "Compétition", y = "Ratio Buts/Tirs") +
+  scale_fill_manual(values = c("FA Cup" = "blue", "Premier League" = "red")) +
+  theme_minimal()
+```
+
+### Analyse des Résultats
+
+Le ratio buts/tirs est légèrement plus élevé en FA Cup (0,105) par rapport à la Premier League (0,1), malgré le nombre moyen de buts par match étant plus élevé en FA Cup (1,77) comparé à la Premier League (1,37). Cette observation suggère que les équipes en coupe ont été légèrement plus efficaces pour convertir leurs tirs en buts, malgré un nombre global de buts par match plus élevé. Plusieurs facteurs peuvent expliquer cette tendance, notamment une concentration accrue sur l'attaque dans les matchs à élimination directe, une pression réduite par rapport à la Premier League et la qualité variable des adversaires rencontrés.
+
+
+#### Hypothèses et Explications
+
+L'hypothèse initiale suggère que les matchs de coupe adoptent une approche plus prudente et tactique, ce qui pourrait se traduire par moins de buts par match par rapport aux championnats où les équipes ont une saison entière pour s'adapter et se projeter. 
+
+Cependant, les résultats de l'analyse contredisent partiellement cette hypothèse. Bien que la différence de nombre moyen de buts par match entre la FA Cup et la Premier League ne soit pas aussi significative que prévu, d'autres aspects des performances des équipes varient en fonction de la compétition.
+
+Par exemple, les données révèlent que le pourcentage de clean sheets est plus élevé en Premier League, ce qui indique une meilleure efficacité défensive dans cette compétition où les équipes ont plus de temps pour se préparer et s'adapter tactiquement. De plus, le pourcentage d'arrêts des gardiens est également supérieur en Premier League, suggérant une pression défensive plus importante dans cette compétition.
+
+Ces résultats mettent en lumière les nuances des performances des équipes dans différentes compétitions et soulignent l'importance de considérer plusieurs aspects du jeu pour comprendre pleinement les différences entre les matchs de coupe et les championnats. Bien que l'hypothèse initiale puisse ne pas être entièrement confirmée, l'analyse fournit des insights précieux sur les stratégies et les performances des équipes dans des contextes de compétition différents.
+
+# Conclusion
+
+Les analyses approfondies des différences entre les championnats et les coupes ont révélé des variations significatives dans les performances des équipes, à la fois sur le plan offensif et défensif. Bien que certaines conclusions aient contredit notre hypothèse initiale selon laquelle les matchs de coupe se caractériseraient par moins de buts, elles ont également mis en lumière des aspects intéressants du jeu qui méritent d'être explorés plus en détail.
+
+Il est clair que la nature des matchs, l'enjeu et les adversaires jouent un rôle crucial dans les stratégies adoptées par les équipes. Par exemple, bien que le nombre moyen de buts par match puisse ne pas différer considérablement entre la FA Cup et la Premier League, d'autres indicateurs tels que le pourcentage de clean sheets et le pourcentage d'arrêts des gardiens varient de manière significative entre les deux compétitions.
+
+Ces résultats soulèvent plusieurs questions intrigantes pour de futures recherches. Par exemple, comment les équipes ajustent-elles leurs stratégies tactiques en fonction du format de la compétition et de la qualité de l'adversaire ? Dans quelle mesure la fatigue et la pression influencent-elles les performances des équipes dans des matchs à élimination directe par rapport à une saison entière ?
+
+En outre, cette étude met en évidence la nécessité de considérer plusieurs aspects du jeu pour comprendre pleinement les différences entre les matchs de coupe et les championnats. Il serait intéressant d'explorer davantage l'impact des facteurs extérieurs tels que la météo, les blessures et les enjeux psychologiques sur les performances des équipes dans différentes compétitions.
+
+En conclusion, cette étude fournit une base solide pour une analyse plus approfondie des stratégies et des performances des équipes dans le football professionnel. Les découvertes réalisées ouvrent la voie à de nouvelles investigations pour mieux comprendre les dynamiques complexes qui régissent le monde du football.
+
+
 # Appliquer la fonction à chaque URL d'équipe de la FA Cup
 fa_cup_team_results_list <- lapply(fa_cup_team_urls, get_fa_cup_team_results)
 
