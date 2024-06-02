@@ -22,22 +22,6 @@ man_city_wages <- man_city_wages %>%
     TRUE ~ "Autre"
   ))
 
-# Créer la dataviz - Graphique en boxplot avec jitter et salaires formatés
-ggplot(man_city_wages, aes(x = Groupe_poste, y = AnnualWageEUR, fill = Groupe_poste)) +
-  geom_boxplot(alpha = 0.7, outlier.shape = NA) +
-  geom_jitter(shape = 20, color = "black", alpha = 0.5, width = 0.3) +
-  labs(title = "Distribution des salaires annuels des joueurs de Manchester City par groupe de poste",
-       x = "Postes",
-       y = "Salaire annuel (en euros)",
-       fill = "Postes") +
-  scale_y_continuous(labels = comma) + # Formater les valeurs de l'axe des ordonnées
-  theme_minimal() +
-  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1),
-        legend.title = element_text(face = "bold"),
-        legend.position = "top",
-        legend.direction = "horizontal",
-        legend.key.size = unit(1.5, "lines"))
-
 library(tibble)
 
 # Créer un dataframe avec les données de note
@@ -90,6 +74,7 @@ ggplot(man_city_wages, aes(x = Note, y = AnnualWageEUR, shape = Groupe_poste, co
         legend.position = "top",
         legend.direction = "horizontal",
         legend.key.size = unit(1.5, "lines"))
+
 
 
 
