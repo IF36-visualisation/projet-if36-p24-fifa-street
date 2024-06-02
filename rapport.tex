@@ -1,0 +1,790 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+%
+\documentclass[
+]{article}
+\usepackage{amsmath,amssymb}
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math} % this also loads fontspec
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+\usepackage{lmodern}
+\ifPDFTeX\else
+  % xetex/luatex font selection
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{xcolor}
+\usepackage[margin=1in]{geometry}
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\usepackage{framed}
+\definecolor{shadecolor}{RGB}{248,248,248}
+\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.94,0.16,0.16}{#1}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\BuiltInTok}[1]{#1}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.64,0.00,0.00}{\textbf{#1}}}
+\newcommand{\ExtensionTok}[1]{#1}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\ImportTok}[1]{#1}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\NormalTok}[1]{#1}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\RegionMarkerTok}[1]{#1}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\usepackage{graphicx}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+% Set default figure placement to htbp
+\makeatletter
+\def\fps@figure{htbp}
+\makeatother
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{-\maxdimen} % remove section numbering
+\ifLuaTeX
+  \usepackage{selnolig}  % disable illegal ligatures
+\fi
+\IfFileExists{bookmark.sty}{\usepackage{bookmark}}{\usepackage{hyperref}}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\urlstyle{same}
+\hypersetup{
+  pdftitle={Analyse de la Premier League},
+  pdfauthor={Groupe Fifa Street},
+  hidelinks,
+  pdfcreator={LaTeX via pandoc}}
+
+\title{Analyse de la Premier League}
+\author{Groupe Fifa Street}
+\date{}
+
+\begin{document}
+\maketitle
+
+\hypertarget{introduction}{%
+\section{Introduction}\label{introduction}}
+
+Nous avons décidé d'orienter notre projet sur la Premier League, qui est
+la première division de football en Angleterre. La Premier League fait
+partie des 5 grands championnats avec la Ligue 1 (France), la Liga
+(Espagne), la Bundesliga (Allemagne) et la Serie A (Italie).
+
+Nous allons utiliser une librairie qui contient une multitude de
+fonctions qui requièrent, en fonction des requêtes, une des 3 API des
+sites suivants : FBref, Transfermarkt et Understat. Le lien qui décrit
+la librairie et toutes ses fonctionnalités est le suivant :
+\href{https://jaseziv.github.io/worldfootballR/articles/extract-fbref-data.html}{worldfootballR}
+
+Les sources sont tirées de FBref, Transfermarkt et Understat.
+
+\textbf{FBref} est un site web qui fournit des statistiques détaillées
+sur les joueurs et les équipes de football, y compris des données sur
+les passes, les tirs et les actions défensives.
+
+\textbf{Transfermarkt} est un site web qui se concentre sur les
+transferts de joueurs de football, les évaluations de joueurs et les
+rumeurs de transfert. Il fournit également des informations sur les
+clubs et les compétitions de football.
+
+\textbf{Understat} est un site web qui fournit des statistiques avancées
+sur les joueurs et les équipes de football, y compris des données sur
+les tirs, les passes et les actions défensives.
+
+Bien que notre sujet soit le championnat anglais, nous pourrons
+également être amenés à le comparer aux autres championnats majeurs,
+afin de voir si les préjugés sur cette ligue sont fondés ou non.
+
+Étant donné que la librairie que nous utilisons nous donne accès à un
+nombre gigantesque de données, nous avons décidé de n'utiliser que les
+données nécessaires pour répondre à nos questions de recherche. Cela
+nous permettra de nous concentrer sur les informations pertinentes et de
+ne pas être submergés par des données inutiles.
+
+Lorsque l'on effectue des requêtes sur une API, il est fréquent d'être
+limité dans le nombre de requêtes que l'on peut effectuer dans un
+certain laps de temps. Dans ce cas, nous stockerons les données
+récupérées dans des fichiers CSV afin de pouvoir les réutiliser
+ultérieurement sans avoir à effectuer de nouvelles requêtes et de ne pas
+dépendre de l'API en cas de panne ou de changement dans les données
+fournies.
+
+\textbf{Présentation des données} Le jeu de données nous permet
+d'obtenir des informations à plusieurs échelles :
+
+\textbf{À l'échelle des saisons} On peut retrouver à l'échelle des
+saisons des données sur les équipes et les joueurs grâce à la méthode
+\texttt{fb\_big5\_advanced\_season\_stats()}, par exemple, pour obtenir
+la possession des joueurs en 2021, on peut utiliser la commande
+\texttt{fb\_big5\_advanced\_season\_stats(season\_end\_year=2021,stat\_type="possession",team\_or\_player="player")},
+qui nous renverra le dataframe des joueurs avec les informations
+suivantes :
+
+\begin{itemize}
+\item
+  \texttt{Squad} : le nom de l'équipe du joueur, donnée nominale
+\item
+  \texttt{Player} : le nom du joueur, donnée nominale
+\item
+  \texttt{Nation} : la nationalité du joueur, donnée nominale
+\item
+  \texttt{Pos} : le poste du joueur, donnée nominale
+\item
+  \texttt{Age} : l'âge du joueur, donnée quantitative
+\item
+  \texttt{Born} : la date de naissance du joueur, donnnée nominale
+\item
+  \texttt{Mins\_per90} : le nombre de minutes jouées par match, donnée
+  quantitative
+\item
+  \texttt{Touches\_Touches} : le nombre de touches de balle par match,
+  donnée quantitative
+\item
+  \texttt{Touches\_Def\_Pen} : le nombre de touches de balle dans la
+  surface de réparation adverse par match, donnée quantitative
+\item
+  \texttt{Succ\_percent\_Dribbles}: le pourcentage de réussite des
+  dribbles par match, donnée quantitative
+\end{itemize}
+
+Cette liste n'est pas exhaustive, car il y a en réalité 32 colonnes dans
+le dataframe, mais cela donne une idée des informations que l'on peut
+obtenir et surtout de ce que nous allons avoir besoin pour répondre à
+nos questions.
+
+\textbf{À l'échelle des équipes} On peut retrouver à l'échelle des
+équipes diverses données grâce à la méthode
+\texttt{fb\_team\_match\_log\_stats(team\_urls,\ stat\_type)} qui nous
+renverra le dataframe des équipes avec les informations suivantes :
+
+\begin{itemize}
+\item
+  \texttt{Team} : le nom de l'équipe, donnée nominale
+\item
+  \texttt{Date} : la date du match, donnée nominale
+\item
+  \texttt{Time} : l'heure du match, donnée nominale
+\item
+  \texttt{Comp} : la compétition, donnée nominale
+\item
+  \texttt{Round} : le tour de la compétition, donnée nominale
+\item
+  \texttt{Day} : le jour du match, donnée nominale
+\item
+  \texttt{Venue} : le lieu du match, donnée nominale
+\item
+  \texttt{Result} : le résultat du match, donnée nominale
+\item
+  \texttt{Opponent} : l'équipe adverse, donnée nominale
+\end{itemize}
+
+Le reste des données dépend du stat\_type que l'on choisit, par exemple,
+si on choisit \texttt{stat\_type="passing"}, ou
+\texttt{stat\_type="defense"}, on aura des informations sur les passes
+ou la défense de l'équipe, respectivement.
+
+\textbf{À l'échelle des joueurs} Enfin, on peut retrouver à l'échelle
+des joueurs diverses données grâce à la méthode
+\texttt{fb\_player\_season\_stats(player\_url,\ stat\_type)} qui nous
+renverra le dataframe des joueurs avec les informations suivantes :
+
+\begin{itemize}
+\item
+  \texttt{player\_name} : le nom du joueur, donnée nominale
+\item
+  \texttt{Season} : la saison, de forme AN01-AN02, donnée nominale
+\item
+  \texttt{Age} : l'âge du joueur, donnée quantitative
+\item
+  \texttt{Squad} : le nom de l'équipe du joueur, donnée nominale
+\item
+  \texttt{Country} : le pays du joueur, donnée nominale
+\item
+  \texttt{Comp} : la compétition, donnée nominale
+\item
+  \texttt{MP} : le nombre de matchs joués, donnée quantitative
+\item
+  \texttt{Starts\_Time}: le nombre de matchs joués en tant que
+  titulaire, donnée quantitative
+\item
+  \texttt{Gls} : le nombre de buts marqués, donnée quantitative
+\end{itemize}
+
+On peut rajouter une deuxième méthode tm\_player\_bio() qui retourne des
+informations supplémentaires.
+
+\begin{itemize}
+\item
+  \texttt{player\_name} : Nom du joueur, donnée nominale
+\item
+  \texttt{date\_of\_birth} : Date de naissance, donnée nominale
+\item
+  \texttt{place\_of\_birth} : Lieu de naissance, donnée nominale
+\item
+  \texttt{height} : Taille, donnée quantitative
+\item
+  \texttt{nationality} : Nationalité, donnée nominale
+\item
+  \texttt{position} : Poste, donnée nominale
+\item
+  \texttt{strong\_foot} : Pied fort, donnée nominale
+\item
+  \texttt{current\_club} : Club actuel, donnée nominale
+\item
+  \texttt{joined} : Date d`arrivée dans le club actuel, donnée nominale
+\item
+  \texttt{contract\_expires} : Date d`expiration du contrat, donnée
+  nominale
+\item
+  \texttt{date\_of\_last\_contract\_extension} : Date de la dernière
+  extension de contrat, donnée nominale
+\item
+  \texttt{player\_valuation} : Valeur marchande du joueur, donnée
+  nominale
+\item
+  \texttt{max\_player\_valuation} : Valeur marchande maximale du joueur,
+  donnée quantitative
+\item
+  \texttt{max\_player\_valuation\_date} : Date de la valeur marchande
+  maximale du joueur, donnée quantitative
+\item
+  \texttt{URL} : URL du joueur, donnée nominale
+\end{itemize}
+
+⚠️ Warning: On pourrait être amené à puiser des informations sur
+d'autres méthodes.
+
+\textbf{Blessure} On aura l'historique des joueurs grâce à
+tm\_player\_injury\_history(), qui retourne différentes informations :
+
+\begin{itemize}
+\item
+  \texttt{player\_url} : l'URL du joueur, donnée nominale
+\item
+  \texttt{season\_injured} : la saison de blessure du joueur, donnée
+  nominale
+\item
+  \texttt{injury} : le type de blessure du joueur, donnée nominale
+\item
+  \texttt{injured\_since} : la date de début de la blessure du joueur,
+  donnée temporelle
+\item
+  \texttt{injured\_until} : la date de fin de la blessure du joueur,
+  donnée temporelle
+\item
+  \texttt{duration} : la durée de la blessure du joueur, donnée nominale
+\item
+  \texttt{games\_missed} : le nombre de matchs manqués par le joueur en
+  raison de la blessure, donnée nominale
+\item
+  \texttt{club} : le club du joueur, donnée nominale
+\end{itemize}
+
+Une fois de plus, cette liste n'est pas exhaustive, mais cela donne une
+idée des informations que l'on peut obtenir et surtout de ce que nous
+allons avoir besoin pour répondre à nos questions.
+
+\#Les questions que nous pouvons nous poser
+
+Nous allons à présent vous présenter les différentes questions que nous
+nous sommes posées sur le championnat. Pour chacune de ces questions,
+nous allons vous expliquer comment nous allons y répondre et quelles
+données nous allons utiliser pour cela.
+
+\textbf{Quelles sont les différences entre les 5 premières équipes de
+chaque championnats ? (traité par Ewen)}
+
+Pour répondre à cette question, nous allons nous concentrer sur les 5
+premières équipes de chaque championnat pour voir s'il y a des
+différences significatives entre elles. Nous allons nous intéresser à
+des statistiques comme la possession de balle (obtenu avec le
+\texttt{stat\_type="possession"}), le nombre de passes réussies (avec
+\texttt{stat\_type="passing"}),puis le nombre de tirs et le nombre de
+buts marqués (\texttt{stat\_type="attack"}).
+
+Pour représenter et mettre en relation les données, nous allons utiliser
+plusieurs graphiques en barres pour comparer les différentes équipes
+entre elles sur les différentes statistiques. Nous pourrons également
+utiliser des graphiques en nuages de points pour voir s'il y a une
+corrélation entre certaines statistiques. Cela nous permettra d'observer
+quelles statistiques sont les plus importantes pour se démarquer des
+autres équipes, et si ces statistiques sont inchangées d'un championnat
+à l'autre.
+
+\textbf{Le nombre de blessures est-il lié au nombre de match joué ou le
+championnat joue une plus grosse partie (stéréotype de championnat +
+physique que d'autres ) (traité par Ahmed)}
+
+Pour répondre à cette question, nous utiliserons deux requêtes. La
+première nous donnera le nombre de matchs joués, éventuellement
+accompagné d'un calcul du temps de jeu. Pour des raisons de clarté et de
+compréhension, nous sélectionnerons probablement les 100 joueurs les
+plus blessés en utilisant la méthode
+\texttt{tm\_player\_injury\_history()} et en filtrant sur la somme de la
+différence entre injured\_until et injured\_since.
+
+\textbf{Quelles sont les blessures les plus fréquentes pour les joueurs
+de Premier League ? (traitée par Ahmed)} Nous récupérerons les blessures
+via tm\_player\_injury\_history, qui prend en paramètre un player\_url
+de Transfermarkt. Nous regarderons donc les blessures de tous les
+joueurs en filtrant sur les joueurs de PL. Un nuage de mots serait bien
+pour représenter la répartition. .
+
+\textbf{Quel est le profil de buteur le plus prolifique (avec des
+statistiques sur la taille) ?}
+
+Nous examinerons les meilleurs buteurs des championnats et leurs
+caractéristiques (physiques, temps de jeu, blessures, etc.) pour trouver
+la meilleure corrélation. Nous pourrons également créer une carte
+thermique (heatmap) avec PowerBI (ou avec R) sur les origines de ces
+joueurs en utilisant la méthode \texttt{tm\_player\_bio()}.
+
+\textbf{Déterminer le profil de l'équipe parfaite (possession par
+exemple) (traité par Nassim)}
+
+Nous analyserons les statistiques des meilleures équipes et les
+comparerons à celles des équipes moins performantes pour déterminer les
+caractéristiques d'une équipe parfaite, telles que la possession de
+balle,nombre de buts moyens encaissés\ldots{} On utilisera
+\texttt{fb\_team\_match\_log\_stats()} pour recuperer tout les matchs et
+faire des moyennes sur leurs matchs .
+
+\textbf{Quelle est la corrélation entre la valeur marchande des joueurs
+et leurs postes ? (traité par Amine)}
+
+Nous étudierons la corrélation entre la valeur marchande des joueurs et
+différents critères spécifiques à leur poste. Par exemple, nous
+examinerons le nombre de buts pour les attaquants et le nombre
+d'interceptions pour les défenseurs parmi les joueurs les plus chers.
+Pour ce faire, nous utiliserons la méthode mentionnée précédemment dans
+la section ``À l'échelle des joueurs''.
+
+\textbf{Quelles sont les différences entre les championnats et les
+coupes ? (traité par Nassim)}
+
+Il existe plusieurs différences entre les championnats et les coupes.
+Nous pourrions les distinguer en examinant différents aspects tels que
+le nombre moyen de buts marqués par match ou les performances moyennes
+des joueurs en coupe par rapport au championnat. Par exemple, en
+utilisant la méthode \texttt{fb\_player\_scouting\_report()}, nous
+pouvons spécifier le championnat comme paramètre et obtenir des retours
+standard pour analyser ces différences.
+
+\hypertarget{ruxe9ponses-aux-questions}{%
+\section{Réponses aux questions}\label{ruxe9ponses-aux-questions}}
+
+\hypertarget{quelles-sont-les-diffuxe9rences-entre-les-5-premiuxe8res-uxe9quipes-de-chaque-championnats}{%
+\subsubsection{Quelles sont les différences entre les 5 premières
+équipes de chaque championnats
+?}\label{quelles-sont-les-diffuxe9rences-entre-les-5-premiuxe8res-uxe9quipes-de-chaque-championnats}}
+
+(traité par Ewen)
+
+Pour répondre à cette question, nous allons dans un premier temps
+effectuer une analyse pour la première League. Nous allons se baser sur
+des données concernant la saison 2021-2022, et observer les différentes
+statistiques des équipes durant cette saison, afin d'observer
+d'éventuels lien entre ces statistiques et la position des équipes dans
+le classement.
+
+Avant de commencer, on peut déjà faire plusieurs suppositions :
+
+\begin{itemize}
+\item
+  On pourrait penser que la meileure équipe aura plus de buts, plus de
+  possession et plus de réussite de manière générale dans ses actions,
+  ce qui pourrait expliquer le fait qu'elle soit en haut du classement.
+\item
+  On s'attend aussi à avoir des données relativement proches, et pas une
+  équipe qui écrase toute les autres, car bien qu'une équipe soit bas
+  dans le classement, les joueurs concernés restent des professionnels.
+\end{itemize}
+
+Nous utiliserons des données récupérées sur le sit \textbf{Fbref},
+stockées dans un csv. Les données sont les statistiques de chaque
+équipes pour chaque saison (Nombre de buts, nombre de touches,
+etc\ldots)
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{library}\NormalTok{(readr)}
+\FunctionTok{library}\NormalTok{(dplyr)}
+\FunctionTok{library}\NormalTok{(ggplot2)}
+\NormalTok{big5\_data\_by\_team }\OtherTok{\textless{}{-}} \FunctionTok{read\_csv}\NormalTok{(}\StringTok{"./data/dataset/big5\_data\_by\_teams/big5\_data\_by\_team.csv"}\NormalTok{,}\AttributeTok{show\_col\_types =} \ConstantTok{FALSE}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+On va sélectionner les colonnes qui nous intéressent pour notre analyse.
+Dans notre cas on va sélectionner les données de 2022 et les données
+concernant les 5 meilleures équipes de la première League pour cette
+année, à savoir Manchester City, Liverpool, Chelsea, Tottenham, Arsenal.
+On va également rajouter une équipe plus basse dans le classement,
+Southampton, afin d'éventuellement noter des différences entre le top 5
+et des équipes moins bien classées.
+
+Les colonnes concernées sont''Season\_End\_Year'' et ``Squad''
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{big5\_data\_by\_team }\OtherTok{\textless{}{-}}\NormalTok{ big5\_data\_by\_team }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{filter}\NormalTok{(Season\_End\_Year }\SpecialCharTok{==} \DecValTok{2022} \SpecialCharTok{\&}\NormalTok{ Squad }\SpecialCharTok{\%in\%} \FunctionTok{c}\NormalTok{(}\StringTok{"Manchester City"}\NormalTok{, }\StringTok{"Liverpool"}\NormalTok{, }\StringTok{"Chelsea"}\NormalTok{, }\StringTok{"Tottenham"}\NormalTok{, }\StringTok{"Arsenal"}\NormalTok{, }\StringTok{"Southampton"}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+Il y a énormément de colonnes à notre disposition, on va donc
+sélectionner les colonnes qui nous intéressent pour notre analyse. On va
+garder uniquement Squad, Team\_or\_Opponent, Gls, Poss.y,
+Touches\_Touches, Succ\_percent\_Dribbles
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{big5\_data\_by\_team }\OtherTok{\textless{}{-}}\NormalTok{ big5\_data\_by\_team }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{select}\NormalTok{(Squad, Team\_or\_Opponent, Gls, }\StringTok{"\_percent\_Pressures"}\NormalTok{, Touches\_Touches, Succ\_percent\_Dribbles)}
+\end{Highlighting}
+\end{Shaded}
+
+On va ensuite renommer les colonnes pour plus de clarté
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{big5\_data\_by\_team }\OtherTok{\textless{}{-}}\NormalTok{ big5\_data\_by\_team }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{rename}\NormalTok{(}\AttributeTok{Equipe =}\NormalTok{ Squad, }\AttributeTok{Buts =}\NormalTok{ Gls, }\AttributeTok{Reussite\_pressing =} \StringTok{\textquotesingle{}\_percent\_Pressures\textquotesingle{}}\NormalTok{, }\AttributeTok{Touches =}\NormalTok{ Touches\_Touches, }\AttributeTok{Reussite\_Dribble =}\NormalTok{ Succ\_percent\_Dribbles)}
+\end{Highlighting}
+\end{Shaded}
+
+Team\_or\_Opponent distingue les match où l'équipe est à domicile ou à
+l'extérieur. On va donc regrouper les données par équipe et par match à
+domicile ou à l'extérieur.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{big5\_data\_by\_team }\OtherTok{\textless{}{-}}\NormalTok{ big5\_data\_by\_team }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{group\_by}\NormalTok{(Equipe) }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{summarise}\NormalTok{(}\AttributeTok{Buts =} \FunctionTok{sum}\NormalTok{(Buts), }\AttributeTok{Reussite\_pressing =} \FunctionTok{mean}\NormalTok{(Reussite\_pressing), }\AttributeTok{Touches =} \FunctionTok{sum}\NormalTok{(Touches), }\AttributeTok{Reussite\_Dribble =} \FunctionTok{mean}\NormalTok{(Reussite\_Dribble))}
+\end{Highlighting}
+\end{Shaded}
+
+Avant de faire des visualisations, on va ordonner les lignes en fonction
+des positions des équipes dans le classement de la ligue, à savoir
+Manchester City, Liverpool, Chelsea, Tottenham, Arsenal
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{big5\_data\_by\_team }\OtherTok{\textless{}{-}}\NormalTok{ big5\_data\_by\_team }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{mutate}\NormalTok{(}\AttributeTok{Equipe =} \FunctionTok{factor}\NormalTok{(Equipe, }\AttributeTok{levels =} \FunctionTok{c}\NormalTok{(}\StringTok{"Manchester City"}\NormalTok{, }\StringTok{"Liverpool"}\NormalTok{, }\StringTok{"Chelsea"}\NormalTok{, }\StringTok{"Tottenham"}\NormalTok{, }\StringTok{"Arsenal"}\NormalTok{, }\StringTok{"Southampton"}\NormalTok{)))}
+\end{Highlighting}
+\end{Shaded}
+
+On peut ensuite faire une première visualisation, avec un barplot qui
+affiche le nombre de but marqué par chaque équipe
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{ggplot}\NormalTok{(big5\_data\_by\_team, }\FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ Equipe, }\AttributeTok{y =}\NormalTok{ Buts, }\AttributeTok{fill =}\NormalTok{ Equipe)) }\SpecialCharTok{+} \FunctionTok{geom\_bar}\NormalTok{(}\AttributeTok{stat =} \StringTok{"identity"}\NormalTok{) }\SpecialCharTok{+} \FunctionTok{theme\_minimal}\NormalTok{() }\SpecialCharTok{+} \FunctionTok{labs}\NormalTok{(}\AttributeTok{title =} \StringTok{"Nombre de buts marqués par équipe"}\NormalTok{, }\AttributeTok{x =} \StringTok{"Equipe"}\NormalTok{, }\AttributeTok{y =} \StringTok{"Nombre de buts"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{rapport_files/figure-latex/unnamed-chunk-7-1.pdf}
+
+Comme on pouvait s'y attendre, Manchester City, Liverpool et Chelsea,
+respectivement 1ère, 2ème et 3ème équipe du classement, sont les équipes
+qui possède le plus de buts. Le nombre de buts est donc directement lié
+à la position de l'équipe dans la ligue. Ce résultat était plutôt
+attendu, dans un match de football, le nombre de but est le paramètre
+qui va déterminer si l'on gagne ou non, on s'attend donc à ce que la
+meilleure équipe en ait le plus.
+
+Mais cela nous amène donc à nous demander si d'autres paramètres, plutôt
+axés sur la défense, comme le pourcentage de pressing réussis, ou sur la
+possession avec le nombre de touches, ou sur l'attaque avec le
+pourcentage de dribble réussis, sont également des caractéristiques
+importante pour différencier les équipes entre elles. On va donc
+visualiser ces paramètres, de la même manière que pour les buts.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{ggplot}\NormalTok{(big5\_data\_by\_team, }\FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ Equipe, }\AttributeTok{y =}\NormalTok{ Reussite\_pressing, }\AttributeTok{fill =}\NormalTok{ Equipe)) }\SpecialCharTok{+} \FunctionTok{geom\_bar}\NormalTok{(}\AttributeTok{stat =} \StringTok{"identity"}\NormalTok{) }\SpecialCharTok{+} \FunctionTok{theme\_minimal}\NormalTok{() }\SpecialCharTok{+} \FunctionTok{labs}\NormalTok{(}\AttributeTok{title =} \StringTok{"Pourcentage de pressing réussis par équipe"}\NormalTok{, }\AttributeTok{x =} \StringTok{"Equipe"}\NormalTok{, }\AttributeTok{y =} \StringTok{"Pourcentage de pressing réussis"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{rapport_files/figure-latex/unnamed-chunk-8-1.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{ggplot}\NormalTok{(big5\_data\_by\_team, }\FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ Equipe, }\AttributeTok{y =}\NormalTok{ Touches, }\AttributeTok{fill =}\NormalTok{ Equipe)) }\SpecialCharTok{+} \FunctionTok{geom\_bar}\NormalTok{(}\AttributeTok{stat =} \StringTok{"identity"}\NormalTok{) }\SpecialCharTok{+} \FunctionTok{theme\_minimal}\NormalTok{() }\SpecialCharTok{+} \FunctionTok{labs}\NormalTok{(}\AttributeTok{title =} \StringTok{"Nombre de touches par équipe"}\NormalTok{, }\AttributeTok{x =} \StringTok{"Equipe"}\NormalTok{, }\AttributeTok{y =} \StringTok{"Nombre de touches"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{rapport_files/figure-latex/unnamed-chunk-8-2.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{ggplot}\NormalTok{(big5\_data\_by\_team, }\FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ Equipe, }\AttributeTok{y =}\NormalTok{ Reussite\_Dribble, }\AttributeTok{fill =}\NormalTok{ Equipe)) }\SpecialCharTok{+} \FunctionTok{geom\_bar}\NormalTok{(}\AttributeTok{stat =} \StringTok{"identity"}\NormalTok{) }\SpecialCharTok{+} \FunctionTok{theme\_minimal}\NormalTok{() }\SpecialCharTok{+} \FunctionTok{labs}\NormalTok{(}\AttributeTok{title =} \StringTok{"Pourcentage de dribbles réussis par équipe"}\NormalTok{, }\AttributeTok{x =} \StringTok{"Equipe"}\NormalTok{, }\AttributeTok{y =} \StringTok{"Pourcentage de dribbles réussis"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{rapport_files/figure-latex/unnamed-chunk-8-3.pdf}
+
+On constate qu'il n'y a finalement que très peu de différence entre les
+équipes pour ces paramètres. On peut donc en conclure que ces paramètres
+ne sont pas déterminants pour différencier les équipes entre elles. Cela
+peut s'expliquer par le fait que les équipes de haut niveau ont des
+joueurs de qualité, et que ces paramètres sont donc assez homogènes
+entre les équipes de haut niveau. On va ensuite rajouter une équipe
+moins bonne dans le classement, pour voir si ces paramètres sont plus
+déterminants pour différencier les équipes de bas niveau. On va rajouter
+l'équipe de Southampton, qui est 15ème de la ligue, et donc une équipe
+de bas niveau. On refait les même étapes que précédemment, en rajoutant
+Southampton dans les équipes sélectionnées.
+
+On constate finalement que deux paramètres semblent être lié à la
+position des équipes dans la ligue : le nombre de but, et le nombre de
+touches. Pour les autres, il est possible que le fait que ce sont des
+pourcentages de réussites ne permettent pas d'identifier une
+corrélation, on peut éventuellement s'intéresser au nombre de dribbles
+et de pressing reussis, et non pas aux pourcentages de réussite.
+
+\includegraphics{rapport_files/figure-latex/unnamed-chunk-9-1.pdf}
+\includegraphics{rapport_files/figure-latex/unnamed-chunk-9-2.pdf}
+
+À nouveau, on ne constate aucun lien particulier entre ces paramètres et
+la position des équipes dans la ligue. On peut donc en conclure que le
+nombre de buts et le nombre de touches sont les paramètres les plus
+importants pour différencier les équipes entre elles.
+
+On peut maintenant se demander si pour d'autres championnat, comme la
+Ligue 1, le nombre de buts et le nombres de touches sont également les
+paramètres les plus importants. On effectue donc la même analyse, mais
+avec les équipes Paris-SG, Marseille, Monaco, Rennes, Nice, et Troyes
+(15ème du classement). On ne va regarder que le nombre de buts et le
+nombre de touches.
+
+\includegraphics{rapport_files/figure-latex/unnamed-chunk-10-1.pdf}
+\includegraphics{rapport_files/figure-latex/unnamed-chunk-10-2.pdf}
+
+On constate que le nombre de buts semble être moins déterminant pour
+différencier les équipes entre elles en Ligue 1, notamment en étudiant
+le cas de Rennes. En effet, si l'on se base uniquement se graphe, on
+aurait pu pensé qu'elle se placerait à la deuxième place.
+
+On constate aussi que le nombre de touches est un paramètre plus
+important, et que le nombre de touche global semble être légèrement plus
+élevé.
+
+Cela peut s'expliquer par le fait que la Ligue 1 est un championnat
+moins offensif que la Premier League, et que la possession de balle est
+donc un paramètre plus important pour différencier les équipes entre
+elles.
+
+\hypertarget{quelles-sont-les-blessures-les-plus-fruxe9quentes-pour-les-joueurs-de-premier-league}{%
+\subsubsection{\texorpdfstring{\textbf{Quelles sont les blessures les
+plus fréquentes pour les joueurs de Premier League
+?}}{Quelles sont les blessures les plus fréquentes pour les joueurs de Premier League ?}}\label{quelles-sont-les-blessures-les-plus-fruxe9quentes-pour-les-joueurs-de-premier-league}}
+
+(traité par Ahmed)
+
+Dans cette analyse, nous chercherons à identifier les types de blessures
+les plus courantes et les parties du corps les plus affectées chez les
+joueurs professionnels, en mettant particulièrement l'accent sur les
+joueurs de Premier League. Nous pourrions nous attendre à ce que les
+blessures aux chevilles, aux genoux et aux adducteurs soient parmi les
+plus fréquentes.
+
+\textbf{Traitement des données} : Dans le cadre de notre analyse des
+blessures des joueurs de Premier League, nous avons collecté des données
+à partir de différentes sources. Tout d'abord, nous avons créé une liste
+de tous les clubs de Premier League, ``clubs\_list'', contenant 26
+clubs.
+
+Ensuite, nous avons importé les données relatives aux joueurs à partir
+du fichier CSV ``players.csv'' en utilisant la fonction
+readr::read\_csv().
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{players }\OtherTok{\textless{}{-}}\NormalTok{ readr}\SpecialCharTok{::}\FunctionTok{read\_csv}\NormalTok{(}\StringTok{"dataset/playerslinkALL/players.csv"}\NormalTok{)}
+\FunctionTok{colnames}\NormalTok{(players)}
+\end{Highlighting}
+\end{Shaded}
+
+Pour obtenir les statistiques de blessures de chaque joueur, nous avons
+utilisé une fonction personnalisée, tm\_player\_injury\_history(), qui
+prend l'URL du profil du joueur sur le site web de Transfermarkt comme
+argument. Nous avons itéré sur chaque ligne de notre jeu de données
+``players'' en utilisant une boucle for, et pour chaque joueur, nous
+avons récupéré ses statistiques de blessures en utilisant cette
+fonction.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{players\_stats\_list }\OtherTok{\textless{}{-}} \FunctionTok{list}\NormalTok{()}
+
+\ControlFlowTok{for}\NormalTok{ (i }\ControlFlowTok{in} \DecValTok{1}\SpecialCharTok{:}\FunctionTok{nrow}\NormalTok{(players)) \{}
+\NormalTok{  player\_url }\OtherTok{\textless{}{-}}\NormalTok{ players}\SpecialCharTok{$}\NormalTok{UrlTmarkt[i]}
+\NormalTok{  stat }\OtherTok{\textless{}{-}} \FunctionTok{tm\_player\_injury\_history}\NormalTok{(player\_url)}
+  \ControlFlowTok{if}\NormalTok{ (}\FunctionTok{any}\NormalTok{(}\SpecialCharTok{!}\FunctionTok{is.na}\NormalTok{(stat}\SpecialCharTok{$}\NormalTok{club))) \{}
+    \FunctionTok{print}\NormalTok{(}\StringTok{"club"}\NormalTok{)}
+\NormalTok{    found }\OtherTok{\textless{}{-}} \ConstantTok{FALSE}
+\NormalTok{    clubs }\OtherTok{\textless{}{-}} \FunctionTok{strsplit}\NormalTok{(stat}\SpecialCharTok{$}\NormalTok{club, }\StringTok{", "}\NormalTok{)[[}\DecValTok{1}\NormalTok{]]}
+    \ControlFlowTok{for}\NormalTok{ (club }\ControlFlowTok{in}\NormalTok{ clubs) \{}
+\NormalTok{      found }\OtherTok{\textless{}{-}} \FunctionTok{grepl}\NormalTok{(club, clubs\_list, }\AttributeTok{ignore.case =} \ConstantTok{TRUE}\NormalTok{)}
+      \ControlFlowTok{if}\NormalTok{ (}\FunctionTok{any}\NormalTok{(found)) \{}
+        \FunctionTok{print}\NormalTok{(}\StringTok{"en PL"}\NormalTok{)}
+\NormalTok{        players\_stats\_list[[i]] }\OtherTok{\textless{}{-}}\NormalTok{ stat}
+        \ControlFlowTok{break}
+\NormalTok{      \} }\ControlFlowTok{else}\NormalTok{ \{}
+        \FunctionTok{print}\NormalTok{(}\StringTok{"pas en PL "}\NormalTok{)}
+\NormalTok{      \}}
+\NormalTok{    \}}
+\NormalTok{  \}}
+\NormalTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+Comme un joueur peut avoir joué pour plusieurs clubs au cours de sa
+carrière, nous avons vérifié s'il a joué pour un club de Premier League
+en comparant le nom du club dans les statistiques de blessures avec
+notre liste de clubs de Premier League. Nous avons utilisé la fonction
+strsplit() pour diviser la chaîne de caractères contenant les noms des
+clubs en un vecteur, puis nous avons itéré sur chaque club en utilisant
+une boucle for. Nous avons utilisé la fonction grepl() pour vérifier si
+le nom du club est dans notre liste de clubs de Premier League, en
+ignorant la casse. Si le joueur a joué pour un club de Premier League,
+nous avons ajouté ses statistiques de blessures à notre liste
+``players\_stats\_list''.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{players\_stats\_df }\OtherTok{\textless{}{-}} \FunctionTok{do.call}\NormalTok{(rbind, players\_stats\_list)}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{graphique}{%
+\subsubsection{Graphique}\label{graphique}}
+
+Cette visualisation nous montre les blessures les plus récurrentes avec
+un double encodage pour représenter la fréquence, la taille et la
+couleur. Ce graphique a été réalisé à partir de données recensant 1000
+blessures de joueurs ayant évolué en Premier League.
+
+\hypertarget{analyse-des-graphiques}{%
+\subsubsection{Analyse des graphiques}\label{analyse-des-graphiques}}
+
+Les résultats confirment nos attentes, avec comme top 3 des blessures
+les plus récurrentes : en premier, les adducteurs, suivis des genoux,
+puis des chevilles. Cette observation est logique étant donné que le
+football de haut niveau exerce une pression particulière sur certains
+muscles et articulations. Nous remarquons également l'impact de la crise
+du COVID-19, qui a réussi à figurer parmi les blessures les plus
+récurrentes, bien que son impact ait été de courte durée dans les
+rapports de blessures (avant la suspension du championnat).
+
+\hypertarget{le-nombre-de-blessures-est-il-liuxe9-au-nombre-de-match-jouuxe9-ou-le-championnat-joue-une-plus-grosse-partie-stuxe9ruxe9otype-de-championnat-physique-que-dautres}{%
+\subsubsection{\texorpdfstring{\textbf{Le nombre de blessures est-il lié
+au nombre de match joué ou le championnat joue une plus grosse partie
+(stéréotype de championnat + physique que d'autres
+)}}{Le nombre de blessures est-il lié au nombre de match joué ou le championnat joue une plus grosse partie (stéréotype de championnat + physique que d'autres )}}\label{le-nombre-de-blessures-est-il-liuxe9-au-nombre-de-match-jouuxe9-ou-le-championnat-joue-une-plus-grosse-partie-stuxe9ruxe9otype-de-championnat-physique-que-dautres}}
+
+(traité par Ahmed) \textbf{optionnel dans la deadline du 5 mai}
+
+Dans cette analyse, nous nous intéressons à la relation entre le nombre
+de jours entre chaque match et le nombre de blessures dans les ligues
+majeures de football. Notre question de recherche est de savoir si
+certains championnats sont plus sujets aux blessures que d'autres en
+raison de leur nature plus physique supposée . Dans l'imaginaire
+collectif des fans de football, la Premier League a une réputation de
+championnat plus physique que les autres. On pourrait donc s'attendre à
+plus de blessures de la part des joueurs de cette ligue.
+
+\hypertarget{graphiques}{%
+\subsubsection{Graphiques}\label{graphiques}}
+
+Sur ce graphique, l'axe des abscisses représente le nombre moyen de
+jours entre chaque match, tandis que l'axe des ordonnées représente le
+nombre de blessures. Nous observons une tendance générale où les
+championnats avec moins de jours de repos entre les matchs ont tendance
+à avoir un nombre de blessures plus élevé.
+
+Sur ce graphique, l'axe des abscisses représente le nombre de matchs par
+équipe en championnat, tandis que l'axe des ordonnées représente le
+nombre de blessures. Nous observons une relation linéaire entre le
+nombre de matchs et le nombre de blessures, sauf pour la Ligue 1 qui
+semble être une exception à cette tendance.
+
+\hypertarget{analyse-des-graphiques-1}{%
+\subsubsection{Analyse des graphiques}\label{analyse-des-graphiques-1}}
+
+Les graphiques montrent clairement des tendances. Nous constatons
+presque une relation linéaire entre le nombre de matchs et les
+blessures, à l'exception de la Ligue 1. Cela confirme l'idée que
+certains championnats peuvent être plus sujets aux blessures en raison
+de leur intensité de matchs.
+
+En ce qui concerne la relation entre le délai entre chaque match et les
+blessures, nous observons que les délais sont souvent très proches, mais
+nous remarquons deux extrêmes. La Premier League a le plus grand nombre
+de blessures avec le moins de temps de repos, tandis que la Ligue 1 a le
+nombre de blessures le plus bas avec le temps de repos le plus long.
+Cela suggère que plus une équipe a de temps de repos, moins elle est
+exposée aux blessures.
+
+Cependant, la Bundesliga se distingue en ayant un bon temps de repos
+mais un nombre élevé de blessures. Cela soulève la question de savoir
+quels autres facteurs influencent le nombre de blessures, en dehors du
+nombre de matchs. Il est important de prendre en compte que le nombre de
+matchs peut varier selon les équipes au sein d'un même championnat, en
+fonction de leur participation dans les compétitions de coupe.
+
+En conclusion, ces observations soulignent l'importance du repos entre
+les matchs dans la prévention des blessures, mais elles soulèvent
+également d'autres questions sur les facteurs influençant le nombre de
+blessures dans le football professionnel car le repos n'étant pas
+l'indice absolu . On pourrait donc se demander quels sont ces autres
+indices ?
+
+\end{document}
