@@ -228,6 +228,8 @@ team_wages <- team_wages %>%
     Pos == "GK" ~ "Gardien de but",
     TRUE ~ "Autre"
   ))
+team_wages <- team_wages %>%
+  mutate(Nation = recode(Nation, "ENG" = "UK"))
 
 # Visualisation : Comparaison des salaires annuels des joueurs de Manchester City en fonction des notes et des postes
 ggplot(team_wages, aes(x = Note, y = AnnualWageEUR, shape = Groupe_poste, color = Team)) +
