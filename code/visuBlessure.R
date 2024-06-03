@@ -15,6 +15,7 @@ setwd("C:/Users/Administrateur/Desktop/ProjetIF36/projet-if36-p24-fifa-street/da
 #install.packages("tm")
 library(wordcloud)
 library(tm)
+library(worldfootballR)
 
 # Lire le fichier CSV et extraire la colonne 'injury'
 players <- read.csv("dataset/playersInjuryPL/playersInjuryPL.csv")
