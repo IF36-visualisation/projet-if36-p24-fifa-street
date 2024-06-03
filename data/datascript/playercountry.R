@@ -4,6 +4,7 @@ if (!requireNamespace("readr", quietly = TRUE)) {
 library(worldfootballR)
 library(readr)
 
+setwd("C:/Users/Administrateur/Desktop/ProjetIF36/projet-if36-p24-fifa-street/data")
 
 
 #----- or for multiple teams: -----#
@@ -20,9 +21,9 @@ print(epl_xfers_2020)
 
 
 print(colnames(epl_xfers_2020))
+print(head(epl_xfers_2020))
 
 
+epl_xfers_2020_subset <- subset(epl_xfers_2020, select = c("team_name", "league", "country", "player_age", "player_nationality","player_position","player_age","club_2","league_2","country_2"))
 
-epl_xfers_2020_subset <- subset(epl_xfers_2020, select = c("team_name", "league", "country", "player_age", "player_nationality"))
-
-readr::write_csv(epl_xfers_2020_subset, file = "PlayerCountry.csv")
+readr::write_csv(epl_xfers_2020_subset, file = "dataset/playerCountry/PlayerCountry.csv")
