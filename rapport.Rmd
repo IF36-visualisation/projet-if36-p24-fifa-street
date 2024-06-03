@@ -1201,7 +1201,7 @@ ggplot(average_goals, aes(x = Comp, y = AverageGoals, fill = Comp)) +
 # Afficher les résultats
 print(average_goals)
 
-```
+
 
 ### Interprétation et conclusion
 
