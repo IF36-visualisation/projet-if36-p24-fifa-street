@@ -2,8 +2,8 @@
 title: "Analyse de la Premier League"
 author: "Groupe Fifa Street"
 output:
-  pdf_document: default
   html_document: default
+  pdf_document: default
 ---
 
 # Introduction
@@ -211,11 +211,11 @@ library(ggplot2)
 big5_data_by_team <- read_csv("./data/dataset/big5_data_by_teams/big5_data_by_team.csv",show_col_types = FALSE)
 ```  
 
-On va sélectionner les colonnes qui nous intéressent pour notre analyse. Dans notre cas on va sélectionner les données de 2022 et les données concernant les 5 meilleures équipes de la première League pour cette année, à savoir Manchester City, Liverpool, Chelsea, Tottenham, Arsenal. On va également rajouter une équipe plus basse dans le classement, Southampton, afin d'éventuellement noter des différences entre le top 5 et des équipes moins bien classées.
+On va sélectionner les colonnes qui nous intéressent pour notre analyse. Dans notre cas on va sélectionner les données de 2022 et les données concernant les 5 meilleures équipes de la première League pour cette année, à savoir Manchester City, Liverpool, Chelsea, Tottenham, Arsenal. On va également rajouter une équipe plus basse dans le classement, Southampton, ainsi qu'une équipe moyenne, Newcastle afin d'éventuellement noter des différences entre le top 5 et des équipes moins bien classés.
 
 Les colonnes concernées sont"Season_End_Year" et "Squad"
 ```{r}
-big5_data_by_team <- big5_data_by_team %>% filter(Season_End_Year == 2022 & Squad %in% c("Manchester City", "Liverpool", "Chelsea", "Tottenham", "Arsenal", "Southampton"))
+big5_data_by_team <- big5_data_by_team %>% filter(Season_End_Year == 2022 & Squad %in% c("Manchester City", "Liverpool", "Chelsea", "Tottenham", "Arsenal", "Newcastle Utd", "Southampton"))
 ```
 
 Il y a énormément de colonnes à notre disposition, on va donc sélectionner les colonnes qui nous intéressent pour notre analyse.
@@ -231,69 +231,123 @@ big5_data_by_team <- big5_data_by_team %>% rename(Equipe = Squad, Buts = Gls, Re
 
 Team_or_Opponent distingue les match où l'équipe est à domicile ou à l'extérieur. On va donc regrouper les données par équipe et par match à domicile ou à l'extérieur.
 ```{r}
+big5_data_by_team <- big5_data_by_team %>% group_by(Equipe) %>% summarise(Buts = sum(Buts), Reussite_pressing = mean(Reussite_pressing), Touches = mean(Touches), Reussite_Dribble = mean(Reussite_Dribble))
+```
+
+Avant de faire des visualisations, on va ordonner les lignes en fonction des positions des 5 premières équipes dans le classement de la ligue, à savoir Manchester City, Liverpool, Chelsea, Tottenham, Arsenal
+On va ensuite rajouter une équipe moins bonne dans le classement, pour voir si ces paramètres sont plus déterminants pour différencier les équipes de bas niveau.
+On va rajouter l'équipe de Southampton, qui est 15ème de la ligue, et donc une équipe de bas niveau.
+On va également rajouter l'équipe de Newcastle, qui est 11ème de la ligue, et donc une équipe de milieu de tableau.
+
+```{r}
+big5_data_by_team <- big5_data_by_team %>% mutate(Equipe = factor(Equipe, levels = c("Manchester City", "Liverpool", "Chelsea", "Tottenham", "Arsenal","Newcastle Utd", "Southampton")))
+
+```
+
+On peut ensuite faire une première visualisation, avec un barplot qui affiche le nombre de but marqué par chaque équipe.
+```{r}
+big5_data_by_team <- big5_data_by_team %>%
+  mutate(Equipe = recode(Equipe, "Manchester City" = "Manchester",
+                                   "Newcastle Utd" ="Newcastle"))
+ggplot(big5_data_by_team, aes(x = Equipe, y = Buts, fill = Equipe)) +
+  geom_bar(stat = "identity", width = 0.6) +
+  theme_minimal() +
+  labs(title = "Nombre de buts marqués par équipe", x = "Equipe", y = "Nombre de buts")+
+  coord_cartesian(ylim = c(75,130))
+```
+Comme on pouvait s'y attendre, Manchester City, Liverpool et Chelsea, respectivement 1ère, 2ème et 3ème équipe du classement, sont les équipes qui possède le plus de buts. Le nombre de buts est donc directement lié à la position de l'équipe dans la ligue. Ce résultat était plutôt attendu, dans un match de football, le nombre de but est le paramètre qui va déterminer si l'on gagne ou non, on s'attend donc à ce que la meilleure équipe en ait le plus. À noter cependant qu'ici, le graphique commence à partir de 75 buts, cela signifie que dans les fait, aucune équipe écrase les autres, ce qui est logique dans un championnant d'une telle envergure.
+
+Mais cela nous amène donc à nous demander si d'autres paramètres, plutôt axés sur la défense, comme le pourcentage de pressing réussis, ou sur la possession avec le nombre de touches, ou sur l'attaque avec le pourcentage de dribble réussis, sont également des caractéristiques importante pour différencier les équipes entre elles. On va donc visualiser ces  paramètres, de la même manière que pour les buts. Cette fois-ci, nous allons prendre toute les équipes du championnat. Pour le nobmre de touches, nous commencerons à 35000 pour mieux identifier d'éventuelles différences
+```{r, echo=FALSE, warning=FALSE,message=FALSE}
+big5_data_by_team <- read_csv("./data/dataset/big5_data_by_teams/big5_data_by_team.csv",show_col_types = FALSE)
+big5_data_by_team <- big5_data_by_team %>% filter(Season_End_Year == 2022 & Squad %in% c("Manchester City","Liverpool","Chelsea","Tottenham","Arsenal","Manchester Utd" ,"West Ham","Leicester City","Brighton","Wolves","Newcastle Utd","Crystal Palace","Brentford","Aston Villa","Southampton","Everton","Leeds United","Burnley","Watford","Norwich City"
+))
+big5_data_by_team <- big5_data_by_team %>% select(Squad, Team_or_Opponent, Gls, "_percent_Pressures", Touches_Touches, Succ_percent_Dribbles)
+big5_data_by_team <- big5_data_by_team %>% rename(Equipe = Squad, Buts = Gls, Reussite_pressing = '_percent_Pressures', Touches = Touches_Touches, Reussite_Dribble = Succ_percent_Dribbles)
 big5_data_by_team <- big5_data_by_team %>% group_by(Equipe) %>% summarise(Buts = sum(Buts), Reussite_pressing = mean(Reussite_pressing), Touches = sum(Touches), Reussite_Dribble = mean(Reussite_Dribble))
+big5_data_by_team <- big5_data_by_team %>% mutate(Equipe = factor(Equipe, levels = c("Manchester City","Liverpool","Chelsea","Tottenham","Arsenal","Manchester Utd" ,"West Ham","Leicester City","Brighton","Wolves","Newcastle Utd","Crystal Palace","Brentford","Aston Villa","Southampton","Everton","Leeds United","Burnley","Watford","Norwich City"
+)))
 ```
 
-Avant de faire des visualisations, on va ordonner les lignes en fonction des positions des équipes dans le classement de la ligue, à savoir Manchester City, Liverpool, Chelsea, Tottenham, Arsenal
-```{r}
-big5_data_by_team <- big5_data_by_team %>% mutate(Equipe = factor(Equipe, levels = c("Manchester City", "Liverpool", "Chelsea", "Tottenham", "Arsenal", "Southampton")))
-```
-
-On peut ensuite faire une première visualisation, avec un barplot qui affiche le nombre de but marqué par chaque équipe
-```{r}
-ggplot(big5_data_by_team, aes(x = Equipe, y = Buts, fill = Equipe)) + geom_bar(stat = "identity") + theme_minimal() + labs(title = "Nombre de buts marqués par équipe", x = "Equipe", y = "Nombre de buts")
-```
-
-Comme on pouvait s'y attendre, Manchester City, Liverpool et Chelsea, respectivement 1ère, 2ème et 3ème équipe du classement, sont les équipes qui possède le plus de buts. Le nombre de buts est donc directement lié à la position de l'équipe dans la ligue. Ce résultat était plutôt attendu, dans un match de football, le nombre de but est le paramètre qui va déterminer si l'on gagne ou non, on s'attend donc à ce que la meilleure équipe en ait le plus.
-
-Mais cela nous amène donc à nous demander si d'autres paramètres, plutôt axés sur la défense, comme le pourcentage de pressing réussis, ou sur la possession avec le nombre de touches, ou sur l'attaque avec le pourcentage de dribble réussis, sont également des caractéristiques importante pour différencier les équipes entre elles. On va donc visualiser ces  paramètres, de la même manière que pour les buts.
 
 ```{r}	
-ggplot(big5_data_by_team, aes(x = Equipe, y = Reussite_pressing, fill = Equipe)) + geom_bar(stat = "identity") + theme_minimal() + labs(title = "Pourcentage de pressing réussis par équipe", x = "Equipe", y = "Pourcentage de pressing réussis")
-ggplot(big5_data_by_team, aes(x = Equipe, y = Touches, fill = Equipe)) + geom_bar(stat = "identity") + theme_minimal() + labs(title = "Nombre de touches par équipe", x = "Equipe", y = "Nombre de touches")
-ggplot(big5_data_by_team, aes(x = Equipe, y = Reussite_Dribble, fill = Equipe)) + geom_bar(stat = "identity") + theme_minimal() + labs(title = "Pourcentage de dribbles réussis par équipe", x = "Equipe", y = "Pourcentage de dribbles réussis")
+ggplot(big5_data_by_team, aes(x = Equipe, y = Reussite_pressing, fill = Equipe)) + geom_bar(stat = "identity") + theme_minimal() + labs(title = "Pourcentage de pressing réussis par équipe", x = "Equipe", y = "Pourcentage de pressing réussis")+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1))+
+  guides(fill = guide_legend(ncol = 2))
+
+
+ggplot(big5_data_by_team, aes(x = Equipe, y = Touches, fill = Equipe)) + geom_bar(stat = "identity") + theme_minimal() + labs(title = "Nombre de touches par équipe", x = "Equipe", y = "Nombre de touches")+coord_cartesian(ylim = c(40000,50000))+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1))+
+  guides(fill = guide_legend(ncol = 2))
+
+
+ggplot(big5_data_by_team, aes(x = Equipe, y = Reussite_Dribble, fill = Equipe)) + geom_bar(stat = "identity") + theme_minimal() + labs(title = "Pourcentage de dribbles réussis par équipe", x = "Equipe", y = "Pourcentage de dribbles réussis")+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1))+
+  guides(fill = guide_legend(ncol = 2))
+
+
 ```
 
 On constate qu'il n'y a finalement que très peu de différence entre les équipes pour ces paramètres. On peut donc en conclure que ces paramètres ne sont pas déterminants pour différencier les équipes entre elles. Cela peut s'expliquer par le fait que les équipes de haut niveau ont des joueurs de qualité, et que ces paramètres sont donc assez homogènes entre les équipes de haut niveau.
-On va ensuite rajouter une équipe moins bonne dans le classement, pour voir si ces paramètres sont plus déterminants pour différencier les équipes de bas niveau.
-On va rajouter l'équipe de Southampton, qui est 15ème de la ligue, et donc une équipe de bas niveau.
-On refait les même étapes que précédemment, en rajoutant Southampton dans les équipes sélectionnées.
 
 On constate finalement que deux paramètres semblent être lié à la position des équipes dans la ligue : le nombre de but, et le nombre de touches. Pour les autres, il est possible que le fait que ce sont des pourcentages de réussites ne permettent pas d'identifier une corrélation, on peut éventuellement s'intéresser au nombre de dribbles et de pressing reussis, et non pas aux pourcentages de réussite. 
 
 ```{r, echo=FALSE, warning=FALSE,message=FALSE}
 big5_data_by_team <- read_csv("./data/dataset/big5_data_by_teams/big5_data_by_team.csv",show_col_types = FALSE)
-big5_data_by_team <- big5_data_by_team %>% filter(Season_End_Year == 2022 & Squad %in% c("Manchester City", "Liverpool", "Chelsea", "Tottenham", "Arsenal", "Southampton"))
+big5_data_by_team <- big5_data_by_team %>% filter(Season_End_Year == 2022 & Squad %in% c("Manchester City","Liverpool","Chelsea","Tottenham","Arsenal","Manchester Utd" ,"West Ham","Leicester City","Brighton","Wolves","Newcastle Utd","Crystal Palace","Brentford","Aston Villa","Southampton","Everton","Leeds United","Burnley","Watford","Norwich City"
+))
 big5_data_by_team <- big5_data_by_team %>% select(Squad, Team_or_Opponent, Gls, Succ_Pressures, Touches_Touches, Succ_Dribbles)
 big5_data_by_team <- big5_data_by_team %>% rename(Equipe = Squad, Buts = Gls, Reussite_pressing = Succ_Pressures, Touches = Touches_Touches, Dribbles_reussis = Succ_Dribbles)
 big5_data_by_team <- big5_data_by_team %>% group_by(Equipe) %>% summarise(Buts = sum(Buts), Reussite_pressing = sum(Reussite_pressing), Touches = sum(Touches), Dribbles_reussis = sum(Dribbles_reussis))
-big5_data_by_team <- big5_data_by_team %>% mutate(Equipe = factor(Equipe, levels = c("Manchester City", "Liverpool", "Chelsea", "Tottenham", "Arsenal", "Southampton")))
-ggplot(big5_data_by_team, aes(x = Equipe, y = Reussite_pressing, fill = Equipe)) + geom_bar(stat = "identity") + theme_minimal() + labs(title = "Nombre de pressing réussis par équipe", x = "Equipe", y = "Nombre de pressing réussis")
-ggplot(big5_data_by_team, aes(x = Equipe, y = Dribbles_reussis, fill = Equipe)) + geom_bar(stat = "identity") + theme_minimal() + labs(title = "Nombre de dribbles réussis par équipe", x = "Equipe", y = "Nombre de dribbles réussis")
+big5_data_by_team <- big5_data_by_team %>% mutate(Equipe = factor(Equipe, levels = c("Manchester City","Liverpool","Chelsea","Tottenham","Arsenal","Manchester Utd" ,"West Ham","Leicester City","Brighton","Wolves","Newcastle Utd","Crystal Palace","Brentford","Aston Villa","Southampton","Everton","Leeds United","Burnley","Watford","Norwich City"
+)))
+ggplot(big5_data_by_team, aes(x = Equipe, y = Reussite_pressing, fill = Equipe)) +
+  geom_bar(stat = "identity") +
+  theme_minimal() +
+  labs(title = "Nombre de pressing réussis par équipe", x = "Equipe", y = "Nombre de pressing réussis") +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1))+
+  guides(fill = guide_legend(ncol = 2))
+
+
+ggplot(big5_data_by_team, aes(x = Equipe, y = Dribbles_reussis, fill = Equipe)) +
+  geom_bar(stat = "identity") +
+  theme_minimal() +
+  labs(title = "Nombre de dribbles réussis par équipe", x = "Equipe", y = "Nombre de dribbles réussis") +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1))+
+  guides(fill = guide_legend(ncol = 2))
+
 ```
 
 À nouveau, on ne constate aucun lien particulier entre ces paramètres et la position des équipes dans la ligue. On peut donc en conclure que le nombre de buts et le nombre de touches sont les paramètres les plus importants pour différencier les équipes entre elles.
 
-On peut maintenant se demander si pour d'autres championnat, comme la Ligue 1, le nombre de buts et le nombres de touches sont également les paramètres les plus importants. On effectue donc la même analyse, mais avec les équipes Paris-SG, Marseille, Monaco, Rennes, Nice, et Troyes (15ème du classement).
+On peut maintenant se demander si pour d'autres championnat, comme la Ligue 1, le nombre de buts et le nombres de touches sont également les paramètres les plus importants. On effectue donc la même analyse, mais avec toutes les équipes de la ligue 1
 On ne va regarder que le nombre de buts et le nombre de touches.
 
 ```{r, echo=FALSE, warning=FALSE,message=FALSE}
 big5_data_by_team <- read_csv("./data/dataset/big5_data_by_teams/big5_data_by_team.csv",show_col_types = FALSE)
-big5_data_by_team <- big5_data_by_team %>% filter(Season_End_Year == 2022 & Squad %in% c("Paris S-G", "Marseille", "Monaco", "Rennes", "Nice", "Troyes"))
+big5_data_by_team <- big5_data_by_team %>% filter(Season_End_Year == 2022 & Squad %in% c("Paris S-G", "Marseille", "Monaco", "Rennes", "Nice","Strasbourg","Lens","Lyon","Nantes","Lille","Brest","Reims","Montpellier","Angers","Troyes","Lorient","Clermont Foot","Saint-Étienne","Metz","Bordeaux"))
 big5_data_by_team <- big5_data_by_team %>% select(Squad, Team_or_Opponent, Gls, Touches_Touches)
 big5_data_by_team <- big5_data_by_team %>% rename(Equipe = Squad, Buts = Gls, Touches = Touches_Touches)
 big5_data_by_team <- big5_data_by_team %>% group_by(Equipe) %>% summarise(Buts = sum(Buts), Touches = sum(Touches))
-big5_data_by_team <- big5_data_by_team %>% mutate(Equipe = factor(Equipe, levels = c("Paris S-G", "Marseille", "Monaco", "Rennes", "Nice", "Troyes")))
-ggplot(big5_data_by_team, aes(x = Equipe, y = Buts, fill = Equipe)) + geom_bar(stat = "identity") + theme_minimal() + labs(title = "Nombre de buts marqués par équipe", x = "Equipe", y = "Nombre de buts")
-ggplot(big5_data_by_team, aes(x = Equipe, y = Touches, fill = Equipe)) + geom_bar(stat = "identity") + theme_minimal() + labs(title = "Nombre de touches par équipe", x = "Equipe", y = "Nombre de touches")
+big5_data_by_team <- big5_data_by_team %>% mutate(Equipe = factor(Equipe, levels = c("Paris S-G", "Marseille", "Monaco", "Rennes", "Nice","Strasbourg","Lens","Lyon","Nantes","Lille","Brest","Reims","Montpellier","Angers","Troyes","Lorient","Clermont Foot","Saint-Étienne","Metz","Bordeaux")))
+ggplot(big5_data_by_team, aes(x = Equipe, y = Buts, fill = Equipe)) + geom_bar(stat = "identity") + theme_minimal() + labs(title = "Nombre de buts marqués par équipe", x = "Equipe", y = "Nombre de buts")+
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1))+
+  coord_cartesian(ylim = c(75,140))+
+  guides(fill = guide_legend(ncol = 2))
+
+ggplot(big5_data_by_team, aes(x = Equipe, y = Touches, fill = Equipe)) + geom_bar(stat = "identity") + theme_minimal() + labs(title = "Nombre de touches par équipe", x = "Equipe", y = "Nombre de touches")+
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1))+
+  coord_cartesian(ylim = c(40000,52000))+
+  guides(fill = guide_legend(ncol = 2))
+
 ```
 
-On constate que le nombre de buts semble être moins déterminant pour différencier les équipes entre elles en Ligue 1, notamment en étudiant le cas de Rennes. En effet, si l'on se base uniquement se graphe, on aurait pu pensé qu'elle se placerait à la deuxième place.
+On constate que les résultats ne sont pas vraiment similaires à ce que l'on pouvait retrouver pour la Premiere League. En effet, on constate que le nombre de but ne semble pas réellement dépendre du classement des équipes, et on remarque également que le nombre de touche est relativement similaires à l'exception de quelques équipes. On en conclut donc que les meilleures équipes de championnat se démarque dans des caractéristiques différentes en fonction du champinnat concerné.
 
-On constate aussi que le nombre de touches est un paramètre plus important, et que le nombre de touche global semble être légèrement plus élevé.
+#### Conclusion sur la première question
 
-Cela peut s'expliquer par le fait que la Ligue 1 est un championnat moins offensif que la Premier League, et que la possession de balle est donc un paramètre plus important pour différencier les équipes entre elles.
+Pour conclure sur cette première question, nous pouvons dire qu'en ce qui concerne la première ligue, les deux paramètres qui semblent être déterminant pour différencier une équipe en haut du tableau et une équipe en bas du tableau sont le nombre de buts marqués et le nombre de touches.
 
+Cependant, nous avons aussi pu remarquer que beaucoup de caractéristiques qui semblaient être pertinentes pour différencier les meilleures équipes des moins bonnes ne peuvent en réalité pas être réellement exploitées.
+
+Cela nous amène donc à penser qu'au delà du nombre de buts et de touches, c'est surtout le cumul d'une multitude d'actions faites par les joueurs durant un match, des actions qui sont difficilement représentables par des chiffres, et qui sont pourtant  décisives pour différencier une équipe d'une autre.
 ### **Analyse de la relation entre les salaires, les notes et les postes des joueurs de Manchester City**
 
 (traitée par Amin)
@@ -892,9 +946,10 @@ get_fa_cup_team_results <- function(team_url) {
     select(Team, Date, Opponent, Result, Venue, GF, GA, Comp = Competition)
   return(results)
 }
-
+```
 
 ### **Quelles sont les différences entre les championnats et les coupes ?**
+
 (traitée par Nassim)
 
 ## Hypothèse
@@ -1152,7 +1207,7 @@ En outre, cette étude met en évidence la nécessité de considérer plusieurs 
 
 En conclusion, cette étude fournit une base solide pour une analyse plus approfondie des stratégies et des performances des équipes dans le football professionnel. Les découvertes réalisées ouvrent la voie à de nouvelles investigations pour mieux comprendre les dynamiques complexes qui régissent le monde du football.
 
-
+```{r}
 # Appliquer la fonction à chaque URL d'équipe de la FA Cup
 fa_cup_team_results_list <- lapply(fa_cup_team_urls, get_fa_cup_team_results)
 
@@ -1200,7 +1255,7 @@ ggplot(average_goals, aes(x = Comp, y = AverageGoals, fill = Comp)) +
 
 # Afficher les résultats
 print(average_goals)
-
+```
 
 
 ### Interprétation et conclusion

@@ -97,7 +97,7 @@
 \ifLuaTeX
   \usepackage{selnolig}  % disable illegal ligatures
 \fi
-\IfFileExists{bookmark.sty}{\usepackage{bookmark}}{\usepackage{hyperref}}
+\usepackage{bookmark}
 \IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
 \urlstyle{same}
 \hypersetup{
@@ -113,8 +113,7 @@
 \begin{document}
 \maketitle
 
-\hypertarget{introduction}{%
-\section{Introduction}\label{introduction}}
+\section{Introduction}\label{introduction}
 
 Nous avons décidé d'orienter notre projet sur la Premier League, qui est
 la première division de football en Angleterre. La Premier League fait
@@ -421,13 +420,11 @@ utilisant la méthode \texttt{fb\_player\_scouting\_report()}, nous
 pouvons spécifier le championnat comme paramètre et obtenir des retours
 standard pour analyser ces différences.
 
-\hypertarget{ruxe9ponses-aux-questions}{%
-\section{Réponses aux questions}\label{ruxe9ponses-aux-questions}}
+\section{Réponses aux questions}\label{ruxe9ponses-aux-questions}
 
-\hypertarget{quelles-sont-les-diffuxe9rences-entre-les-5-premiuxe8res-uxe9quipes-de-chaque-championnats}{%
 \subsubsection{Quelles sont les différences entre les 5 premières
 équipes de chaque championnats
-?}\label{quelles-sont-les-diffuxe9rences-entre-les-5-premiuxe8res-uxe9quipes-de-chaque-championnats}}
+?}\label{quelles-sont-les-diffuxe9rences-entre-les-5-premiuxe8res-uxe9quipes-de-chaque-championnats}
 
 (traité par Ewen)
 
@@ -451,7 +448,7 @@ Avant de commencer, on peut déjà faire plusieurs suppositions :
   dans le classement, les joueurs concernés restent des professionnels.
 \end{itemize}
 
-Nous utiliserons des données récupérées sur le sit \textbf{Fbref},
+Nous utiliserons des données récupérées sur le site \textbf{Fbref},
 stockées dans un csv. Les données sont les statistiques de chaque
 équipes pour chaque saison (Nombre de buts, nombre de touches,
 etc\ldots)
@@ -470,14 +467,15 @@ Dans notre cas on va sélectionner les données de 2022 et les données
 concernant les 5 meilleures équipes de la première League pour cette
 année, à savoir Manchester City, Liverpool, Chelsea, Tottenham, Arsenal.
 On va également rajouter une équipe plus basse dans le classement,
-Southampton, afin d'éventuellement noter des différences entre le top 5
-et des équipes moins bien classées.
+Southampton, ainsi qu'une équipe moyenne, Newcastle afin
+d'éventuellement noter des différences entre le top 5 et des équipes
+moins bien classés.
 
 Les colonnes concernées sont''Season\_End\_Year'' et ``Squad''
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\NormalTok{big5\_data\_by\_team }\OtherTok{\textless{}{-}}\NormalTok{ big5\_data\_by\_team }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{filter}\NormalTok{(Season\_End\_Year }\SpecialCharTok{==} \DecValTok{2022} \SpecialCharTok{\&}\NormalTok{ Squad }\SpecialCharTok{\%in\%} \FunctionTok{c}\NormalTok{(}\StringTok{"Manchester City"}\NormalTok{, }\StringTok{"Liverpool"}\NormalTok{, }\StringTok{"Chelsea"}\NormalTok{, }\StringTok{"Tottenham"}\NormalTok{, }\StringTok{"Arsenal"}\NormalTok{, }\StringTok{"Southampton"}\NormalTok{))}
+\NormalTok{big5\_data\_by\_team }\OtherTok{\textless{}{-}}\NormalTok{ big5\_data\_by\_team }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{filter}\NormalTok{(Season\_End\_Year }\SpecialCharTok{==} \DecValTok{2022} \SpecialCharTok{\&}\NormalTok{ Squad }\SpecialCharTok{\%in\%} \FunctionTok{c}\NormalTok{(}\StringTok{"Manchester City"}\NormalTok{, }\StringTok{"Liverpool"}\NormalTok{, }\StringTok{"Chelsea"}\NormalTok{, }\StringTok{"Tottenham"}\NormalTok{, }\StringTok{"Arsenal"}\NormalTok{, }\StringTok{"Newcastle Utd"}\NormalTok{, }\StringTok{"Southampton"}\NormalTok{))}
 \end{Highlighting}
 \end{Shaded}
 
@@ -506,81 +504,97 @@ domicile ou à l'extérieur.
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\NormalTok{big5\_data\_by\_team }\OtherTok{\textless{}{-}}\NormalTok{ big5\_data\_by\_team }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{group\_by}\NormalTok{(Equipe) }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{summarise}\NormalTok{(}\AttributeTok{Buts =} \FunctionTok{sum}\NormalTok{(Buts), }\AttributeTok{Reussite\_pressing =} \FunctionTok{mean}\NormalTok{(Reussite\_pressing), }\AttributeTok{Touches =} \FunctionTok{sum}\NormalTok{(Touches), }\AttributeTok{Reussite\_Dribble =} \FunctionTok{mean}\NormalTok{(Reussite\_Dribble))}
+\NormalTok{big5\_data\_by\_team }\OtherTok{\textless{}{-}}\NormalTok{ big5\_data\_by\_team }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{group\_by}\NormalTok{(Equipe) }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{summarise}\NormalTok{(}\AttributeTok{Buts =} \FunctionTok{sum}\NormalTok{(Buts), }\AttributeTok{Reussite\_pressing =} \FunctionTok{mean}\NormalTok{(Reussite\_pressing), }\AttributeTok{Touches =} \FunctionTok{mean}\NormalTok{(Touches), }\AttributeTok{Reussite\_Dribble =} \FunctionTok{mean}\NormalTok{(Reussite\_Dribble))}
 \end{Highlighting}
 \end{Shaded}
 
 Avant de faire des visualisations, on va ordonner les lignes en fonction
-des positions des équipes dans le classement de la ligue, à savoir
-Manchester City, Liverpool, Chelsea, Tottenham, Arsenal
+des positions des 5 premières équipes dans le classement de la ligue, à
+savoir Manchester City, Liverpool, Chelsea, Tottenham, Arsenal On va
+ensuite rajouter une équipe moins bonne dans le classement, pour voir si
+ces paramètres sont plus déterminants pour différencier les équipes de
+bas niveau. On va rajouter l'équipe de Southampton, qui est 15ème de la
+ligue, et donc une équipe de bas niveau. On va également rajouter
+l'équipe de Newcastle, qui est 11ème de la ligue, et donc une équipe de
+milieu de tableau.
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\NormalTok{big5\_data\_by\_team }\OtherTok{\textless{}{-}}\NormalTok{ big5\_data\_by\_team }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{mutate}\NormalTok{(}\AttributeTok{Equipe =} \FunctionTok{factor}\NormalTok{(Equipe, }\AttributeTok{levels =} \FunctionTok{c}\NormalTok{(}\StringTok{"Manchester City"}\NormalTok{, }\StringTok{"Liverpool"}\NormalTok{, }\StringTok{"Chelsea"}\NormalTok{, }\StringTok{"Tottenham"}\NormalTok{, }\StringTok{"Arsenal"}\NormalTok{, }\StringTok{"Southampton"}\NormalTok{)))}
+\NormalTok{big5\_data\_by\_team }\OtherTok{\textless{}{-}}\NormalTok{ big5\_data\_by\_team }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{mutate}\NormalTok{(}\AttributeTok{Equipe =} \FunctionTok{factor}\NormalTok{(Equipe, }\AttributeTok{levels =} \FunctionTok{c}\NormalTok{(}\StringTok{"Manchester City"}\NormalTok{, }\StringTok{"Liverpool"}\NormalTok{, }\StringTok{"Chelsea"}\NormalTok{, }\StringTok{"Tottenham"}\NormalTok{, }\StringTok{"Arsenal"}\NormalTok{,}\StringTok{"Newcastle Utd"}\NormalTok{, }\StringTok{"Southampton"}\NormalTok{)))}
 \end{Highlighting}
 \end{Shaded}
 
 On peut ensuite faire une première visualisation, avec un barplot qui
-affiche le nombre de but marqué par chaque équipe
+affiche le nombre de but marqué par chaque équipe.
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\FunctionTok{ggplot}\NormalTok{(big5\_data\_by\_team, }\FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ Equipe, }\AttributeTok{y =}\NormalTok{ Buts, }\AttributeTok{fill =}\NormalTok{ Equipe)) }\SpecialCharTok{+} \FunctionTok{geom\_bar}\NormalTok{(}\AttributeTok{stat =} \StringTok{"identity"}\NormalTok{) }\SpecialCharTok{+} \FunctionTok{theme\_minimal}\NormalTok{() }\SpecialCharTok{+} \FunctionTok{labs}\NormalTok{(}\AttributeTok{title =} \StringTok{"Nombre de buts marqués par équipe"}\NormalTok{, }\AttributeTok{x =} \StringTok{"Equipe"}\NormalTok{, }\AttributeTok{y =} \StringTok{"Nombre de buts"}\NormalTok{)}
+\NormalTok{big5\_data\_by\_team }\OtherTok{\textless{}{-}}\NormalTok{ big5\_data\_by\_team }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{mutate}\NormalTok{(}\AttributeTok{Equipe =} \FunctionTok{recode}\NormalTok{(Equipe, }\StringTok{"Manchester City"} \OtherTok{=} \StringTok{"Manchester"}\NormalTok{,}
+                                   \StringTok{"Newcastle Utd"} \OtherTok{=}\StringTok{"Newcastle"}\NormalTok{))}
+\FunctionTok{ggplot}\NormalTok{(big5\_data\_by\_team, }\FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ Equipe, }\AttributeTok{y =}\NormalTok{ Buts, }\AttributeTok{fill =}\NormalTok{ Equipe)) }\SpecialCharTok{+}
+  \FunctionTok{geom\_bar}\NormalTok{(}\AttributeTok{stat =} \StringTok{"identity"}\NormalTok{, }\AttributeTok{width =} \FloatTok{0.6}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{theme\_minimal}\NormalTok{() }\SpecialCharTok{+}
+  \FunctionTok{labs}\NormalTok{(}\AttributeTok{title =} \StringTok{"Nombre de buts marqués par équipe"}\NormalTok{, }\AttributeTok{x =} \StringTok{"Equipe"}\NormalTok{, }\AttributeTok{y =} \StringTok{"Nombre de buts"}\NormalTok{)}\SpecialCharTok{+}
+  \FunctionTok{coord\_cartesian}\NormalTok{(}\AttributeTok{ylim =} \FunctionTok{c}\NormalTok{(}\DecValTok{75}\NormalTok{,}\DecValTok{130}\NormalTok{))}
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{rapport_files/figure-latex/unnamed-chunk-7-1.pdf}
-
-Comme on pouvait s'y attendre, Manchester City, Liverpool et Chelsea,
+\includegraphics{rapport_files/figure-latex/unnamed-chunk-7-1.pdf} Comme
+on pouvait s'y attendre, Manchester City, Liverpool et Chelsea,
 respectivement 1ère, 2ème et 3ème équipe du classement, sont les équipes
 qui possède le plus de buts. Le nombre de buts est donc directement lié
 à la position de l'équipe dans la ligue. Ce résultat était plutôt
 attendu, dans un match de football, le nombre de but est le paramètre
 qui va déterminer si l'on gagne ou non, on s'attend donc à ce que la
-meilleure équipe en ait le plus.
+meilleure équipe en ait le plus. À noter cependant qu'ici, le graphique
+commence à partir de 75 buts, cela signifie que dans les fait, aucune
+équipe écrase les autres, ce qui est logique dans un championnant d'une
+telle envergure.
 
 Mais cela nous amène donc à nous demander si d'autres paramètres, plutôt
 axés sur la défense, comme le pourcentage de pressing réussis, ou sur la
 possession avec le nombre de touches, ou sur l'attaque avec le
 pourcentage de dribble réussis, sont également des caractéristiques
 importante pour différencier les équipes entre elles. On va donc
-visualiser ces paramètres, de la même manière que pour les buts.
+visualiser ces paramètres, de la même manière que pour les buts. Cette
+fois-ci, nous allons prendre toute les équipes du championnat. Pour le
+nobmre de touches, nous commencerons à 35000 pour mieux identifier
+d'éventuelles différences
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\FunctionTok{ggplot}\NormalTok{(big5\_data\_by\_team, }\FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ Equipe, }\AttributeTok{y =}\NormalTok{ Reussite\_pressing, }\AttributeTok{fill =}\NormalTok{ Equipe)) }\SpecialCharTok{+} \FunctionTok{geom\_bar}\NormalTok{(}\AttributeTok{stat =} \StringTok{"identity"}\NormalTok{) }\SpecialCharTok{+} \FunctionTok{theme\_minimal}\NormalTok{() }\SpecialCharTok{+} \FunctionTok{labs}\NormalTok{(}\AttributeTok{title =} \StringTok{"Pourcentage de pressing réussis par équipe"}\NormalTok{, }\AttributeTok{x =} \StringTok{"Equipe"}\NormalTok{, }\AttributeTok{y =} \StringTok{"Pourcentage de pressing réussis"}\NormalTok{)}
+\FunctionTok{ggplot}\NormalTok{(big5\_data\_by\_team, }\FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ Equipe, }\AttributeTok{y =}\NormalTok{ Reussite\_pressing, }\AttributeTok{fill =}\NormalTok{ Equipe)) }\SpecialCharTok{+} \FunctionTok{geom\_bar}\NormalTok{(}\AttributeTok{stat =} \StringTok{"identity"}\NormalTok{) }\SpecialCharTok{+} \FunctionTok{theme\_minimal}\NormalTok{() }\SpecialCharTok{+} \FunctionTok{labs}\NormalTok{(}\AttributeTok{title =} \StringTok{"Pourcentage de pressing réussis par équipe"}\NormalTok{, }\AttributeTok{x =} \StringTok{"Equipe"}\NormalTok{, }\AttributeTok{y =} \StringTok{"Pourcentage de pressing réussis"}\NormalTok{)}\SpecialCharTok{+}  \FunctionTok{theme}\NormalTok{(}\AttributeTok{axis.text.x =} \FunctionTok{element\_text}\NormalTok{(}\AttributeTok{angle =} \DecValTok{90}\NormalTok{, }\AttributeTok{vjust =} \FloatTok{0.5}\NormalTok{, }\AttributeTok{hjust =} \DecValTok{1}\NormalTok{))}\SpecialCharTok{+}
+  \FunctionTok{guides}\NormalTok{(}\AttributeTok{fill =} \FunctionTok{guide\_legend}\NormalTok{(}\AttributeTok{ncol =} \DecValTok{2}\NormalTok{))}
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{rapport_files/figure-latex/unnamed-chunk-8-1.pdf}
+\includegraphics{rapport_files/figure-latex/unnamed-chunk-9-1.pdf}
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\FunctionTok{ggplot}\NormalTok{(big5\_data\_by\_team, }\FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ Equipe, }\AttributeTok{y =}\NormalTok{ Touches, }\AttributeTok{fill =}\NormalTok{ Equipe)) }\SpecialCharTok{+} \FunctionTok{geom\_bar}\NormalTok{(}\AttributeTok{stat =} \StringTok{"identity"}\NormalTok{) }\SpecialCharTok{+} \FunctionTok{theme\_minimal}\NormalTok{() }\SpecialCharTok{+} \FunctionTok{labs}\NormalTok{(}\AttributeTok{title =} \StringTok{"Nombre de touches par équipe"}\NormalTok{, }\AttributeTok{x =} \StringTok{"Equipe"}\NormalTok{, }\AttributeTok{y =} \StringTok{"Nombre de touches"}\NormalTok{)}
+\FunctionTok{ggplot}\NormalTok{(big5\_data\_by\_team, }\FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ Equipe, }\AttributeTok{y =}\NormalTok{ Touches, }\AttributeTok{fill =}\NormalTok{ Equipe)) }\SpecialCharTok{+} \FunctionTok{geom\_bar}\NormalTok{(}\AttributeTok{stat =} \StringTok{"identity"}\NormalTok{) }\SpecialCharTok{+} \FunctionTok{theme\_minimal}\NormalTok{() }\SpecialCharTok{+} \FunctionTok{labs}\NormalTok{(}\AttributeTok{title =} \StringTok{"Nombre de touches par équipe"}\NormalTok{, }\AttributeTok{x =} \StringTok{"Equipe"}\NormalTok{, }\AttributeTok{y =} \StringTok{"Nombre de touches"}\NormalTok{)}\SpecialCharTok{+}\FunctionTok{coord\_cartesian}\NormalTok{(}\AttributeTok{ylim =} \FunctionTok{c}\NormalTok{(}\DecValTok{40000}\NormalTok{,}\DecValTok{50000}\NormalTok{))}\SpecialCharTok{+}  \FunctionTok{theme}\NormalTok{(}\AttributeTok{axis.text.x =} \FunctionTok{element\_text}\NormalTok{(}\AttributeTok{angle =} \DecValTok{90}\NormalTok{, }\AttributeTok{vjust =} \FloatTok{0.5}\NormalTok{, }\AttributeTok{hjust =} \DecValTok{1}\NormalTok{))}\SpecialCharTok{+}
+  \FunctionTok{guides}\NormalTok{(}\AttributeTok{fill =} \FunctionTok{guide\_legend}\NormalTok{(}\AttributeTok{ncol =} \DecValTok{2}\NormalTok{))}
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{rapport_files/figure-latex/unnamed-chunk-8-2.pdf}
+\includegraphics{rapport_files/figure-latex/unnamed-chunk-9-2.pdf}
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\FunctionTok{ggplot}\NormalTok{(big5\_data\_by\_team, }\FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ Equipe, }\AttributeTok{y =}\NormalTok{ Reussite\_Dribble, }\AttributeTok{fill =}\NormalTok{ Equipe)) }\SpecialCharTok{+} \FunctionTok{geom\_bar}\NormalTok{(}\AttributeTok{stat =} \StringTok{"identity"}\NormalTok{) }\SpecialCharTok{+} \FunctionTok{theme\_minimal}\NormalTok{() }\SpecialCharTok{+} \FunctionTok{labs}\NormalTok{(}\AttributeTok{title =} \StringTok{"Pourcentage de dribbles réussis par équipe"}\NormalTok{, }\AttributeTok{x =} \StringTok{"Equipe"}\NormalTok{, }\AttributeTok{y =} \StringTok{"Pourcentage de dribbles réussis"}\NormalTok{)}
+\FunctionTok{ggplot}\NormalTok{(big5\_data\_by\_team, }\FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ Equipe, }\AttributeTok{y =}\NormalTok{ Reussite\_Dribble, }\AttributeTok{fill =}\NormalTok{ Equipe)) }\SpecialCharTok{+} \FunctionTok{geom\_bar}\NormalTok{(}\AttributeTok{stat =} \StringTok{"identity"}\NormalTok{) }\SpecialCharTok{+} \FunctionTok{theme\_minimal}\NormalTok{() }\SpecialCharTok{+} \FunctionTok{labs}\NormalTok{(}\AttributeTok{title =} \StringTok{"Pourcentage de dribbles réussis par équipe"}\NormalTok{, }\AttributeTok{x =} \StringTok{"Equipe"}\NormalTok{, }\AttributeTok{y =} \StringTok{"Pourcentage de dribbles réussis"}\NormalTok{)}\SpecialCharTok{+}  \FunctionTok{theme}\NormalTok{(}\AttributeTok{axis.text.x =} \FunctionTok{element\_text}\NormalTok{(}\AttributeTok{angle =} \DecValTok{90}\NormalTok{, }\AttributeTok{vjust =} \FloatTok{0.5}\NormalTok{, }\AttributeTok{hjust =} \DecValTok{1}\NormalTok{))}\SpecialCharTok{+}
+  \FunctionTok{guides}\NormalTok{(}\AttributeTok{fill =} \FunctionTok{guide\_legend}\NormalTok{(}\AttributeTok{ncol =} \DecValTok{2}\NormalTok{))}
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{rapport_files/figure-latex/unnamed-chunk-8-3.pdf}
+\includegraphics{rapport_files/figure-latex/unnamed-chunk-9-3.pdf}
 
 On constate qu'il n'y a finalement que très peu de différence entre les
 équipes pour ces paramètres. On peut donc en conclure que ces paramètres
 ne sont pas déterminants pour différencier les équipes entre elles. Cela
 peut s'expliquer par le fait que les équipes de haut niveau ont des
 joueurs de qualité, et que ces paramètres sont donc assez homogènes
-entre les équipes de haut niveau. On va ensuite rajouter une équipe
-moins bonne dans le classement, pour voir si ces paramètres sont plus
-déterminants pour différencier les équipes de bas niveau. On va rajouter
-l'équipe de Southampton, qui est 15ème de la ligue, et donc une équipe
-de bas niveau. On refait les même étapes que précédemment, en rajoutant
-Southampton dans les équipes sélectionnées.
+entre les équipes de haut niveau.
 
 On constate finalement que deux paramètres semblent être lié à la
 position des équipes dans la ligue : le nombre de but, et le nombre de
@@ -589,8 +603,8 @@ pourcentages de réussites ne permettent pas d'identifier une
 corrélation, on peut éventuellement s'intéresser au nombre de dribbles
 et de pressing reussis, et non pas aux pourcentages de réussite.
 
-\includegraphics{rapport_files/figure-latex/unnamed-chunk-9-1.pdf}
-\includegraphics{rapport_files/figure-latex/unnamed-chunk-9-2.pdf}
+\includegraphics{rapport_files/figure-latex/unnamed-chunk-10-1.pdf}
+\includegraphics{rapport_files/figure-latex/unnamed-chunk-10-2.pdf}
 
 À nouveau, on ne constate aucun lien particulier entre ces paramètres et
 la position des équipes dans la ligue. On peut donc en conclure que le
@@ -600,31 +614,306 @@ importants pour différencier les équipes entre elles.
 On peut maintenant se demander si pour d'autres championnat, comme la
 Ligue 1, le nombre de buts et le nombres de touches sont également les
 paramètres les plus importants. On effectue donc la même analyse, mais
-avec les équipes Paris-SG, Marseille, Monaco, Rennes, Nice, et Troyes
-(15ème du classement). On ne va regarder que le nombre de buts et le
-nombre de touches.
+avec toutes les équipes de la ligue 1 On ne va regarder que le nombre de
+buts et le nombre de touches.
 
-\includegraphics{rapport_files/figure-latex/unnamed-chunk-10-1.pdf}
-\includegraphics{rapport_files/figure-latex/unnamed-chunk-10-2.pdf}
+\includegraphics{rapport_files/figure-latex/unnamed-chunk-11-1.pdf}
+\includegraphics{rapport_files/figure-latex/unnamed-chunk-11-2.pdf}
 
-On constate que le nombre de buts semble être moins déterminant pour
-différencier les équipes entre elles en Ligue 1, notamment en étudiant
-le cas de Rennes. En effet, si l'on se base uniquement se graphe, on
-aurait pu pensé qu'elle se placerait à la deuxième place.
+On constate que les résultats ne sont pas vraiment similaires à ce que
+l'on pouvait retrouver pour la Premiere League. En effet, on constate
+que le nombre de but ne semble pas réellement dépendre du classement des
+équipes, et on remarque également que le nombre de touche est
+relativement similaires à l'exception de quelques équipes. On en conclut
+donc que les meilleures équipes de championnat se démarque dans des
+caractéristiques différentes en fonction du champinnat concerné.
 
-On constate aussi que le nombre de touches est un paramètre plus
-important, et que le nombre de touche global semble être légèrement plus
-élevé.
+\paragraph{Conclusion sur la première
+question}\label{conclusion-sur-la-premiuxe8re-question}
 
-Cela peut s'expliquer par le fait que la Ligue 1 est un championnat
-moins offensif que la Premier League, et que la possession de balle est
-donc un paramètre plus important pour différencier les équipes entre
-elles.
+Pour conclure sur cette première question, nous pouvons dire qu'en ce
+qui concerne la première ligue, les deux paramètres qui semblent être
+déterminant pour différencier une équipe en haut du tableau et une
+équipe en bas du tableau sont le nombre de buts marqués et le nombre de
+touches.
 
-\hypertarget{quelles-sont-les-blessures-les-plus-fruxe9quentes-pour-les-joueurs-de-premier-league}{%
+Cependant, nous avons aussi pu remarquer que beaucoup de
+caractéristiques qui semblaient être pertinentes pour différencier les
+meilleures équipes des moins bonnes ne peuvent en réalité pas être
+réellement exploitées.
+
+Cela nous amène donc à penser qu'au delà du nombre de buts et de
+touches, c'est surtout le cumul d'une multitude d'actions faites par les
+joueurs durant un match, des actions qui sont difficilement
+représentables par des chiffres, et qui sont pourtant décisives pour
+différencier une équipe d'une autre. \#\#\# \textbf{Analyse de la
+relation entre les salaires, les notes et les postes des joueurs de
+Manchester City}
+
+(traitée par Amin)
+
+Dans cette partie, nous explorons la relation entre les salaires
+annuels, les notes des joueurs et leurs postes au sein de l'équipe de
+Manchester City pour la saison 2023-2024. On peut supposer que les
+salaires seront d'autant plus élevées que les performances du joueurs
+sont bonnes (notes élevées), nous allons vérifier cela. Quant au poste
+du joueur, certains favorisent-ils la rémunération ?
+
+\textbf{Chargement des données} :
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Chargement du package worldfootballR}
+\FunctionTok{library}\NormalTok{(worldfootballR)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Warning: le package 'worldfootballR' a été compilé avec la version R 4.2.3
+\end{verbatim}
+
+\textbf{Chargement des bibliothèques nécessaires} :
+
+\begin{itemize}
+\tightlist
+\item
+  \texttt{dplyr\ et\ tibble} : pour la manipulation des données
+\item
+  \texttt{ggplot2} : pour la création de graphiques
+\item
+  \texttt{scales} : pour la mise en forme des échelles sur les
+  graphiques
+\end{itemize}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Charger les bibliothèques nécessaires}
+\FunctionTok{library}\NormalTok{(dplyr)}
+\FunctionTok{library}\NormalTok{(ggplot2)}
+\FunctionTok{library}\NormalTok{(scales)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Warning: le package 'scales' a été compilé avec la version R 4.2.3
+\end{verbatim}
+
+\begin{verbatim}
+## 
+## Attachement du package : 'scales'
+\end{verbatim}
+
+\begin{verbatim}
+## L'objet suivant est masqué depuis 'package:readr':
+## 
+##     col_factor
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{library}\NormalTok{(tibble)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Warning: le package 'tibble' a été compilé avec la version R 4.2.3
+\end{verbatim}
+
+Nous avons chargé les données sur les salaires des joueurs de Manchester
+City à partir du site FBref. Les données ont été stockées dans un
+dataframe nommé \texttt{man\_city\_wages}.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Importation des données des joueurs à partir de l\textquotesingle{}URL spécifiée}
+\NormalTok{man\_city\_url }\OtherTok{\textless{}{-}} \StringTok{"https://fbref.com/en/squads/b8fd03ef/Manchester{-}City{-}Stats"}
+\NormalTok{man\_city\_wages }\OtherTok{\textless{}{-}} \FunctionTok{fb\_squad\_wages}\NormalTok{(}\AttributeTok{team\_urls =}\NormalTok{ man\_city\_url)}
+\end{Highlighting}
+\end{Shaded}
+
+\textbf{Traitement des données} :
+
+Pour mieux analyser les données, nous avons recodé les postes des
+joueurs en de nouveaux groupes en fonction de leur position sur le
+terrain. Voici la logique derrière ce recodage : - Les joueurs occupant
+les postes ``FW'' (attaquant), ``FW,MF'' (attaquant ou milieu) et
+``MF,FW'' (milieu ou attaquant) ont été regroupés sous la catégorie
+``Attaquant''. - Ceux occupant les postes ``MF'' (milieu) et ``DF,MF''
+(défenseur ou milieu) ont été regroupés sous la catégorie ``Milieu''. -
+Les joueurs occupant les postes ``DF'' (défenseur), ``DF,FW'' (défenseur
+ou attaquant), ``RB'' (arrière droit) et ``AM'' (ailier) ont été
+regroupés sous la catégorie ``Défenseur''. - Les gardiens de but,
+identifiés par le poste ``GK'', ont été regroupés dans la catégorie
+``Gardien de but''. - Les joueurs occupant d'autres postes ont été
+regroupés dans la catégorie ``Autre''.
+
+Cette séquence de code applique la fonction case\_when() pour chaque
+ligne du dataframe man\_city\_wages. Selon les valeurs de la colonne Pos
+(qui représente les postes des joueurs), cette fonction affecte un
+nouveau groupe (Groupe\_poste) à chaque joueur en fonction de son poste
+d'origine. Les postes sont reclassés en fonction des critères définis,
+et les joueurs sont ainsi regroupés de manière cohérente pour une
+analyse plus approfondie.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Recoder les postes en nouveaux groupes}
+\NormalTok{man\_city\_wages }\OtherTok{\textless{}{-}}\NormalTok{ man\_city\_wages }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{mutate}\NormalTok{(}\AttributeTok{Groupe\_poste =} \FunctionTok{case\_when}\NormalTok{(}
+\NormalTok{    Pos }\SpecialCharTok{\%in\%} \FunctionTok{c}\NormalTok{(}\StringTok{"FW"}\NormalTok{, }\StringTok{"FW,MF"}\NormalTok{, }\StringTok{"MF,FW"}\NormalTok{) }\SpecialCharTok{\textasciitilde{}} \StringTok{"Attaquant"}\NormalTok{,}
+\NormalTok{    Pos }\SpecialCharTok{\%in\%} \FunctionTok{c}\NormalTok{(}\StringTok{"MF"}\NormalTok{, }\StringTok{"DF,MF"}\NormalTok{) }\SpecialCharTok{\textasciitilde{}} \StringTok{"Milieu"}\NormalTok{,}
+\NormalTok{    Pos }\SpecialCharTok{\%in\%} \FunctionTok{c}\NormalTok{(}\StringTok{"DF"}\NormalTok{, }\StringTok{"DF,FW"}\NormalTok{, }\StringTok{"RB"}\NormalTok{, }\StringTok{"AM"}\NormalTok{) }\SpecialCharTok{\textasciitilde{}} \StringTok{"Défenseur"}\NormalTok{,}
+\NormalTok{    Pos }\SpecialCharTok{==} \StringTok{"GK"} \SpecialCharTok{\textasciitilde{}} \StringTok{"Gardien de but"}\NormalTok{,}
+    \ConstantTok{TRUE} \SpecialCharTok{\textasciitilde{}} \StringTok{"Autre"}
+\NormalTok{  ))}
+\end{Highlighting}
+\end{Shaded}
+
+Création d'un dataframe avec les données de note des joueurs. Nous avons
+récupérés ses notes sur le site officiel de la Prmeier League.
+
+Afin de prendre en compte les notes des joueurs, nous avons créé un
+nouveau dataframe nommé \texttt{notes\_df}. Ce dataframe contient deux
+colonnes : - La colonne \texttt{Joueur}, qui indique le nom de chaque
+joueur. - La colonne \texttt{Note}, qui représente la note attribuée à
+chaque joueur.
+
+Voici un échantillon des joueurs et leurs notes correspondantes : -
+Kevin De Bruyne : 7.60 - Erling Haaland : 7.35 - Bernardo Silva : 7.10 -
+\ldots{}
+
+On remarque que des notes de joueurs sont manquants. Ces notes sont des
+données importantes pour comprendre et analyser la performance des
+joueurs.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Créer un dataframe avec les données de note}
+\NormalTok{notes\_df }\OtherTok{\textless{}{-}} \FunctionTok{tribble}\NormalTok{(}
+  \SpecialCharTok{\textasciitilde{}}\NormalTok{Joueur,               }\SpecialCharTok{\textasciitilde{}}\NormalTok{Note,}
+  \StringTok{"Kevin De Bruyne"}\NormalTok{,     }\FloatTok{7.60}\NormalTok{,}
+  \StringTok{"Erling Haaland"}\NormalTok{,      }\FloatTok{7.35}\NormalTok{,}
+  \StringTok{"Bernardo Silva"}\NormalTok{,      }\FloatTok{7.10}\NormalTok{,}
+  \StringTok{"Jack Grealish"}\NormalTok{,       }\FloatTok{6.75}\NormalTok{,}
+  \StringTok{"John Stones"}\NormalTok{,         }\FloatTok{6.58}\NormalTok{,}
+  \StringTok{"Phil Foden"}\NormalTok{,          }\FloatTok{7.26}\NormalTok{,}
+  \StringTok{"Rodri"}\NormalTok{,               }\FloatTok{7.59}\NormalTok{,}
+  \StringTok{"Joško Gvardiol"}\NormalTok{,      }\FloatTok{6.93}\NormalTok{,}
+  \StringTok{"Rúben Dias"}\NormalTok{,          }\FloatTok{6.80}\NormalTok{,}
+  \StringTok{"Manuel Akanji"}\NormalTok{,       }\FloatTok{6.81}\NormalTok{,}
+  \StringTok{"Kyle Walker"}\NormalTok{,         }\FloatTok{6.84}\NormalTok{,}
+  \StringTok{"Nathan Aké"}\NormalTok{,          }\FloatTok{6.78}\NormalTok{,}
+  \StringTok{"Kalvin Phillips"}\NormalTok{,     }\FloatTok{6.27}\NormalTok{,}
+  \StringTok{"Mateo Kovačić"}\NormalTok{,       }\FloatTok{6.62}\NormalTok{,}
+  \StringTok{"Matheus Nunes"}\NormalTok{,       }\FloatTok{6.37}\NormalTok{,}
+  \StringTok{"Ederson"}\NormalTok{,             }\FloatTok{6.60}\NormalTok{,}
+  \StringTok{"Julián Álvarez"}\NormalTok{,      }\FloatTok{7.15}\NormalTok{,}
+  \StringTok{"Stefan Ortega"}\NormalTok{,       }\FloatTok{6.67}\NormalTok{,}
+  \StringTok{"Jeremy Doku"}\NormalTok{,         }\FloatTok{7.26}\NormalTok{,}
+  \StringTok{"Sergio Gómez"}\NormalTok{,        }\FloatTok{6.24}\NormalTok{,}
+  \StringTok{"Zack Steffen"}\NormalTok{,        }\FloatTok{6.60}\NormalTok{,}
+  \StringTok{"Scott Carson"}\NormalTok{,        }\ConstantTok{NA}\NormalTok{,}
+  \StringTok{"Rico Lewis"}\NormalTok{,          }\FloatTok{6.56}\NormalTok{,}
+  \StringTok{"Oscar Bobb"}\NormalTok{,          }\ConstantTok{NA}
+\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+Ajout de la colonne ``Note'' à man\_city\_wages.
+
+Pour enrichir le dataframe \texttt{man\_city\_wages} avec les notes des
+joueurs, nous avons ajouté une nouvelle colonne appelée ``Note''. Nous
+avons utilisé la fonction \texttt{match} pour faire correspondre les
+noms des joueurs dans le dataframe \texttt{man\_city\_wages} avec ceux
+du dataframe \texttt{notes\_df}, afin d'obtenir les notes
+correspondantes.
+
+Voici les étapes que nous avons suivies : 1. Nous avons utilisé la
+fonction \texttt{match} pour trouver les indices des noms de joueurs
+dans le dataframe \texttt{notes\_df}. 2. Nous avons récupéré les notes
+correspondantes à ces indices dans la colonne ``Note'' du dataframe
+\texttt{notes\_df}. 3. Nous avons ajouté ces notes comme nouvelle
+colonne ``Note'' dans le dataframe \texttt{man\_city\_wages}. 4. Enfin,
+nous avons supprimé les colonnes non pertinentes telles que ``Url'',
+``Notes'', ``AnnualWageGBP'', ``AnnualWageUSD'', ``WeeklyWageUSD'',
+``WeeklyWageGBP'', et ``Comp'' du dataframe \texttt{man\_city\_wages} à
+l'aide de la fonction \texttt{select}.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Ajouter la colonne "Note" à man\_city\_wages}
+\NormalTok{man\_city\_wages}\SpecialCharTok{$}\NormalTok{Note }\OtherTok{\textless{}{-}}\NormalTok{ notes\_df}\SpecialCharTok{$}\NormalTok{Note[}\FunctionTok{match}\NormalTok{(man\_city\_wages}\SpecialCharTok{$}\NormalTok{Player, notes\_df}\SpecialCharTok{$}\NormalTok{Joueur)]}
+\NormalTok{man\_city\_wages }\OtherTok{\textless{}{-}} \FunctionTok{select}\NormalTok{(man\_city\_wages, }\SpecialCharTok{{-}}\NormalTok{Url, }\SpecialCharTok{{-}}\NormalTok{Notes, }\SpecialCharTok{{-}}\NormalTok{AnnualWageGBP, }\SpecialCharTok{{-}}\NormalTok{AnnualWageUSD, }\SpecialCharTok{{-}}\NormalTok{WeeklyWageUSD, }\SpecialCharTok{{-}}\NormalTok{WeeklyWageGBP, }\SpecialCharTok{{-}}\NormalTok{Comp)}
+\end{Highlighting}
+\end{Shaded}
+
+Cela nous permet d'avoir un dataframe complet comprenant les salaires
+annuels, les postes et les notes des joueurs de Manchester City.
+
+\subsubsection{Graphique}\label{graphique}
+
+Nous avons créé un graphique pour explorer la relation entre les
+salaires annuels, les notes et les postes des joueurs de Manchester
+City.
+
+\textbf{Description du graphique} : - L'axe des abscisses représente les
+notes des joueurs. - L'axe des ordonnées représente les salaires annuels
+des joueurs en euros. - Les points sur le graphique représentent les
+joueurs, où chaque point est placé en fonction de sa note et de son
+salaire annuel. - Les formes des points sont déterminées par les groupes
+de postes des joueurs. - Les couleurs des points représentent également
+les groupes de postes des joueurs. - Nous avons utilisé des formes
+différentes pour représenter les différents postes des joueurs. - Le
+titre du graphique est ``Relation entre les salaires annuels, les notes
+et les postes des joueurs de Manchester City''. - Les étiquettes des
+axes sont ``Note'' pour l'axe des abscisses et ``Salaire annuel (en
+euros)'' pour l'axe des ordonnées.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Visualisation : Comparaison des salaires annuels des joueurs de Manchester City en fonction des notes et des postes}
+\FunctionTok{ggplot}\NormalTok{(man\_city\_wages, }\FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ Note, }\AttributeTok{y =}\NormalTok{ AnnualWageEUR, }\AttributeTok{shape =}\NormalTok{ Groupe\_poste, }\AttributeTok{color =}\NormalTok{ Groupe\_poste)) }\SpecialCharTok{+}
+  \FunctionTok{geom\_point}\NormalTok{(}\AttributeTok{size =} \DecValTok{4}\NormalTok{, }\AttributeTok{alpha =} \FloatTok{0.7}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{labs}\NormalTok{(}\AttributeTok{title =} \StringTok{"Relation entre les salaires annuels, les notes et les postes des joueurs de Manchester City"}\NormalTok{,}
+       \AttributeTok{x =} \StringTok{"Note"}\NormalTok{,}
+       \AttributeTok{y =} \StringTok{"Salaire annuel (en euros)"}\NormalTok{,}
+       \AttributeTok{shape =} \StringTok{"Poste"}\NormalTok{,}
+       \AttributeTok{color =} \StringTok{"Poste"}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{scale\_x\_continuous}\NormalTok{(}\AttributeTok{breaks =} \FunctionTok{seq}\NormalTok{(}\DecValTok{5}\NormalTok{, }\DecValTok{10}\NormalTok{, }\AttributeTok{by =} \FloatTok{0.5}\NormalTok{)) }\SpecialCharTok{+}
+  \FunctionTok{scale\_y\_continuous}\NormalTok{(}\AttributeTok{labels =}\NormalTok{ scales}\SpecialCharTok{::}\NormalTok{comma) }\SpecialCharTok{+}
+  \FunctionTok{scale\_shape\_manual}\NormalTok{(}\AttributeTok{values =} \FunctionTok{c}\NormalTok{(}\DecValTok{17}\NormalTok{, }\DecValTok{19}\NormalTok{, }\DecValTok{15}\NormalTok{, }\DecValTok{16}\NormalTok{, }\DecValTok{18}\NormalTok{, }\DecValTok{3}\NormalTok{, }\DecValTok{4}\NormalTok{)) }\SpecialCharTok{+}
+  \FunctionTok{scale\_color\_brewer}\NormalTok{(}\AttributeTok{palette =} \StringTok{"Set1"}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{theme\_minimal}\NormalTok{() }\SpecialCharTok{+}
+  \FunctionTok{theme}\NormalTok{(}\AttributeTok{legend.title =} \FunctionTok{element\_text}\NormalTok{(}\AttributeTok{face =} \StringTok{"bold"}\NormalTok{),}
+        \AttributeTok{legend.position =} \StringTok{"top"}\NormalTok{,}
+        \AttributeTok{legend.direction =} \StringTok{"horizontal"}\NormalTok{,}
+        \AttributeTok{legend.key.size =} \FunctionTok{unit}\NormalTok{(}\FloatTok{1.5}\NormalTok{, }\StringTok{"lines"}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Warning: Removed 2 rows containing missing values or values outside the scale range
+## (`geom_point()`).
+\end{verbatim}
+
+\includegraphics{rapport_files/figure-latex/unnamed-chunk-18-1.pdf}
+
+\textbf{Analyse finale} :
+
+L'analyse révèle une corrélation claire entre les notes des joueurs et
+leurs salaires à Manchester City. Les joueurs mieux notés ont tendance à
+percevoir des salaires plus élevés, mettant en lumière l'impact des
+performances individuelles sur la rémunération. De plus, les attaquants
+et les milieux de terrain sont les mieux rémunérés, soulignant
+l'importance de ces postes dans le jeu. Les gardiens de but présentent
+des notes et des salaires similaires, reflétant une certaine équité dans
+la rémunération de ce poste. Enfin, cette analyse met en évidence
+l'accent mis sur l'offensive dans le football professionnel, où les
+attaquants sont souvent les mieux notés et rémunérés.
+
 \subsubsection{\texorpdfstring{\textbf{Quelles sont les blessures les
 plus fréquentes pour les joueurs de Premier League
-?}}{Quelles sont les blessures les plus fréquentes pour les joueurs de Premier League ?}}\label{quelles-sont-les-blessures-les-plus-fruxe9quentes-pour-les-joueurs-de-premier-league}}
+?}}{Quelles sont les blessures les plus fréquentes pour les joueurs de Premier League ?}}\label{quelles-sont-les-blessures-les-plus-fruxe9quentes-pour-les-joueurs-de-premier-league}
 
 (traité par Ahmed)
 
@@ -704,16 +993,14 @@ nous avons ajouté ses statistiques de blessures à notre liste
 \end{Highlighting}
 \end{Shaded}
 
-\hypertarget{graphique}{%
-\subsubsection{Graphique}\label{graphique}}
+\subsubsection{Graphique}\label{graphique-1}
 
 Cette visualisation nous montre les blessures les plus récurrentes avec
 un double encodage pour représenter la fréquence, la taille et la
 couleur. Ce graphique a été réalisé à partir de données recensant 1000
 blessures de joueurs ayant évolué en Premier League.
 
-\hypertarget{analyse-des-graphiques}{%
-\subsubsection{Analyse des graphiques}\label{analyse-des-graphiques}}
+\subsubsection{Analyse des graphiques}\label{analyse-des-graphiques}
 
 Les résultats confirment nos attentes, avec comme top 3 des blessures
 les plus récurrentes : en premier, les adducteurs, suivis des genoux,
@@ -724,11 +1011,10 @@ du COVID-19, qui a réussi à figurer parmi les blessures les plus
 récurrentes, bien que son impact ait été de courte durée dans les
 rapports de blessures (avant la suspension du championnat).
 
-\hypertarget{le-nombre-de-blessures-est-il-liuxe9-au-nombre-de-match-jouuxe9-ou-le-championnat-joue-une-plus-grosse-partie-stuxe9ruxe9otype-de-championnat-physique-que-dautres}{%
 \subsubsection{\texorpdfstring{\textbf{Le nombre de blessures est-il lié
 au nombre de match joué ou le championnat joue une plus grosse partie
 (stéréotype de championnat + physique que d'autres
-)}}{Le nombre de blessures est-il lié au nombre de match joué ou le championnat joue une plus grosse partie (stéréotype de championnat + physique que d'autres )}}\label{le-nombre-de-blessures-est-il-liuxe9-au-nombre-de-match-jouuxe9-ou-le-championnat-joue-une-plus-grosse-partie-stuxe9ruxe9otype-de-championnat-physique-que-dautres}}
+)}}{Le nombre de blessures est-il lié au nombre de match joué ou le championnat joue une plus grosse partie (stéréotype de championnat + physique que d'autres )}}\label{le-nombre-de-blessures-est-il-liuxe9-au-nombre-de-match-jouuxe9-ou-le-championnat-joue-une-plus-grosse-partie-stuxe9ruxe9otype-de-championnat-physique-que-dautres}
 
 (traité par Ahmed) \textbf{optionnel dans la deadline du 5 mai}
 
@@ -741,8 +1027,7 @@ collectif des fans de football, la Premier League a une réputation de
 championnat plus physique que les autres. On pourrait donc s'attendre à
 plus de blessures de la part des joueurs de cette ligue.
 
-\hypertarget{graphiques}{%
-\subsubsection{Graphiques}\label{graphiques}}
+\subsubsection{Graphiques}\label{graphiques}
 
 Sur ce graphique, l'axe des abscisses représente le nombre moyen de
 jours entre chaque match, tandis que l'axe des ordonnées représente le
@@ -756,8 +1041,7 @@ nombre de blessures. Nous observons une relation linéaire entre le
 nombre de matchs et le nombre de blessures, sauf pour la Ligue 1 qui
 semble être une exception à cette tendance.
 
-\hypertarget{analyse-des-graphiques-1}{%
-\subsubsection{Analyse des graphiques}\label{analyse-des-graphiques-1}}
+\subsubsection{Analyse des graphiques}\label{analyse-des-graphiques-1}
 
 Les graphiques montrent clairement des tendances. Nous constatons
 presque une relation linéaire entre le nombre de matchs et les
@@ -786,5 +1070,1252 @@ les matchs dans la prévention des blessures, mais elles soulèvent
 blessures dans le football professionnel car le repos n'étant pas
 l'indice absolu . On pourrait donc se demander quels sont ces autres
 indices ?
+
+\subsubsection{\texorpdfstring{\textbf{Déterminer le profil de l'équipe
+parfaite (possession par
+exemple)}}{Déterminer le profil de l'équipe parfaite (possession par exemple)}}\label{duxe9terminer-le-profil-de-luxe9quipe-parfaite-possession-par-exemple}
+
+(traité par nassim)
+
+\section{Introduction}\label{introduction-1}
+
+La possession de balle est souvent citée comme un indicateur clé de la
+performance d'une équipe de football. Les équipes qui dominent la
+possession sont souvent perçues comme ayant un meilleur contrôle du jeu,
+une défense plus solide et une attaque plus efficace. Ce rapport vise à
+analyser en profondeur l'impact de la possession de balle sur les
+performances des équipes à travers cinq graphiques distincts, et à
+déterminer le profil de l'équipe parfaite en termes de possession de
+balle.
+
+\section{Question de Recherche}\label{question-de-recherche}
+
+\textbf{Question :} Déterminer le profil de l'équipe parfaite en termes
+de possession de balle.
+
+\section{Hypothèses}\label{hypothuxe8ses}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  \textbf{Hypothèse 1 :} Les équipes avec une plus grande possession de
+  balle ont tendance à marquer plus de buts par match.
+\item
+  \textbf{Hypothèse 2 :} Les équipes qui dominent en possession de balle
+  sont plus efficaces dans la création d'occasions de but.
+\item
+  \textbf{Hypothèse 3 :} La possession de balle est liée à la capacité
+  d'une équipe à contrôler le jeu.
+\end{enumerate}
+
+\section{Analyse des Graphiques}\label{analyse-des-graphiques-2}
+
+Nous avons analysé cinq graphiques pour vérifier les hypothèses et
+déterminer le profil de l'équipe parfaite en termes de possession de
+balle.
+
+\subsection{Graphique 1 : Statistiques des Équipes Championnes des 5
+Grandes Ligues
+(2023)}\label{graphique-1-statistiques-des-uxe9quipes-championnes-des-5-grandes-ligues-2023}
+
+Ce graphique en barres affiche le pourcentage de possession, les buts
+marqués (Buts mis) et les buts encaissés (Buts pris) des équipes
+championnes des cinq grandes ligues européennes en 2023. Les ligues sont
+codées par couleur, et les équipes sont listées comme suit :
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Paris S-G (Ligue 1)}
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Buts marqués : 86
+  \item
+    Buts encaissés : 39
+  \item
+    Possession : 60.7\%
+  \end{itemize}
+\item
+  \textbf{Napoli (Serie A)}
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Buts marqués : 75
+  \item
+    Buts encaissés : 28
+  \item
+    Possession : 61.8\%
+  \end{itemize}
+\item
+  \textbf{Bayern Munich (Bundesliga)}
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Buts marqués : 90
+  \item
+    Buts encaissés : 38
+  \item
+    Possession : 64.2\%
+  \end{itemize}
+\item
+  \textbf{Barcelona (La Liga)}
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Buts marqués : 69
+  \item
+    Buts encaissés : 17
+  \item
+    Possession : 64.3\%
+  \end{itemize}
+\item
+  \textbf{Manchester City (Premier League)}
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Buts marqués : 92
+  \item
+    Buts encaissés : 32
+  \item
+    Possession : 64.7\%
+  \end{itemize}
+\end{itemize}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{champions }\OtherTok{\textless{}{-}} \FunctionTok{data.frame}\NormalTok{(}
+\NormalTok{  é}\AttributeTok{quipe =} \FunctionTok{c}\NormalTok{(}\StringTok{"Paris S{-}G"}\NormalTok{, }\StringTok{"Napoli"}\NormalTok{, }\StringTok{"Bayern Munich"}\NormalTok{, }\StringTok{"Barcelona"}\NormalTok{, }\StringTok{"Manchester City"}\NormalTok{),}
+  \AttributeTok{buts\_mis =} \FunctionTok{c}\NormalTok{(}\DecValTok{86}\NormalTok{, }\DecValTok{75}\NormalTok{, }\DecValTok{90}\NormalTok{, }\DecValTok{69}\NormalTok{, }\DecValTok{92}\NormalTok{),}
+  \AttributeTok{buts\_pris =} \FunctionTok{c}\NormalTok{(}\DecValTok{39}\NormalTok{, }\DecValTok{28}\NormalTok{, }\DecValTok{38}\NormalTok{, }\DecValTok{17}\NormalTok{, }\DecValTok{32}\NormalTok{),}
+  \AttributeTok{possession =} \FunctionTok{c}\NormalTok{(}\FloatTok{60.7}\NormalTok{, }\FloatTok{61.8}\NormalTok{, }\FloatTok{64.2}\NormalTok{, }\FloatTok{64.3}\NormalTok{, }\FloatTok{64.7}\NormalTok{),}
+\NormalTok{  compétition }\OtherTok{=} \FunctionTok{c}\NormalTok{(}\StringTok{"Ligue 1"}\NormalTok{, }\StringTok{"Serie A"}\NormalTok{, }\StringTok{"Bundesliga"}\NormalTok{, }\StringTok{"La Liga"}\NormalTok{, }\StringTok{"Premier League"}\NormalTok{)}
+\NormalTok{)}
+
+\FunctionTok{ggplot}\NormalTok{(champions, }\FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ équipe, }\AttributeTok{y =}\NormalTok{ possession, }\AttributeTok{fill =}\NormalTok{ compétition)) }\SpecialCharTok{+}
+  \FunctionTok{geom\_bar}\NormalTok{(}\AttributeTok{stat =} \StringTok{"identity"}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{geom\_text}\NormalTok{(}\FunctionTok{aes}\NormalTok{(}\AttributeTok{label =} \FunctionTok{paste}\NormalTok{(}\StringTok{"Buts mis: "}\NormalTok{, buts\_mis, }\StringTok{"}\SpecialCharTok{\textbackslash{}n}\StringTok{Buts pris: "}\NormalTok{, buts\_pris, }\StringTok{"}\SpecialCharTok{\textbackslash{}n}\StringTok{Possession: "}\NormalTok{, possession, }\StringTok{"\%"}\NormalTok{)), }
+            \AttributeTok{hjust =} \FloatTok{0.5}\NormalTok{, }\AttributeTok{color =} \StringTok{"black"}\NormalTok{, }\AttributeTok{position =} \FunctionTok{position\_stack}\NormalTok{(}\AttributeTok{vjust =} \FloatTok{0.5}\NormalTok{)) }\SpecialCharTok{+}
+  \FunctionTok{labs}\NormalTok{(}\AttributeTok{title =} \StringTok{"Statistiques des équipes championnes des 5 grandes ligues (2023)"}\NormalTok{,}
+       \AttributeTok{subtitle =} \StringTok{"Inclut la possession, les buts marqués et les buts encaissés"}\NormalTok{,}
+       \AttributeTok{x =} \StringTok{"Équipe"}\NormalTok{,}
+       \AttributeTok{y =} \StringTok{"Possession (\%)"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{rapport_files/figure-latex/unnamed-chunk-22-1.pdf}
+
+\subsection{Graphique 2 : Contraste Entre les 10 Meilleures et les 10
+Pires Équipes en Termes de Buts Marqués par
+Possession}\label{graphique-2-contraste-entre-les-10-meilleures-et-les-10-pires-uxe9quipes-en-termes-de-buts-marquuxe9s-par-possession}
+
+Ce graphique en barres montre le ratio de buts marqués par possession
+pour les 10 meilleures et 10 pires équipes. Les 10 meilleures équipes
+sont :
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Monaco (Ligue 1)}
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Ratio : 1.43
+  \end{itemize}
+\item
+  \textbf{Manchester City (Premier League)}
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Ratio : 1.42
+  \end{itemize}
+\item
+  \textbf{Paris S-G (Ligue 1)}
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Ratio : 1.42
+  \end{itemize}
+\item
+  \textbf{Arsenal (Premier League)}
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Ratio : 1.42
+  \end{itemize}
+\item
+  \textbf{Bayern Munich (Bundesliga)}
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Ratio : 1.40
+  \end{itemize}
+\item
+  \textbf{Montpellier (Ligue 1)}
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Ratio : 1.40
+  \end{itemize}
+\item
+  \textbf{Dortmund (Bundesliga)}
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Ratio : 1.39
+  \end{itemize}
+\item
+  \textbf{Tottenham (Premier League)}
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Ratio : 1.36
+  \end{itemize}
+\item
+  \textbf{Atlético Madrid (La Liga)}
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Ratio : 1.34
+  \end{itemize}
+\item
+  \textbf{Atalanta (Serie A)}
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Ratio : 1.28
+  \end{itemize}
+\end{itemize}
+
+Les 10 pires équipes sont :
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Schalke 04 (Bundesliga)}
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Ratio : 0.70
+  \end{itemize}
+\item
+  \textbf{Cádiz (La Liga)}
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Ratio : 0.69
+  \end{itemize}
+\item
+  \textbf{Angers (Ligue 1)}
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Ratio : 0.66
+  \end{itemize}
+\item
+  \textbf{Elche (La Liga)}
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Ratio : 0.66
+  \end{itemize}
+\item
+  \textbf{Valladolid (La Liga)}
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Ratio : 0.66
+  \end{itemize}
+\item
+  \textbf{Chelsea (Premier League)}
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Ratio : 0.63
+  \end{itemize}
+\item
+  \textbf{Spezia (Serie A)}
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Ratio : 0.61
+  \end{itemize}
+\item
+  \textbf{Wolves (Premier League)}
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Ratio : 0.56
+  \end{itemize}
+\item
+  \textbf{Ajaccio (Ligue 1)}
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Ratio : 0.51
+  \end{itemize}
+\item
+  \textbf{Sampdoria (Serie A)}
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Ratio : 0.50
+  \end{itemize}
+\end{itemize}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{top\_bottom\_teams }\OtherTok{\textless{}{-}} \FunctionTok{data.frame}\NormalTok{(}
+\NormalTok{  é}\AttributeTok{quipe =} \FunctionTok{c}\NormalTok{(}\StringTok{"Monaco"}\NormalTok{, }\StringTok{"Manchester City"}\NormalTok{, }\StringTok{"Paris S{-}G"}\NormalTok{, }\StringTok{"Arsenal"}\NormalTok{, }\StringTok{"Bayern Munich"}\NormalTok{, }\StringTok{"Montpellier"}\NormalTok{, }\StringTok{"Dortmund"}\NormalTok{, }
+             \StringTok{"Tottenham"}\NormalTok{, }\StringTok{"Atlético Madrid"}\NormalTok{, }\StringTok{"Atalanta"}\NormalTok{, }\StringTok{"Schalke 04"}\NormalTok{, }\StringTok{"Cádiz"}\NormalTok{, }\StringTok{"Angers"}\NormalTok{, }\StringTok{"Elche"}\NormalTok{, }\StringTok{"Valladolid"}\NormalTok{, }
+             \StringTok{"Chelsea"}\NormalTok{, }\StringTok{"Spezia"}\NormalTok{, }\StringTok{"Wolves"}\NormalTok{, }\StringTok{"Ajaccio"}\NormalTok{, }\StringTok{"Sampdoria"}\NormalTok{),}
+  \AttributeTok{ratio =} \FunctionTok{c}\NormalTok{(}\FloatTok{1.43}\NormalTok{, }\FloatTok{1.42}\NormalTok{, }\FloatTok{1.42}\NormalTok{, }\FloatTok{1.42}\NormalTok{, }\FloatTok{1.40}\NormalTok{, }\FloatTok{1.40}\NormalTok{, }\FloatTok{1.39}\NormalTok{, }\FloatTok{1.36}\NormalTok{, }\FloatTok{1.34}\NormalTok{, }\FloatTok{1.28}\NormalTok{, }\FloatTok{0.70}\NormalTok{, }\FloatTok{0.69}\NormalTok{, }\FloatTok{0.66}\NormalTok{, }\FloatTok{0.66}\NormalTok{, }\FloatTok{0.66}\NormalTok{, }\FloatTok{0.63}\NormalTok{, }
+            \FloatTok{0.61}\NormalTok{, }\FloatTok{0.56}\NormalTok{, }\FloatTok{0.51}\NormalTok{, }\FloatTok{0.50}\NormalTok{),}
+  \AttributeTok{groupe =} \FunctionTok{c}\NormalTok{(}\FunctionTok{rep}\NormalTok{(}\StringTok{"Top 10"}\NormalTok{, }\DecValTok{10}\NormalTok{), }\FunctionTok{rep}\NormalTok{(}\StringTok{"Bottom 10"}\NormalTok{, }\DecValTok{10}\NormalTok{)),}
+  \AttributeTok{ligue =} \FunctionTok{c}\NormalTok{(}\StringTok{"Ligue 1"}\NormalTok{, }\StringTok{"Premier League"}\NormalTok{, }\StringTok{"Ligue 1"}\NormalTok{, }\StringTok{"Premier League"}\NormalTok{, }\StringTok{"Bundesliga"}\NormalTok{, }\StringTok{"Ligue 1"}\NormalTok{, }\StringTok{"Bundesliga"}\NormalTok{, }
+            \StringTok{"Premier League"}\NormalTok{, }\StringTok{"La Liga"}\NormalTok{, }\StringTok{"Serie A"}\NormalTok{, }\StringTok{"Bundesliga"}\NormalTok{, }\StringTok{"La Liga"}\NormalTok{, }\StringTok{"Ligue 1"}\NormalTok{, }\StringTok{"La Liga"}\NormalTok{, }\StringTok{"La Liga"}\NormalTok{, }
+            \StringTok{"Premier League"}\NormalTok{, }\StringTok{"Serie A"}\NormalTok{, }\StringTok{"Premier League"}\NormalTok{, }\StringTok{"Ligue 1"}\NormalTok{, }\StringTok{"Serie A"}\NormalTok{)}
+\NormalTok{)}
+
+\FunctionTok{ggplot}\NormalTok{(top\_bottom\_teams, }\FunctionTok{aes}\NormalTok{(}\AttributeTok{x =} \FunctionTok{reorder}\NormalTok{(équipe, }\SpecialCharTok{{-}}\NormalTok{ratio), }\AttributeTok{y =}\NormalTok{ ratio, }\AttributeTok{fill =}\NormalTok{ groupe)) }\SpecialCharTok{+}
+  \FunctionTok{geom\_bar}\NormalTok{(}\AttributeTok{stat =} \StringTok{"identity"}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{geom\_text}\NormalTok{(}\FunctionTok{aes}\NormalTok{(}\AttributeTok{label =}\NormalTok{ ratio), }\AttributeTok{vjust =} \SpecialCharTok{{-}}\FloatTok{0.5}\NormalTok{, }\AttributeTok{color =} \StringTok{"black"}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{labs}\NormalTok{(}\AttributeTok{title =} \StringTok{"Contraste entre les 10 meilleures et les 10 pires équipes en termes de buts marqués par possession"}\NormalTok{,}
+       \AttributeTok{x =} \StringTok{"Équipe"}\NormalTok{,}
+       \AttributeTok{y =} \StringTok{"Ratio de buts par possession"}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{theme}\NormalTok{(}\AttributeTok{axis.text.x =} \FunctionTok{element\_text}\NormalTok{(}\AttributeTok{angle =} \DecValTok{45}\NormalTok{, }\AttributeTok{hjust =} \DecValTok{1}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{rapport_files/figure-latex/unnamed-chunk-23-1.pdf}
+
+\subsection{Graphique 3 : Top et Bottom 10 Équipes en Termes de
+Possession en
+2023}\label{graphique-3-top-et-bottom-10-uxe9quipes-en-termes-de-possession-en-2023}
+
+Ce graphique en barres affiche le pourcentage de possession des 10
+meilleures et 10 pires équipes, ainsi que leurs buts par match. Les 10
+meilleures équipes en possession sont :
+
+\begin{itemize}
+\item
+  \textbf{Manchester City (Premier League)}
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Possession : 64.7\%
+  \item
+    Buts par match : 2.42
+  \end{itemize}
+\item
+  \textbf{Barcelona (La Liga)}
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Possession : 64.3\%
+  \end{itemize}
+\item
+  Buts par match : 1.82
+\item
+  \textbf{Bayern Munich (Bundesliga)}
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Possession : 64.2\%
+  \item
+    Buts par match : 2.37
+  \end{itemize}
+\item
+  \textbf{Napoli (Serie A)}
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Possession : 61.8\%
+  \item
+    Buts par match : 1.97
+  \end{itemize}
+\item
+  \textbf{Real Madrid (La Liga)}
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Possession : 61.0\%
+  \item
+    Buts par match : 1.92
+  \end{itemize}
+\item
+  \textbf{Liverpool (Premier League)}
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Possession : 60.8\%
+  \item
+    Buts par match : 1.87
+  \end{itemize}
+\item
+  \textbf{Paris S-G (Ligue 1)}
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Possession : 60.7\%
+  \item
+    Buts par match : 2.26
+  \end{itemize}
+\end{itemize}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{top\_teams\_possession }\OtherTok{\textless{}{-}} \FunctionTok{data.frame}\NormalTok{(}
+\NormalTok{  é}\AttributeTok{quipe =} \FunctionTok{c}\NormalTok{(}\StringTok{"Manchester City"}\NormalTok{, }\StringTok{"Barcelona"}\NormalTok{, }\StringTok{"Bayern Munich"}\NormalTok{, }\StringTok{"Napoli"}\NormalTok{, }\StringTok{"Real Madrid"}\NormalTok{, }\StringTok{"Liverpool"}\NormalTok{, }\StringTok{"Paris S{-}G"}\NormalTok{),}
+  \AttributeTok{possession =} \FunctionTok{c}\NormalTok{(}\FloatTok{64.7}\NormalTok{, }\FloatTok{64.3}\NormalTok{, }\FloatTok{64.2}\NormalTok{, }\FloatTok{61.8}\NormalTok{, }\FloatTok{61.0}\NormalTok{, }\FloatTok{60.8}\NormalTok{, }\FloatTok{60.7}\NormalTok{),}
+  \AttributeTok{buts\_par\_match =} \FunctionTok{c}\NormalTok{(}\FloatTok{2.42}\NormalTok{, }\FloatTok{1.82}\NormalTok{, }\FloatTok{2.37}\NormalTok{, }\FloatTok{1.97}\NormalTok{, }\FloatTok{1.92}\NormalTok{, }\FloatTok{1.87}\NormalTok{, }\FloatTok{2.26}\NormalTok{)}
+\NormalTok{)}
+
+\FunctionTok{ggplot}\NormalTok{(top\_teams\_possession, }\FunctionTok{aes}\NormalTok{(}\AttributeTok{x =} \FunctionTok{reorder}\NormalTok{(équipe, }\SpecialCharTok{{-}}\NormalTok{possession), }\AttributeTok{y =}\NormalTok{ possession, }\AttributeTok{fill =}\NormalTok{ équipe)) }\SpecialCharTok{+}
+  \FunctionTok{geom\_bar}\NormalTok{(}\AttributeTok{stat =} \StringTok{"identity"}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{geom\_text}\NormalTok{(}\FunctionTok{aes}\NormalTok{(}\AttributeTok{label =} \FunctionTok{paste}\NormalTok{(}\StringTok{"Possession: "}\NormalTok{, possession, }\StringTok{"\%}\SpecialCharTok{\textbackslash{}n}\StringTok{Buts/match: "}\NormalTok{, buts\_par\_match)), }
+            \AttributeTok{vjust =} \SpecialCharTok{{-}}\FloatTok{0.5}\NormalTok{, }\AttributeTok{color =} \StringTok{"black"}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{labs}\NormalTok{(}\AttributeTok{title =} \StringTok{"Top 10 équipes en termes de possession en 2023"}\NormalTok{,}
+       \AttributeTok{x =} \StringTok{"Équipe"}\NormalTok{,}
+       \AttributeTok{y =} \StringTok{"Possession (\%)"}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{theme}\NormalTok{(}\AttributeTok{axis.text.x =} \FunctionTok{element\_text}\NormalTok{(}\AttributeTok{angle =} \DecValTok{45}\NormalTok{, }\AttributeTok{hjust =} \DecValTok{1}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{rapport_files/figure-latex/unnamed-chunk-24-1.pdf}
+
+\subsection{Graphique 4 : Relation entre la Possession et les Buts
+Encaissés}\label{graphique-4-relation-entre-la-possession-et-les-buts-encaissuxe9s}
+
+Ce graphique en nuages de points montre la relation entre le pourcentage
+de possession et les buts encaissés (buts pris).
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Extraire les données des grandes ligues pour la saison 2023}
+\NormalTok{big5\_stats }\OtherTok{\textless{}{-}} \FunctionTok{fb\_big5\_advanced\_season\_stats}\NormalTok{(}\AttributeTok{season\_end\_year =} \DecValTok{2023}\NormalTok{, }\AttributeTok{stat\_type =} \StringTok{"standard"}\NormalTok{, }\AttributeTok{team\_or\_player =} \StringTok{"team"}\NormalTok{)}
+\NormalTok{big5\_possession }\OtherTok{\textless{}{-}} \FunctionTok{fb\_big5\_advanced\_season\_stats}\NormalTok{(}\AttributeTok{season\_end\_year =} \DecValTok{2023}\NormalTok{, }\AttributeTok{stat\_type =} \StringTok{"possession"}\NormalTok{, }\AttributeTok{team\_or\_player =} \StringTok{"team"}\NormalTok{)}
+
+\CommentTok{\# Séparer les buts marqués et encaissés}
+\NormalTok{buts\_marques }\OtherTok{\textless{}{-}}\NormalTok{ big5\_stats }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{filter}\NormalTok{(Team\_or\_Opponent }\SpecialCharTok{==} \StringTok{"team"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{select}\NormalTok{(Squad, Comp, Gls)}
+
+\NormalTok{buts\_encaisses }\OtherTok{\textless{}{-}}\NormalTok{ big5\_stats }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{filter}\NormalTok{(Team\_or\_Opponent }\SpecialCharTok{==} \StringTok{"opponent"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{select}\NormalTok{(Squad, Comp, }\AttributeTok{GA =}\NormalTok{ Gls)  }\CommentTok{\# Renommer Gls en GA pour clarté}
+
+\CommentTok{\# Fusionner les données de possession avec les données de buts marqués et encaissés}
+\NormalTok{data }\OtherTok{\textless{}{-}}\NormalTok{ big5\_possession }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{inner\_join}\NormalTok{(buts\_marques, }\AttributeTok{by =} \FunctionTok{c}\NormalTok{(}\StringTok{"Squad"}\NormalTok{, }\StringTok{"Comp"}\NormalTok{)) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{inner\_join}\NormalTok{(buts\_encaisses, }\AttributeTok{by =} \FunctionTok{c}\NormalTok{(}\StringTok{"Squad"}\NormalTok{, }\StringTok{"Comp"}\NormalTok{))}
+
+\CommentTok{\# Visualisation de la corrélation entre la possession et les buts encaissés}
+\FunctionTok{ggplot}\NormalTok{(data, }\FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ Poss, }\AttributeTok{y =}\NormalTok{ GA)) }\SpecialCharTok{+}
+  \FunctionTok{geom\_point}\NormalTok{() }\SpecialCharTok{+}
+  \FunctionTok{geom\_smooth}\NormalTok{(}\AttributeTok{method =} \StringTok{"lm"}\NormalTok{, }\AttributeTok{se =} \ConstantTok{TRUE}\NormalTok{, }\AttributeTok{color =} \StringTok{"red"}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{labs}\NormalTok{(}\AttributeTok{title =} \StringTok{"Relation entre la possession et les buts encaissés"}\NormalTok{,}
+       \AttributeTok{x =} \StringTok{"Possession (\%)"}\NormalTok{,}
+       \AttributeTok{y =} \StringTok{"Buts encaissés"}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{theme\_minimal}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## `geom_smooth()` using formula = 'y ~ x'
+\end{verbatim}
+
+\includegraphics{rapport_files/figure-latex/unnamed-chunk-25-1.pdf}
+
+\subsection{Graphique 5 : Relation entre la Possession et les Buts
+Marqués}\label{graphique-5-relation-entre-la-possession-et-les-buts-marquuxe9s}
+
+Ce graphique en nuages de points illustre la relation entre le
+pourcentage de possession et les buts marqués (buts mis).
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Visualisation de la corrélation entre la possession et les buts marqués}
+\FunctionTok{ggplot}\NormalTok{(data, }\FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ Poss, }\AttributeTok{y =}\NormalTok{ Gls)) }\SpecialCharTok{+}
+  \FunctionTok{geom\_point}\NormalTok{() }\SpecialCharTok{+}
+  \FunctionTok{geom\_smooth}\NormalTok{(}\AttributeTok{method =} \StringTok{"lm"}\NormalTok{, }\AttributeTok{se =} \ConstantTok{TRUE}\NormalTok{, }\AttributeTok{color =} \StringTok{"blue"}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{labs}\NormalTok{(}\AttributeTok{title =} \StringTok{"Relation entre la possession et les buts marqués"}\NormalTok{,}
+       \AttributeTok{x =} \StringTok{"Possession (\%)"}\NormalTok{,}
+       \AttributeTok{y =} \StringTok{"Buts marqués"}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{theme\_minimal}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## `geom_smooth()` using formula = 'y ~ x'
+\end{verbatim}
+
+\includegraphics{rapport_files/figure-latex/unnamed-chunk-26-1.pdf}
+
+\section{Vérification des
+Hypothèses}\label{vuxe9rification-des-hypothuxe8ses}
+
+\subsection{Hypothèse 1 : Les équipes avec une plus grande possession de
+balle ont tendance à marquer plus de buts par
+match.}\label{hypothuxe8se-1-les-uxe9quipes-avec-une-plus-grande-possession-de-balle-ont-tendance-uxe0-marquer-plus-de-buts-par-match.}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Vérification :} Le graphique 5 confirme clairement cette
+  hypothèse. La corrélation positive entre la possession et les buts
+  marqués montre que les équipes qui dominent en possession marquent
+  plus de buts.
+\end{itemize}
+
+\subsection{Hypothèse 2 : Les équipes qui dominent en possession de
+balle sont plus efficaces dans la création d'occasions de
+but.}\label{hypothuxe8se-2-les-uxe9quipes-qui-dominent-en-possession-de-balle-sont-plus-efficaces-dans-la-cruxe9ation-doccasions-de-but.}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Vérification :} Les graphiques 2 et 3 confirment cette
+  hypothèse. La corrélation positive entre la possession et le nombre de
+  buts par match montre que les équipes avec une plus grande possession
+  créent plus d'occasions de but et sont plus précises dans leurs
+  tentatives.
+\end{itemize}
+
+\subsection{Hypothèse 3 : La possession de balle est liée à la capacité
+d'une équipe à contrôler le
+jeu.}\label{hypothuxe8se-3-la-possession-de-balle-est-liuxe9e-uxe0-la-capacituxe9-dune-uxe9quipe-uxe0-contruxf4ler-le-jeu.}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Vérification :} Les graphiques 1 et 3 supportent cette
+  hypothèse. Une plus grande possession de balle est associée à un
+  meilleur contrôle du jeu, comme en témoigne la possession élevée et le
+  nombre élevé de buts marqués par les meilleures équipes.
+\end{itemize}
+
+\section{Conclusion}\label{conclusion}
+
+L'analyse des données et des graphiques montre que la possession de
+balle est un facteur crucial pour la performance globale d'une équipe de
+football. Les équipes qui dominent la possession de balle tendent à
+marquer plus de buts et à en concéder moins, ce qui leur permet de mieux
+contrôler le jeu et d'obtenir de meilleurs résultats. Le profil de
+l'équipe parfaite en termes de possession de balle serait donc une
+équipe qui maintient une possession élevée, réussit un grand nombre de
+passes et crée de nombreuses occasions de but.
+
+\subsubsection{\texorpdfstring{\textbf{Quelles sont les différences
+entre les championnats et les coupes
+?}}{Quelles sont les différences entre les championnats et les coupes ?}}\label{quelles-sont-les-diffuxe9rences-entre-les-championnats-et-les-coupes}
+
+(traitée par Nassim)
+
+Dans cette section, nous explorons les différences entre les
+compétitions de championnat, comme la Premier League, et les
+compétitions en coupe, telles que la FA Cup. Une des métriques que nous
+examinons est le nombre moyen de buts marqués par match, ce qui pourrait
+indiquer une approche stratégique différente due à la nature de chaque
+type de compétition. On pourrait s'attendre à ce que les matchs de
+coupe, qui sont souvent des affrontements à élimination directe,
+encouragent un jeu plus agressif et potentiellement plus de buts, tandis
+que les championnats pourraient favoriser une approche plus mesurée et
+stratégique sur la durée d'une saison.
+
+Traitement des données : Nous avons utilisé la bibliothèque
+worldfootballR pour extraire les résultats des matchs des équipes
+participant à la FA Cup et à la Premier League pour la saison 2022-2023.
+Nous avons ensuite nettoyé et transformé ces données pour en faciliter
+l'analyse. Voici le code utilisé pour obtenir ces données et calculer
+les moyennes de buts marqués :
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{library}\NormalTok{(worldfootballR)}
+\FunctionTok{library}\NormalTok{(dplyr)}
+\FunctionTok{library}\NormalTok{(ggplot2)}
+
+\CommentTok{\# Extraction des URLs des équipes pour la FA Cup et la Premier League}
+\NormalTok{fa\_cup\_url }\OtherTok{\textless{}{-}} \StringTok{"https://fbref.com/en/comps/514/2022{-}2023/2022{-}2023{-}FA{-}Cup{-}Stats"}
+\NormalTok{fa\_cup\_team\_urls }\OtherTok{\textless{}{-}} \FunctionTok{fb\_teams\_urls}\NormalTok{(fa\_cup\_url)}
+\NormalTok{pl\_team\_urls }\OtherTok{\textless{}{-}} \FunctionTok{fb\_teams\_urls}\NormalTok{(}\StringTok{"https://fbref.com/en/comps/9/2022{-}2023/2022{-}2023{-}Premier{-}League{-}Stats"}\NormalTok{)}
+
+\CommentTok{\# Fonctions pour obtenir les résultats des matchs}
+\NormalTok{get\_fa\_cup\_team\_results }\OtherTok{\textless{}{-}} \ControlFlowTok{function}\NormalTok{(team\_url) \{}
+\NormalTok{  results }\OtherTok{\textless{}{-}} \FunctionTok{fb\_team\_match\_results}\NormalTok{(team\_url)}
+\NormalTok{  results }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{mutate}\NormalTok{(}\AttributeTok{Team =} \FunctionTok{gsub}\NormalTok{(}\StringTok{".*/"}\NormalTok{, }\StringTok{""}\NormalTok{, team\_url), }\AttributeTok{Team =} \FunctionTok{gsub}\NormalTok{(}\StringTok{"{-}Stats"}\NormalTok{, }\StringTok{""}\NormalTok{, Team),}
+                    \AttributeTok{Competition =} \StringTok{"FA Cup"}\NormalTok{, }\AttributeTok{GF =} \FunctionTok{as.numeric}\NormalTok{(GF), }\AttributeTok{GA =} \FunctionTok{as.numeric}\NormalTok{(GA)) }\SpecialCharTok{\%\textgreater{}\%}
+    \FunctionTok{select}\NormalTok{(Team, Date, Opponent, Result, Venue, GF, GA, }\AttributeTok{Comp =}\NormalTok{ Competition)}
+\NormalTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+\subsubsection{Visualisation des moyennes de buts
+marqués}\label{visualisation-des-moyennes-de-buts-marquuxe9s}
+
+Nous avons créé un graphique pour visualiser les différences entre la
+moyenne des buts marqués par match dans la FA Cup et dans la Premier
+League :
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{library}\NormalTok{(worldfootballR)}
+\FunctionTok{library}\NormalTok{(dplyr)}
+\FunctionTok{library}\NormalTok{(ggplot2)}
+
+\CommentTok{\# URL pour la FA Cup 2022{-}2023}
+\NormalTok{fa\_cup\_url }\OtherTok{\textless{}{-}} \StringTok{"https://fbref.com/en/comps/514/2022{-}2023/2022{-}2023{-}FA{-}Cup{-}Stats"}
+
+\CommentTok{\# Extraire les URLs des équipes pour la FA Cup}
+\NormalTok{fa\_cup\_team\_urls }\OtherTok{\textless{}{-}} \FunctionTok{fb\_teams\_urls}\NormalTok{(fa\_cup\_url)}
+
+\CommentTok{\# Fonction pour obtenir les résultats des matchs d\textquotesingle{}une équipe dans la FA Cup}
+\NormalTok{get\_fa\_cup\_team\_results }\OtherTok{\textless{}{-}} \ControlFlowTok{function}\NormalTok{(team\_url) \{}
+\NormalTok{  results }\OtherTok{\textless{}{-}} \FunctionTok{fb\_team\_match\_results}\NormalTok{(team\_url)}
+\NormalTok{  results }\OtherTok{\textless{}{-}}\NormalTok{ results }\SpecialCharTok{\%\textgreater{}\%}
+    \FunctionTok{mutate}\NormalTok{(}\AttributeTok{Team =} \FunctionTok{gsub}\NormalTok{(}\StringTok{".*/"}\NormalTok{, }\StringTok{""}\NormalTok{, team\_url),  }\CommentTok{\# Extraire et nettoyer le nom de l\textquotesingle{}équipe de l\textquotesingle{}URL}
+           \AttributeTok{Team =} \FunctionTok{gsub}\NormalTok{(}\StringTok{"{-}Stats"}\NormalTok{, }\StringTok{""}\NormalTok{, Team),}
+           \AttributeTok{Competition =} \StringTok{"FA Cup"}\NormalTok{,}
+           \AttributeTok{GF =} \FunctionTok{as.numeric}\NormalTok{(GF),  }\CommentTok{\# Assurez{-}vous que les buts marqués sont numériques}
+           \AttributeTok{GA =} \FunctionTok{as.numeric}\NormalTok{(GA)) }\SpecialCharTok{\%\textgreater{}\%}
+    \FunctionTok{select}\NormalTok{(Team, Date, Opponent, Result, Venue, GF, GA, }\AttributeTok{Comp =}\NormalTok{ Competition)}
+  \FunctionTok{return}\NormalTok{(results)}
+\NormalTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+\subsubsection{\texorpdfstring{\textbf{Quelles sont les différences
+entre les championnats et les coupes
+?}}{Quelles sont les différences entre les championnats et les coupes ?}}\label{quelles-sont-les-diffuxe9rences-entre-les-championnats-et-les-coupes-1}
+
+(traitée par Nassim)
+
+\subsection{Hypothèse}\label{hypothuxe8se}
+
+Notre hypothèse est que dans les coupes, où les matchs se jouent
+généralement en élimination directe, les équipes adoptent une approche
+plus prudente et tactique pour mieux gérer le match et minimiser les
+risques. Cela peut se traduire par des performances différentes par
+rapport aux championnats où les équipes ont une saison entière pour
+s'adapter et se projeter. En particulier, nous nous attendons à ce qu'il
+y ait moins de buts par match en coupe.
+
+\section{Analyse des Données}\label{analyse-des-donnuxe9es}
+
+\subsection{Moyenne des Buts par
+Match}\label{moyenne-des-buts-par-match}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{avg\_goals }\OtherTok{\textless{}{-}} \FunctionTok{data.frame}\NormalTok{(}
+  \AttributeTok{Competition =} \FunctionTok{c}\NormalTok{(}\StringTok{"FA Cup"}\NormalTok{, }\StringTok{"Premier League"}\NormalTok{),}
+  \AttributeTok{AvgGoals =} \FunctionTok{c}\NormalTok{(}\FloatTok{1.77}\NormalTok{, }\FloatTok{1.37}\NormalTok{)}
+\NormalTok{)}
+
+\FunctionTok{ggplot}\NormalTok{(avg\_goals, }\FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ Competition, }\AttributeTok{y =}\NormalTok{ AvgGoals, }\AttributeTok{fill =}\NormalTok{ Competition)) }\SpecialCharTok{+}
+  \FunctionTok{geom\_bar}\NormalTok{(}\AttributeTok{stat =} \StringTok{"identity"}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{geom\_text}\NormalTok{(}\FunctionTok{aes}\NormalTok{(}\AttributeTok{label =} \FunctionTok{paste0}\NormalTok{(AvgGoals, }\StringTok{" buts/match"}\NormalTok{)), }\AttributeTok{vjust =} \SpecialCharTok{{-}}\FloatTok{0.5}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{labs}\NormalTok{(}\AttributeTok{title =} \StringTok{"Nombre moyen de buts par match selon la compétition"}\NormalTok{,}
+       \AttributeTok{x =} \StringTok{"Compétition"}\NormalTok{, }\AttributeTok{y =} \StringTok{"Nombre moyen de buts par match"}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{scale\_fill\_manual}\NormalTok{(}\AttributeTok{values =} \FunctionTok{c}\NormalTok{(}\StringTok{"FA Cup"} \OtherTok{=} \StringTok{"blue"}\NormalTok{, }\StringTok{"Premier League"} \OtherTok{=} \StringTok{"red"}\NormalTok{)) }\SpecialCharTok{+}
+  \FunctionTok{theme\_minimal}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{rapport_files/figure-latex/unnamed-chunk-29-1.pdf}
+
+\subsubsection{Analyse des Résultats}\label{analyse-des-ruxe9sultats}
+
+Les données montrent que la FA Cup a une moyenne de 1,77 buts par match
+contre 1,37 pour la Premier League. Ce résultat est surprenant et
+contredit notre hypothèse initiale selon laquelle il y aurait moins de
+buts en coupe.
+
+\paragraph{Hypothèses et
+Explications}\label{hypothuxe8ses-et-explications}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  \textbf{Nature des Adversaires} : En FA Cup, les équipes de Premier
+  League peuvent rencontrer des équipes de divisions inférieures, ce qui
+  pourrait conduire à un nombre plus élevé de buts en raison de la
+  différence de niveau.
+\item
+  \textbf{Approche Offensif} : Les équipes peuvent adopter une approche
+  plus offensive en FA Cup pour éviter les prolongations et les tirs au
+  but, ce qui peut résulter en plus de buts marqués.
+\item
+  \textbf{Moins de Pression} : Les équipes de Premier League peuvent
+  jouer avec moins de pression en FA Cup, sachant que cette compétition
+  n'affecte pas leur classement en championnat, ce qui pourrait libérer
+  les attaquants.
+\end{enumerate}
+
+\subsection{Pourcentage d'Arrêts}\label{pourcentage-darruxeats}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{avg\_saves }\OtherTok{\textless{}{-}} \FunctionTok{data.frame}\NormalTok{(}
+  \AttributeTok{Competition =} \FunctionTok{c}\NormalTok{(}\StringTok{"FA Cup"}\NormalTok{, }\StringTok{"Premier League"}\NormalTok{),}
+  \AttributeTok{AvgSavePercentage =} \FunctionTok{c}\NormalTok{(}\FloatTok{61.68}\NormalTok{, }\FloatTok{66.23}\NormalTok{)}
+\NormalTok{)}
+
+\FunctionTok{ggplot}\NormalTok{(avg\_saves, }\FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ Competition, }\AttributeTok{y =}\NormalTok{ AvgSavePercentage, }\AttributeTok{fill =}\NormalTok{ Competition)) }\SpecialCharTok{+}
+  \FunctionTok{geom\_bar}\NormalTok{(}\AttributeTok{stat =} \StringTok{"identity"}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{geom\_text}\NormalTok{(}\FunctionTok{aes}\NormalTok{(}\AttributeTok{label =} \FunctionTok{paste0}\NormalTok{(AvgSavePercentage, }\StringTok{" \%"}\NormalTok{)), }\AttributeTok{vjust =} \SpecialCharTok{{-}}\FloatTok{0.5}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{labs}\NormalTok{(}\AttributeTok{title =} \StringTok{"Pourcentage d\textquotesingle{}arrêts selon la compétition"}\NormalTok{,}
+       \AttributeTok{x =} \StringTok{"Compétition"}\NormalTok{, }\AttributeTok{y =} \StringTok{"Pourcentage d\textquotesingle{}arrêts"}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{scale\_fill\_manual}\NormalTok{(}\AttributeTok{values =} \FunctionTok{c}\NormalTok{(}\StringTok{"FA Cup"} \OtherTok{=} \StringTok{"blue"}\NormalTok{, }\StringTok{"Premier League"} \OtherTok{=} \StringTok{"red"}\NormalTok{)) }\SpecialCharTok{+}
+  \FunctionTok{theme\_minimal}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{rapport_files/figure-latex/unnamed-chunk-30-1.pdf}
+
+\subsubsection{Analyse des Résultats}\label{analyse-des-ruxe9sultats-1}
+
+Le pourcentage d'arrêts est légèrement supérieur en Premier League
+(66,23 \%) par rapport à la FA Cup (61,68 \%). Cette différence peut
+être significative lorsqu'elle est examinée en parallèle avec le nombre
+de buts concédés par match dans chaque compétition. En Premier League,
+où les équipes ont un pourcentage d'arrêts plus élevé, le nombre moyen
+de buts concédés par match est en moyenne plus bas (1,37) par rapport à
+la FA Cup (1,77).Cela suggère que les équipes de Premier League ont une
+meilleure efficacité défensive, ce qui se traduit par un pourcentage
+d'arrêts plus élevé et un nombre de buts concédés plus faible par match.
+En revanche, en FA Cup, où le pourcentage d'arrêts est légèrement
+inférieur, les équipes ont tendance à concéder plus de buts par match.
+\#\#\#\# Hypothèses et Explications
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  \textbf{Niveau de Compétition} : En Premier League, les gardiens
+  affrontent régulièrement des attaquants de haut niveau, ce qui peut
+  les rendre plus performants sur la durée.
+\item
+  \textbf{Rotation des Gardiens} : En FA Cup, certaines équipes
+  utilisent leurs gardiens remplaçants, ce qui pourrait expliquer un
+  pourcentage d'arrêts légèrement inférieur.
+\item
+  \textbf{Style de Jeu} : Les matchs de coupe peuvent être plus ouverts
+  avec des attaques fréquentes, ce qui peut rendre le travail des
+  gardiens plus difficile.
+\end{enumerate}
+
+\subsection{Pourcentage de Clean
+Sheets}\label{pourcentage-de-clean-sheets}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{avg\_cleansheet }\OtherTok{\textless{}{-}} \FunctionTok{data.frame}\NormalTok{(}
+  \AttributeTok{Competition =} \FunctionTok{c}\NormalTok{(}\StringTok{"FA Cup"}\NormalTok{, }\StringTok{"Premier League"}\NormalTok{),}
+  \AttributeTok{AvgCleanSheetPercentage =} \FunctionTok{c}\NormalTok{(}\FloatTok{20.66}\NormalTok{, }\FloatTok{30.74}\NormalTok{)}
+\NormalTok{)}
+
+\FunctionTok{ggplot}\NormalTok{(avg\_cleansheet, }\FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ Competition, }\AttributeTok{y =}\NormalTok{ AvgCleanSheetPercentage, }\AttributeTok{fill =}\NormalTok{ Competition)) }\SpecialCharTok{+}
+  \FunctionTok{geom\_bar}\NormalTok{(}\AttributeTok{stat =} \StringTok{"identity"}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{geom\_text}\NormalTok{(}\FunctionTok{aes}\NormalTok{(}\AttributeTok{label =} \FunctionTok{paste0}\NormalTok{(AvgCleanSheetPercentage, }\StringTok{" \%"}\NormalTok{)), }\AttributeTok{vjust =} \SpecialCharTok{{-}}\FloatTok{0.5}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{labs}\NormalTok{(}\AttributeTok{title =} \StringTok{"Pourcentage de clean sheets selon la compétition"}\NormalTok{,}
+       \AttributeTok{x =} \StringTok{"Compétition"}\NormalTok{, }\AttributeTok{y =} \StringTok{"Pourcentage de clean sheets"}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{scale\_fill\_manual}\NormalTok{(}\AttributeTok{values =} \FunctionTok{c}\NormalTok{(}\StringTok{"FA Cup"} \OtherTok{=} \StringTok{"blue"}\NormalTok{, }\StringTok{"Premier League"} \OtherTok{=} \StringTok{"red"}\NormalTok{)) }\SpecialCharTok{+}
+  \FunctionTok{theme\_minimal}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{rapport_files/figure-latex/unnamed-chunk-31-1.pdf}
+
+\subsubsection{Analyse des Résultats}\label{analyse-des-ruxe9sultats-2}
+
+En Premier League, le pourcentage de clean sheets est de 30,74 \%,
+tandis qu'en FA Cup, il est de 20,66 \%. Cette différence indique que
+les équipes ont tendance à garder leur cage inviolée plus souvent en
+Premier League qu'en FA Cup.
+
+Cette observation est cohérente avec le nombre moyen de buts par match
+dans chaque compétition. En Premier League, où les équipes ont un
+pourcentage de clean sheets plus élevé, le nombre moyen de buts concédés
+par match est en moyenne plus bas (1,37) par rapport à la FA Cup (1,77).
+Cela suggère que les équipes de Premier League ont une meilleure
+efficacité défensive, ce qui se traduit par un nombre de buts concédés
+plus faible et donc un pourcentage de clean sheets plus élevé.
+
+\paragraph{Hypothèses et
+Explications}\label{hypothuxe8ses-et-explications-1}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  \textbf{Importance des Matchs} : En Premier League, chaque match
+  compte pour le classement final, ce qui pousse les équipes à être plus
+  défensives pour éviter les buts.
+\item
+  \textbf{Adversaires Variés en Coupe} : En FA Cup, les équipes de
+  Premier League affrontent parfois des équipes de divisions inférieures
+  qui peuvent adopter des tactiques très offensives dans l'espoir de
+  créer une surprise.
+\item
+  \textbf{Gestion de l'Équipe} : Les équipes de Premier League peuvent
+  être plus conservatrices dans leur gestion défensive au long de la
+  saison, tandis qu'en coupe, elles peuvent prendre plus de risques.
+\end{enumerate}
+
+\subsection{Performance des Équipes
+Sélectionnées}\label{performance-des-uxe9quipes-suxe9lectionnuxe9es}
+
+\subsubsection{Nombre Moyen de Buts par
+Match}\label{nombre-moyen-de-buts-par-match}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{team\_goals }\OtherTok{\textless{}{-}} \FunctionTok{data.frame}\NormalTok{(}
+  \AttributeTok{Team =} \FunctionTok{rep}\NormalTok{(}\FunctionTok{c}\NormalTok{(}\StringTok{"Fulham"}\NormalTok{, }\StringTok{"Manchester City"}\NormalTok{, }\StringTok{"Southampton"}\NormalTok{), }\AttributeTok{each =} \DecValTok{2}\NormalTok{),}
+  \AttributeTok{Competition =} \FunctionTok{rep}\NormalTok{(}\FunctionTok{c}\NormalTok{(}\StringTok{"FA Cup"}\NormalTok{, }\StringTok{"Premier League"}\NormalTok{), }\DecValTok{3}\NormalTok{),}
+  \AttributeTok{AvgGoals =} \FunctionTok{c}\NormalTok{(}\FloatTok{1.8}\NormalTok{, }\FloatTok{1.37}\NormalTok{, }\FloatTok{3.17}\NormalTok{, }\FloatTok{2.42}\NormalTok{, }\FloatTok{1.67}\NormalTok{, }\FloatTok{0.95}\NormalTok{)}
+\NormalTok{)}
+
+\FunctionTok{ggplot}\NormalTok{(team\_goals, }\FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ Competition, }\AttributeTok{y =}\NormalTok{ AvgGoals, }\AttributeTok{fill =}\NormalTok{ Team)) }\SpecialCharTok{+}
+  \FunctionTok{geom\_bar}\NormalTok{(}\AttributeTok{stat =} \StringTok{"identity"}\NormalTok{, }\AttributeTok{position =} \StringTok{"dodge"}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{geom\_text}\NormalTok{(}\FunctionTok{aes}\NormalTok{(}\AttributeTok{label =} \FunctionTok{paste0}\NormalTok{(AvgGoals, }\StringTok{" buts/match"}\NormalTok{)), }\AttributeTok{position =} \FunctionTok{position\_dodge}\NormalTok{(}\AttributeTok{width =} \FloatTok{0.9}\NormalTok{), }\AttributeTok{vjust =} \SpecialCharTok{{-}}\FloatTok{0.5}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{labs}\NormalTok{(}\AttributeTok{title =} \StringTok{"Nombre moyen de buts par match pour Fulham, Manchester City et Southampton selon la compétition"}\NormalTok{,}
+       \AttributeTok{x =} \StringTok{"Compétition"}\NormalTok{, }\AttributeTok{y =} \StringTok{"Nombre moyen de buts par match"}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{scale\_fill\_manual}\NormalTok{(}\AttributeTok{values =} \FunctionTok{c}\NormalTok{(}\StringTok{"Fulham"} \OtherTok{=} \StringTok{"black"}\NormalTok{, }\StringTok{"Manchester City"} \OtherTok{=} \StringTok{"skyblue"}\NormalTok{, }\StringTok{"Southampton"} \OtherTok{=} \StringTok{"red"}\NormalTok{)) }\SpecialCharTok{+}
+  \FunctionTok{theme\_minimal}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{rapport_files/figure-latex/unnamed-chunk-32-1.pdf}
+
+\subsubsection{Analyse des Résultats}\label{analyse-des-ruxe9sultats-3}
+
+Les résultats montrent des variations significatives entre les
+compétitions pour les équipes sélectionnées. Par exemple, Manchester
+City marque en moyenne 3,17 buts par match en FA Cup contre 2,42 en
+Premier League.
+
+\paragraph{Hypothèses et
+Explications}\label{hypothuxe8ses-et-explications-2}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  \textbf{Différences de Niveau des Adversaires} : Manchester City peut
+  affronter des équipes plus faibles en FA Cup, ce qui se traduit par un
+  plus grand nombre de buts.
+\item
+  \textbf{Motivation en Coupe} : Les équipes de bas de tableau comme
+  Southampton peuvent adopter une stratégie plus offensive en FA Cup
+  pour essayer de compenser leur manque de succès en championnat.
+\item
+  \textbf{Tactiques et Sélection des Joueurs} : Les équipes peuvent
+  expérimenter différentes formations et donner du temps de jeu à des
+  attaquants supplémentaires en FA Cup.
+\end{enumerate}
+
+\subsubsection{Pourcentage d'Arrêts}\label{pourcentage-darruxeats-1}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{team\_saves }\OtherTok{\textless{}{-}} \FunctionTok{data.frame}\NormalTok{(}
+  \AttributeTok{Team =} \FunctionTok{rep}\NormalTok{(}\FunctionTok{c}\NormalTok{(}\StringTok{"Fulham"}\NormalTok{, }\StringTok{"Manchester City"}\NormalTok{, }\StringTok{"Southampton"}\NormalTok{), }\AttributeTok{each =} \DecValTok{2}\NormalTok{),}
+  \AttributeTok{Competition =} \FunctionTok{rep}\NormalTok{(}\FunctionTok{c}\NormalTok{(}\StringTok{"FA Cup"}\NormalTok{, }\StringTok{"Premier League"}\NormalTok{), }\DecValTok{3}\NormalTok{),}
+  \AttributeTok{SavePercentage =} \FunctionTok{c}\NormalTok{(}\FloatTok{80.8}\NormalTok{, }\FloatTok{76.5}\NormalTok{, }\DecValTok{100}\NormalTok{, }\FloatTok{67.4}\NormalTok{, }\DecValTok{75}\NormalTok{, }\FloatTok{52.7}\NormalTok{)}
+\NormalTok{)}
+
+\FunctionTok{ggplot}\NormalTok{(team\_saves, }\FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ Competition, }\AttributeTok{y =}\NormalTok{ SavePercentage, }\AttributeTok{fill =}\NormalTok{ Team)) }\SpecialCharTok{+}
+  \FunctionTok{geom\_bar}\NormalTok{(}\AttributeTok{stat =} \StringTok{"identity"}\NormalTok{, }\AttributeTok{position =} \StringTok{"dodge"}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{geom\_text}\NormalTok{(}\FunctionTok{aes}\NormalTok{(}\AttributeTok{label =} \FunctionTok{paste0}\NormalTok{(SavePercentage, }\StringTok{" \%"}\NormalTok{)), }\AttributeTok{position =} \FunctionTok{position\_dodge}\NormalTok{(}\AttributeTok{width =} \FloatTok{0.9}\NormalTok{), }\AttributeTok{vjust =} \SpecialCharTok{{-}}\FloatTok{0.5}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{labs}\NormalTok{(}\AttributeTok{title =} \StringTok{"Pourcentage d\textquotesingle{}arrêts pour Fulham, Manchester City et Southampton selon la compétition"}\NormalTok{,}
+       \AttributeTok{x =} \StringTok{"Compétition"}\NormalTok{, }\AttributeTok{y =} \StringTok{"Pourcentage d\textquotesingle{}arrêts"}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{scale\_fill\_manual}\NormalTok{(}\AttributeTok{values =} \FunctionTok{c}\NormalTok{(}\StringTok{"Fulham"} \OtherTok{=} \StringTok{"black"}\NormalTok{, }\StringTok{"Manchester City"} \OtherTok{=} \StringTok{"skyblue"}\NormalTok{, }\StringTok{"Southampton"} \OtherTok{=} \StringTok{"red"}\NormalTok{)) }\SpecialCharTok{+}
+  \FunctionTok{theme\_minimal}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{rapport_files/figure-latex/unnamed-chunk-33-1.pdf}
+
+\subsubsection{Analyse des Résultats}\label{analyse-des-ruxe9sultats-4}
+
+Les pourcentages d'arrêts varient également significativement entre les
+compétitions pour les équipes sélectionnées. Par exemple, Manchester
+City affiche un pourcentage d'arrêts de 100 \% en FA Cup, contre 67,4 \%
+en Premier League. Cette différence est intéressante à examiner en
+relation avec le nombre de buts marqués par Manchester City dans chaque
+compétition. En FA Cup, où Manchester City affiche un pourcentage
+d'arrêts de 100 \%, ils ont également marqué en moyenne 3,17 buts par
+match. En revanche, en Premier League, où leur pourcentage d'arrêts est
+de 67,4 \%, ils ont marqué en moyenne 2,42 buts par match. Cette
+corrélation suggère que lorsque Manchester City est plus efficace dans
+ses arrêts en FA Cup, cela peut potentiellement libérer leur potentiel
+offensif, conduisant ainsi à un plus grand nombre de buts marqués par
+match. En revanche, une efficacité réduite dans les arrêts en Premier
+League peut être associée à une pression défensive accrue, ce qui peut
+affecter leurs performances offensives.
+
+\paragraph{Hypothèses et
+Explications}\label{hypothuxe8ses-et-explications-3}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  \textbf{Rotation des Gardiens} : Les équipes peuvent utiliser des
+  gardiens remplaçants en FA Cup, ce qui peut entraîner des performances
+  variables.
+\item
+  \textbf{Approche Tactique} : Les équipes peuvent adapter leur
+  stratégie en fonction du niveau de l'adversaire et de l'importance du
+  match, ce qui peut influencer le pourcentage d'arrêts.
+\item
+  \textbf{Fatigue et Concentration} : La fatigue accumulée au cours de
+  la saison peut affecter la concentration des gardiens en championnat,
+  ce qui peut se traduire par un pourcentage d'arrêts plus faible.
+\end{enumerate}
+
+\subsubsection{Pourcentage de Clean
+Sheets}\label{pourcentage-de-clean-sheets-1}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{team\_cleansheets }\OtherTok{\textless{}{-}} \FunctionTok{data.frame}\NormalTok{(}
+  \AttributeTok{Team =} \FunctionTok{rep}\NormalTok{(}\FunctionTok{c}\NormalTok{(}\StringTok{"Fulham"}\NormalTok{, }\StringTok{"Manchester City"}\NormalTok{, }\StringTok{"Southampton"}\NormalTok{), }\AttributeTok{each =} \DecValTok{2}\NormalTok{),}
+  \AttributeTok{Competition =} \FunctionTok{rep}\NormalTok{(}\FunctionTok{c}\NormalTok{(}\StringTok{"FA Cup"}\NormalTok{, }\StringTok{"Premier League"}\NormalTok{), }\DecValTok{3}\NormalTok{),}
+  \AttributeTok{CleanSheetPercentage =} \FunctionTok{c}\NormalTok{(}\FloatTok{13.5}\NormalTok{, }\FloatTok{11.7}\NormalTok{, }\DecValTok{13}\NormalTok{, }\FloatTok{15.53}\NormalTok{, }\DecValTok{14}\NormalTok{, }\FloatTok{10.87}\NormalTok{)}
+\NormalTok{)}
+
+\FunctionTok{ggplot}\NormalTok{(team\_cleansheets, }\FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ Competition, }\AttributeTok{y =}\NormalTok{ CleanSheetPercentage, }\AttributeTok{fill =}\NormalTok{ Team)) }\SpecialCharTok{+}
+  \FunctionTok{geom\_bar}\NormalTok{(}\AttributeTok{stat =} \StringTok{"identity"}\NormalTok{, }\AttributeTok{position =} \StringTok{"dodge"}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{geom\_text}\NormalTok{(}\FunctionTok{aes}\NormalTok{(}\AttributeTok{label =} \FunctionTok{paste0}\NormalTok{(CleanSheetPercentage, }\StringTok{" \%"}\NormalTok{)), }\AttributeTok{position =} \FunctionTok{position\_dodge}\NormalTok{(}\AttributeTok{width =} \FloatTok{0.9}\NormalTok{), }\AttributeTok{vjust =} \SpecialCharTok{{-}}\FloatTok{0.5}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{labs}\NormalTok{(}\AttributeTok{title =} \StringTok{"Pourcentage de clean sheets pour Fulham, Manchester City et Southampton selon la compétition"}\NormalTok{,}
+       \AttributeTok{x =} \StringTok{"Compétition"}\NormalTok{, }\AttributeTok{y =} \StringTok{"Pourcentage de clean sheets"}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{scale\_fill\_manual}\NormalTok{(}\AttributeTok{values =} \FunctionTok{c}\NormalTok{(}\StringTok{"Fulham"} \OtherTok{=} \StringTok{"black"}\NormalTok{, }\StringTok{"Manchester City"} \OtherTok{=} \StringTok{"skyblue"}\NormalTok{, }\StringTok{"Southampton"} \OtherTok{=} \StringTok{"red"}\NormalTok{)) }\SpecialCharTok{+}
+  \FunctionTok{theme\_minimal}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{rapport_files/figure-latex/unnamed-chunk-34-1.pdf}
+
+\subsubsection{Nombre Moyen de Tirs par
+Match}\label{nombre-moyen-de-tirs-par-match}
+
+En moyenne, les équipes ont pris plus de tirs par match en FA Cup (13,5)
+que en Premier League (11,7), ce qui correspond également à un nombre de
+tirs cadrés par match plus élevé en FA Cup (4,4) par rapport à la
+Premier League (4,1). Cette tendance suggère une approche plus offensive
+adoptée en coupe, où les équipes cherchent à marquer rapidement pour
+éviter les prolongations ou les tirs au but. La différence dans le
+nombre de tirs peut également refléter la variabilité du niveau des
+adversaires en FA Cup, où les équipes de divisions inférieures peuvent
+être plus ouvertes en attaque, offrant ainsi plus d'opportunités de tirs
+aux équipes de Premier League.En moyenne, les équipes ont marqué plus de
+buts par match en FA Cup (1,77) que en Premier League (1,37), ce qui
+suggère une tendance offensive plus prononcée dans cette compétition.
+Cette observation est cohérente avec le fait que les équipes en FA Cup
+prennent également plus de tirs par match, ce qui indique une approche
+plus offensive et une volonté de marquer des buts.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{avg\_shots }\OtherTok{\textless{}{-}} \FunctionTok{data.frame}\NormalTok{(}
+  \AttributeTok{Competition =} \FunctionTok{c}\NormalTok{(}\StringTok{"FA Cup"}\NormalTok{, }\StringTok{"Premier League"}\NormalTok{),}
+  \AttributeTok{AvgShots =} \FunctionTok{c}\NormalTok{(}\FloatTok{13.5}\NormalTok{, }\FloatTok{11.7}\NormalTok{)}
+\NormalTok{)}
+
+\FunctionTok{ggplot}\NormalTok{(avg\_shots, }\FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ Competition, }\AttributeTok{y =}\NormalTok{ AvgShots, }\AttributeTok{fill =}\NormalTok{ Competition)) }\SpecialCharTok{+}
+  \FunctionTok{geom\_bar}\NormalTok{(}\AttributeTok{stat =} \StringTok{"identity"}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{geom\_text}\NormalTok{(}\FunctionTok{aes}\NormalTok{(}\AttributeTok{label =}\NormalTok{ AvgShots), }\AttributeTok{vjust =} \SpecialCharTok{{-}}\FloatTok{0.5}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{labs}\NormalTok{(}\AttributeTok{title =} \StringTok{"Nombre moyen de tirs par match selon la compétition"}\NormalTok{,}
+       \AttributeTok{x =} \StringTok{"Compétition"}\NormalTok{, }\AttributeTok{y =} \StringTok{"Nombre moyen de tirs par match"}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{scale\_fill\_manual}\NormalTok{(}\AttributeTok{values =} \FunctionTok{c}\NormalTok{(}\StringTok{"FA Cup"} \OtherTok{=} \StringTok{"blue"}\NormalTok{, }\StringTok{"Premier League"} \OtherTok{=} \StringTok{"red"}\NormalTok{)) }\SpecialCharTok{+}
+  \FunctionTok{theme\_minimal}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{rapport_files/figure-latex/unnamed-chunk-35-1.pdf}
+
+\subsubsection{Nombre Moyen de Tirs Cadrés par
+Match}\label{nombre-moyen-de-tirs-cadruxe9s-par-match}
+
+Le nombre moyen de tirs cadrés par match est également plus élevé en FA
+Cup (4,4) par rapport à la Premier League (4,1). Cette tendance est
+intéressante à observer, d'autant plus que le nombre moyen de buts par
+match est également plus élevé en FA Cup (1,77) par rapport à la Premier
+League (1,37). Cela suggère que les équipes en coupe ont non seulement
+tendance à cibler plus souvent le but adverse avec leurs tirs, mais
+aussi qu'elles réussissent à convertir ces occasions en buts à un taux
+légèrement plus élevé que lors des matchs de championnat. Ces
+observations soulignent l'importance de la précision des tirs et de
+l'efficacité offensive dans les matchs de coupe, où chaque occasion peut
+avoir un impact significatif sur le résultat final.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{avg\_shots\_on\_target }\OtherTok{\textless{}{-}} \FunctionTok{data.frame}\NormalTok{(}
+  \AttributeTok{Competition =} \FunctionTok{c}\NormalTok{(}\StringTok{"FA Cup"}\NormalTok{, }\StringTok{"Premier League"}\NormalTok{),}
+  \AttributeTok{AvgShotsOnTarget =} \FunctionTok{c}\NormalTok{(}\FloatTok{4.4}\NormalTok{, }\FloatTok{4.1}\NormalTok{)}
+\NormalTok{)}
+
+\FunctionTok{ggplot}\NormalTok{(avg\_shots\_on\_target, }\FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ Competition, }\AttributeTok{y =}\NormalTok{ AvgShotsOnTarget, }\AttributeTok{fill =}\NormalTok{ Competition)) }\SpecialCharTok{+}
+  \FunctionTok{geom\_bar}\NormalTok{(}\AttributeTok{stat =} \StringTok{"identity"}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{geom\_text}\NormalTok{(}\FunctionTok{aes}\NormalTok{(}\AttributeTok{label =}\NormalTok{ AvgShotsOnTarget), }\AttributeTok{vjust =} \SpecialCharTok{{-}}\FloatTok{0.5}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{labs}\NormalTok{(}\AttributeTok{title =} \StringTok{"Nombre moyen de tirs cadrés par match selon la compétition"}\NormalTok{,}
+       \AttributeTok{x =} \StringTok{"Compétition"}\NormalTok{, }\AttributeTok{y =} \StringTok{"Nombre moyen de tirs cadrés par match"}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{scale\_fill\_manual}\NormalTok{(}\AttributeTok{values =} \FunctionTok{c}\NormalTok{(}\StringTok{"FA Cup"} \OtherTok{=} \StringTok{"blue"}\NormalTok{, }\StringTok{"Premier League"} \OtherTok{=} \StringTok{"red"}\NormalTok{)) }\SpecialCharTok{+}
+  \FunctionTok{theme\_minimal}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{rapport_files/figure-latex/unnamed-chunk-36-1.pdf}
+
+\subsubsection{Conclusion}\label{conclusion-1}
+
+En incluant le nombre moyen de tirs cadrés par match dans notre analyse,
+nous avons observé une corrélation plus forte entre les tirs, les tirs
+cadrés et les arrêts des gardiens. Les équipes qui prennent plus de tirs
+et les ciblent plus souvent parviennent à mettre davantage de pression
+sur les gardiens adverses, ce qui réduit leur efficacité globale. Ces
+observations soulignent l'importance de la qualité des tirs et de la
+défense dans le déroulement des matchs de football, et soulignent la
+nécessité pour les équipes de trouver un équilibre entre l'attaque et la
+défense pour réussir dans différentes compétitions.
+
+\subsubsection{Ratio Buts/Tirs}\label{ratio-butstirs}
+
+Le ratio buts/tirs est un indicateur important de l'efficacité des
+équipes à convertir leurs occasions en buts. En comparant la FA Cup et
+la Premier League, nous pouvons observer comment ce ratio varie selon la
+compétition.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{goal\_to\_shot\_ratio }\OtherTok{\textless{}{-}} \FunctionTok{data.frame}\NormalTok{(}
+  \AttributeTok{Competition =} \FunctionTok{c}\NormalTok{(}\StringTok{"FA Cup"}\NormalTok{, }\StringTok{"Premier League"}\NormalTok{),}
+  \AttributeTok{GoalToShotRatio =} \FunctionTok{c}\NormalTok{(}\FloatTok{0.105}\NormalTok{, }\FloatTok{0.1}\NormalTok{)}
+\NormalTok{)}
+
+\FunctionTok{ggplot}\NormalTok{(goal\_to\_shot\_ratio, }\FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ Competition, }\AttributeTok{y =}\NormalTok{ GoalToShotRatio, }\AttributeTok{fill =}\NormalTok{ Competition)) }\SpecialCharTok{+}
+  \FunctionTok{geom\_bar}\NormalTok{(}\AttributeTok{stat =} \StringTok{"identity"}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{geom\_text}\NormalTok{(}\FunctionTok{aes}\NormalTok{(}\AttributeTok{label =}\NormalTok{ GoalToShotRatio), }\AttributeTok{vjust =} \SpecialCharTok{{-}}\FloatTok{0.5}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{labs}\NormalTok{(}\AttributeTok{title =} \StringTok{"Ratio Buts/Tirs selon la compétition"}\NormalTok{,}
+       \AttributeTok{x =} \StringTok{"Compétition"}\NormalTok{, }\AttributeTok{y =} \StringTok{"Ratio Buts/Tirs"}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{scale\_fill\_manual}\NormalTok{(}\AttributeTok{values =} \FunctionTok{c}\NormalTok{(}\StringTok{"FA Cup"} \OtherTok{=} \StringTok{"blue"}\NormalTok{, }\StringTok{"Premier League"} \OtherTok{=} \StringTok{"red"}\NormalTok{)) }\SpecialCharTok{+}
+  \FunctionTok{theme\_minimal}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{rapport_files/figure-latex/unnamed-chunk-37-1.pdf}
+
+\subsubsection{Analyse des Résultats}\label{analyse-des-ruxe9sultats-5}
+
+Le ratio buts/tirs est légèrement plus élevé en FA Cup (0,105) par
+rapport à la Premier League (0,1), malgré le nombre moyen de buts par
+match étant plus élevé en FA Cup (1,77) comparé à la Premier League
+(1,37). Cette observation suggère que les équipes en coupe ont été
+légèrement plus efficaces pour convertir leurs tirs en buts, malgré un
+nombre global de buts par match plus élevé. Plusieurs facteurs peuvent
+expliquer cette tendance, notamment une concentration accrue sur
+l'attaque dans les matchs à élimination directe, une pression réduite
+par rapport à la Premier League et la qualité variable des adversaires
+rencontrés.
+
+\paragraph{Hypothèses et
+Explications}\label{hypothuxe8ses-et-explications-4}
+
+L'hypothèse initiale suggère que les matchs de coupe adoptent une
+approche plus prudente et tactique, ce qui pourrait se traduire par
+moins de buts par match par rapport aux championnats où les équipes ont
+une saison entière pour s'adapter et se projeter.
+
+Cependant, les résultats de l'analyse contredisent partiellement cette
+hypothèse. Bien que la différence de nombre moyen de buts par match
+entre la FA Cup et la Premier League ne soit pas aussi significative que
+prévu, d'autres aspects des performances des équipes varient en fonction
+de la compétition.
+
+Par exemple, les données révèlent que le pourcentage de clean sheets est
+plus élevé en Premier League, ce qui indique une meilleure efficacité
+défensive dans cette compétition où les équipes ont plus de temps pour
+se préparer et s'adapter tactiquement. De plus, le pourcentage d'arrêts
+des gardiens est également supérieur en Premier League, suggérant une
+pression défensive plus importante dans cette compétition.
+
+Ces résultats mettent en lumière les nuances des performances des
+équipes dans différentes compétitions et soulignent l'importance de
+considérer plusieurs aspects du jeu pour comprendre pleinement les
+différences entre les matchs de coupe et les championnats. Bien que
+l'hypothèse initiale puisse ne pas être entièrement confirmée, l'analyse
+fournit des insights précieux sur les stratégies et les performances des
+équipes dans des contextes de compétition différents.
+
+\section{Conclusion}\label{conclusion-2}
+
+Les analyses approfondies des différences entre les championnats et les
+coupes ont révélé des variations significatives dans les performances
+des équipes, à la fois sur le plan offensif et défensif. Bien que
+certaines conclusions aient contredit notre hypothèse initiale selon
+laquelle les matchs de coupe se caractériseraient par moins de buts,
+elles ont également mis en lumière des aspects intéressants du jeu qui
+méritent d'être explorés plus en détail.
+
+Il est clair que la nature des matchs, l'enjeu et les adversaires jouent
+un rôle crucial dans les stratégies adoptées par les équipes. Par
+exemple, bien que le nombre moyen de buts par match puisse ne pas
+différer considérablement entre la FA Cup et la Premier League, d'autres
+indicateurs tels que le pourcentage de clean sheets et le pourcentage
+d'arrêts des gardiens varient de manière significative entre les deux
+compétitions.
+
+Ces résultats soulèvent plusieurs questions intrigantes pour de futures
+recherches. Par exemple, comment les équipes ajustent-elles leurs
+stratégies tactiques en fonction du format de la compétition et de la
+qualité de l'adversaire ? Dans quelle mesure la fatigue et la pression
+influencent-elles les performances des équipes dans des matchs à
+élimination directe par rapport à une saison entière ?
+
+En outre, cette étude met en évidence la nécessité de considérer
+plusieurs aspects du jeu pour comprendre pleinement les différences
+entre les matchs de coupe et les championnats. Il serait intéressant
+d'explorer davantage l'impact des facteurs extérieurs tels que la météo,
+les blessures et les enjeux psychologiques sur les performances des
+équipes dans différentes compétitions.
+
+En conclusion, cette étude fournit une base solide pour une analyse plus
+approfondie des stratégies et des performances des équipes dans le
+football professionnel. Les découvertes réalisées ouvrent la voie à de
+nouvelles investigations pour mieux comprendre les dynamiques complexes
+qui régissent le monde du football.
+
+\section{Appliquer la fonction à chaque URL d'équipe de la FA
+Cup}\label{appliquer-la-fonction-uxe0-chaque-url-duxe9quipe-de-la-fa-cup}
+
+fa\_cup\_team\_results\_list \textless- lapply(fa\_cup\_team\_urls,
+get\_fa\_cup\_team\_results)
+
+\section{Combiner les résultats de la FA
+Cup}\label{combiner-les-ruxe9sultats-de-la-fa-cup}
+
+fa\_cup\_team\_results \textless- do.call(rbind,
+fa\_cup\_team\_results\_list)
+
+\section{Collecter les URLs des équipes en Premier League pour la saison
+2022-2023}\label{collecter-les-urls-des-uxe9quipes-en-premier-league-pour-la-saison-2022-2023}
+
+pl\_team\_urls \textless-
+fb\_teams\_urls(``\url{https://fbref.com/en/comps/9/2022-2023/2022-2023-Premier-League-Stats}'')
+
+\section{Fonction pour extraire les résultats de
+championnat}\label{fonction-pour-extraire-les-ruxe9sultats-de-championnat}
+
+get\_pl\_team\_results \textless- function(team\_url) \{ results
+\textless- fb\_team\_match\_results(team\_url) results \textless-
+results \%\textgreater\% mutate(Team = gsub(``.*/``,''``, team\_url),
+Team = gsub(''-Stats'', ````, Team), Competition =''Premier League'', GF
+= as.numeric(GF), GA = as.numeric(GA)) \%\textgreater\% select(Team,
+Date, Opponent, Result, Venue, GF, GA, Comp = Competition)
+return(results) \}
+
+\section{Appliquer la fonction aux URLs de Premier
+League}\label{appliquer-la-fonction-aux-urls-de-premier-league}
+
+pl\_team\_results\_list \textless- lapply(pl\_team\_urls,
+get\_pl\_team\_results)
+
+\section{Combiner les résultats de la Premier
+League}\label{combiner-les-ruxe9sultats-de-la-premier-league}
+
+pl\_team\_results \textless- do.call(rbind, pl\_team\_results\_list)
+
+\section{Fusionner les données de la FA Cup et de la Premier
+League}\label{fusionner-les-donnuxe9es-de-la-fa-cup-et-de-la-premier-league}
+
+all\_results \textless- rbind(fa\_cup\_team\_results, pl\_team\_results)
+
+\section{Calculer les moyennes de buts marqués pour chaque
+compétition}\label{calculer-les-moyennes-de-buts-marquuxe9s-pour-chaque-compuxe9tition}
+
+average\_goals \textless- all\_results \%\textgreater\% group\_by(Comp)
+\%\textgreater\% summarise(AverageGoals = mean(GF, na.rm = TRUE))
+
+\section{Visualisation des moyennes de buts
+marqués}\label{visualisation-des-moyennes-de-buts-marquuxe9s-1}
+
+ggplot(average\_goals, aes(x = Comp, y = AverageGoals, fill = Comp)) +
+geom\_col() + labs(title = ``Moyenne des buts marqués par match en FA
+Cup vs Premier League'', x = ``Compétition'', y = ``Moyenne des buts
+marqués par match'') + theme\_minimal() + theme(legend.position =
+``none'')
+
+\section{Afficher les résultats}\label{afficher-les-ruxe9sultats}
+
+print(average\_goals)
+
+\subsubsection{Interprétation et
+conclusion}\label{interpruxe9tation-et-conclusion}
+
+L'analyse montre que le nombre moyen de buts par match diffère entre les
+compétitions de la FA Cup et de la Premier League. Cette information
+pourrait suggérer différentes approches tactiques entre les matchs de
+coupe et de championnat. Par exemple, les équipes pourraient adopter des
+stratégies plus offensives ou défensives selon l'importance ou le format
+du match.
+
+\subsubsection{Questions pour approfondir
+l'analyse}\label{questions-pour-approfondir-lanalyse}
+
+Cette observation initiale mène à plusieurs questions intéressantes pour
+des recherches futures :
+
+\begin{itemize}
+\tightlist
+\item
+  Comment les styles de jeu diffèrent-ils entre les matchs de coupe et
+  de championnat au niveau des équipes individuelles ?
+\item
+  Y a-t-il une corrélation entre la fréquence des changements de joueurs
+  et les performances dans les matchs de coupe par rapport au
+  championnat ?
+\item
+  Quel est l'impact de la pression des matchs à élimination directe sur
+  les performances des équipes en termes de buts marqués et encaissés ?
+\end{itemize}
 
 \end{document}
