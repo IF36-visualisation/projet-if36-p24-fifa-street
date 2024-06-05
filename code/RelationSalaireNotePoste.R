@@ -4,8 +4,6 @@ install.packages("worldfootballR")
 library(worldfootballR)
 
 #Load data
-#man_city_url <- "https://fbref.com/en/squads/b8fd03ef/Manchester-City-Stats"
-#man_city_wages <- fb_squad_wages(team_urls = man_city_url)
 
 teams_urls <- list(
   man_city = "https://fbref.com/en/squads/b8fd03ef/Manchester-City-Stats",
@@ -233,8 +231,8 @@ team_wages <- team_wages %>%
 
 # Visualisation : Comparaison des salaires annuels des joueurs de Manchester City en fonction des notes et des postes
 ggplot(team_wages, aes(x = Note, y = AnnualWageEUR, shape = Groupe_poste, color = Team)) +
-  geom_point(size = 4, alpha = 0.7) +
-  labs(title = "Relation entre les salaires annuels, les notes et les postes des joueurs de Manchester City",
+  geom_point(size = 4, alpha = 3) +
+  labs(title = "Relation entre les salaires annuels, les notes et les postes des joueurs de PL",
        x = "Note",
        y = "Salaire annuel (en euros)",
        shape = "Poste",
@@ -244,16 +242,18 @@ ggplot(team_wages, aes(x = Note, y = AnnualWageEUR, shape = Groupe_poste, color 
   scale_shape_manual(values = c(17, 19, 15, 16, 18, 3, 4)) +
   scale_color_brewer(palette = "Set1") +
   theme_minimal() +
-  theme(legend.title = element_text(face = "bold"),
-        legend.position = "top",
-        legend.direction = "horizontal",
-        legend.key.size = unit(1.5, "lines"))
-
-
-
-
-
-
+  theme(
+    plot.title = element_text(face = "bold", hjust = 0.5, size = 20), # Centrer et agrandir le titre
+    axis.title.x = element_text(size = 16), # Agrandir le titre de l'axe x
+    axis.title.y = element_text(size = 16), # Agrandir le titre de l'axe y
+    axis.text.x = element_text(size = 14),  # Agrandir les labels de l'axe x
+    axis.text.y = element_text(size = 14),  # Agrandir les labels de l'axe y
+    legend.title = element_text(face = "bold", size = 14), # Agrandir le titre de la légende
+    legend.text = element_text(size = 12),   # Agrandir le texte de la légende
+    legend.position = "top",
+    legend.direction = "horizontal",
+    legend.key.size = unit(1.5, "lines")
+  )
 
 
 
