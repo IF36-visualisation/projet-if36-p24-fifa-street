@@ -179,9 +179,9 @@ Nous examinerons les meilleurs buteurs des championnats et leurs caractéristiqu
 
 Nous analyserons les statistiques des meilleures équipes et les comparerons à celles des équipes moins performantes pour déterminer les caractéristiques d'une équipe parfaite, telles que la possession de balle,nombre de buts moyens encaissés... On utilisera `fb_team_match_log_stats()` pour recuperer tout les matchs et faire des moyennes sur leurs matchs .
 
-**Quelle est la corrélation entre la valeur marchande des joueurs et leurs postes ? (traité par Amine)**
+**Quelle est la corrélation entre la valeur marchande des joueurs et leurs notes / postes ? (traité par Amin)**
 
-Nous étudierons la corrélation entre la valeur marchande des joueurs et différents critères spécifiques à leur poste. Par exemple, nous examinerons le nombre de buts pour les attaquants et le nombre d'interceptions pour les défenseurs parmi les joueurs les plus chers. Pour ce faire, nous utiliserons la méthode mentionnée précédemment dans la section "À l'échelle des joueurs".
+Nous étudierons la corrélation entre la valeur marchande des joueurs et son poste ainsi que la note qui lui est attribué par les journalistes. Pour ce faire, nous utiliserons la méthode mentionnée précédemment dans la section "À l'échelle des joueurs".
 
 **Quelles sont les différences entre les championnats et les coupes ? (traité par Nassim)**
 
