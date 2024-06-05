@@ -1,4 +1,4 @@
-install.packages("worldfootballR")
+iinstall.packages("worldfootballR")
 
 # Chargement du package worldfootballR
 library(worldfootballR)
@@ -236,7 +236,7 @@ ggplot(team_wages, aes(x = Note, y = AnnualWageEUR, shape = Groupe_poste, color 
        x = "Note",
        y = "Salaire annuel (en euros)",
        shape = "Poste",
-       color = "Poste") +
+       color = "Equipe") +
   scale_x_continuous(breaks = seq(5, 10, by = 0.5)) +
   scale_y_continuous(labels = scales::comma) +
   scale_shape_manual(values = c(17, 19, 15, 16, 18, 3, 4)) +
