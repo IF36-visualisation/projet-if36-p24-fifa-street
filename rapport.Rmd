@@ -1031,320 +1031,307 @@ get_fa_cup_team_results <- function(team_url) {
 
 (traitée par Nassim)
 
-## Hypothèse
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
+```
 
-Notre hypothèse est que dans les coupes, où les matchs se jouent généralement en élimination directe, les équipes adoptent une approche plus prudente et tactique pour mieux gérer le match et minimiser les risques. Cela peut se traduire par des performances différentes par rapport aux championnats où les équipes ont une saison entière pour s'adapter et se projeter. En particulier, nous nous attendons à ce qu'il y ait moins de buts par match en coupe.
+# Introduction
 
-# Analyse des Données
+Dans le football, les compétitions de coupe et les championnats offrent des dynamiques de jeu distinctes. Les matchs de coupe, souvent en élimination directe, poussent les équipes à adopter des stratégies prudentes pour minimiser les risques, tandis que les championnats, étalés sur une saison entière, permettent aux équipes de s'adapter et de se projeter plus librement. Cette analyse explore les différences entre les performances des équipes en coupe et en championnat.
 
-## Moyenne des Buts par Match
+**Question :** Quelles sont les différences entre les championnats et les coupes ?
 
-```{r}
-avg_goals <- data.frame(
-  Competition = c("FA Cup", "Premier League"),
-  AvgGoals = c(1.77, 1.37)
+**Hypothèse :** En coupe, où les matchs se jouent généralement en élimination directe, les équipes adoptent une approche plus prudente et tactique pour mieux gérer le match et minimiser les risques, ce qui peut se traduire par des performances différentes par rapport aux championnats où les équipes ont une saison entière pour s'adapter et se projeter. Donc moins de buts par matchs.
+
+
+```{r echo=FALSE}
+
+library(rvest)
+library(dplyr)
+library(ggplot2)
+library(tidyr)
+# Fonction pour extraire les tables HTML et renommer les colonnes
+extract_fbref_data <- function(url, table_number) {
+  page <- read_html(url)
+  tables <- page %>% html_table(fill = TRUE)
+  data <- tables[[table_number]]
+  colnames(data) <- data[1, ]  # Utilisation de la première ligne comme noms de colonnes
+  data <- data[-1, ]  # Suppression de la première ligne des données
+  return(data)
+}
+
+# Extraction des données de la FA Cup
+fa_cup_standard <- extract_fbref_data("https://fbref.com/en/comps/514/2022-2023/stats/2022-2023-FA-Cup-Stats", 1)
+fa_cup_shooting <- extract_fbref_data("https://fbref.com/en/comps/514/2022-2023/shooting/2022-2023-FA-Cup-Stats", 1)
+fa_cup_goalkeeping <- extract_fbref_data("https://fbref.com/en/comps/514/2022-2023/keepers/2022-2023-FA-Cup-Stats", 1)
+
+# Extraction des données de la Premier League
+pl_standard <- extract_fbref_data("https://fbref.com/en/comps/9/2022-2023/stats/2022-2023-Premier-League-Stats", 1)
+pl_shooting <- extract_fbref_data("https://fbref.com/en/comps/9/2022-2023/shooting/2022-2023-Premier-League-Stats", 1)
+pl_goalkeeping <- extract_fbref_data("https://fbref.com/en/comps/9/2022-2023/keepers/2022-2023-Premier-League-Stats", 1)
+
+# Sélection des équipes d'intérêt
+teams <- c("Arsenal", "Aston Villa", "Bournemouth", "Brentford", "Brighton", "Chelsea", 
+           "Crystal Palace", "Everton", "Fulham", "Leeds United", "Leicester City", 
+           "Liverpool", "Manchester City", "Manchester Utd", "Newcastle Utd", 
+           "Nott'ham Forest", "Southampton", "Tottenham", "West Ham", "Wolves")
+
+# Identifier les colonnes en double et les renommer
+dup_cols <- which(duplicated(names(fa_cup_standard)))
+names(fa_cup_standard)[dup_cols] <- paste0(names(fa_cup_standard)[dup_cols], ".2")
+
+dup_cols_pl <- which(duplicated(names(pl_standard)))
+names(pl_standard)[dup_cols_pl] <- paste0(names(pl_standard)[dup_cols_pl], ".2")
+
+# Filtrer les données pour les équipes d'intérêt
+fa_cup_data <- fa_cup_standard %>%
+  filter(Squad %in% teams)
+
+pl_data <- pl_standard %>%
+  filter(Squad %in% teams)
+
+# Ajouter une colonne pour indiquer la compétition
+fa_cup_data <- fa_cup_data %>%
+  mutate(Competition = "FA Cup")
+
+pl_data <- pl_data %>%
+  mutate(Competition = "Premier League")
+
+# Combiner les deux datasets
+combined_data <- bind_rows(fa_cup_data, pl_data)
+
+# Supprimer les colonnes spécifiées
+combined_data <- combined_data %>%
+  select(-c("xG", "xAG", "xG+xAG", "npxG", "npxG+xAG"))
+
+# Convertir la colonne "Gls" en format numérique
+combined_data$Gls <- as.numeric(combined_data$Gls)
+
+# Calculer le nombre moyen de buts par match pour la FA Cup
+avg_goals_facup <- combined_data %>%
+  filter(Competition == "FA Cup") %>%
+  summarise(avg_goals = sum(Gls) / sum(as.numeric(MP)))
+
+# Calculer le nombre moyen de buts par match pour la Premier League
+avg_goals_pl <- combined_data %>%
+  filter(Competition == "Premier League") %>%
+  summarise(avg_goals = sum(Gls) / sum(as.numeric(MP)))
+
+# Créer un nouveau dataframe pour les moyennes
+avg_goals <- rbind(avg_goals_facup, avg_goals_pl)
+
+# Créer une nouvelle colonne pour stocker les noms de compétition
+avg_goals$Competition <- rownames(avg_goals)
+
+# Renommer les niveaux de la variable Competition
+avg_goals$Competition <- factor(avg_goals$Competition, levels = c("1", "2"), labels = c("FA Cup", "Premier League"))
+
+# Identifier les colonnes en double dans les données de goalkeeping et les renommer
+dup_cols_fa_cup <- which(duplicated(names(fa_cup_goalkeeping)))
+names(fa_cup_goalkeeping)[dup_cols_fa_cup] <- paste0(names(fa_cup_goalkeeping)[dup_cols_fa_cup], ".fa_cup")
+
+dup_cols_pl <- which(duplicated(names(pl_goalkeeping)))
+names(pl_goalkeeping)[dup_cols_pl] <- paste0(names(pl_goalkeeping)[dup_cols_pl], ".pl")
+
+# Fusionner les données de goalkeeping en tenant compte des noms de colonnes renommés
+combined_data_goalkeeping_teams <- bind_rows(
+  filter(fa_cup_goalkeeping, Squad %in% teams),
+  filter(pl_goalkeeping, Squad %in% teams)
 )
 
-ggplot(avg_goals, aes(x = Competition, y = AvgGoals, fill = Competition)) +
-  geom_bar(stat = "identity") +
-  geom_text(aes(label = paste0(AvgGoals, " buts/match")), vjust = -0.5) +
+# Ajouter une colonne Competition aux données combined_data_goalkeeping_teams
+combined_data_goalkeeping_teams <- combined_data_goalkeeping_teams %>%
+  mutate(Competition = if_else(Squad %in% teams[1:length(teams) / 2], "FA Cup", "Premier League"))
+
+# Renommer la colonne %Save en Arret
+combined_data_goalkeeping_teams <- combined_data_goalkeeping_teams %>%
+  rename(Arret = 'Save%' )
+
+# Conversion de la colonne Arret en type numérique
+combined_data_goalkeeping_teams <- combined_data_goalkeeping_teams %>%
+  mutate(Arret = as.numeric(Arret))
+
+# Calcul des moyennes des sauvegardes pour chaque compétition
+avg_saves <- combined_data_goalkeeping_teams %>%
+  group_by(Competition) %>%
+  summarise(avg_save_percentage = sum(Arret, na.rm = TRUE) / n())
+
+# Conversion de la colonne CS% en type numérique
+combined_data_goalkeeping_teams <- combined_data_goalkeeping_teams %>%
+  mutate(`CS%` = as.numeric(`CS%`))
+
+# Calcul des moyennes des pourcentages de cleans sheet pour chaque compétition
+avg_cleansheet <- combined_data_goalkeeping_teams %>%
+  group_by(Competition) %>%
+  summarise(avg_cleansheet_percentage = sum(`CS%`, na.rm = TRUE) / n())
+
+# Convertir les colonnes Gls et MP en format numérique
+combined_data <- combined_data %>%
+  mutate(Gls = as.numeric(Gls),
+         MP = as.numeric(MP))
+
+# Filtrer les données pour Manchester City, Fulham et Southampton
+teams_of_interest <- combined_data %>%
+  filter(Squad %in% c("Manchester City", "Southampton", "Fulham"))
+
+# Remplacer les valeurs NA par 0 pour éviter les erreurs lors des calculs
+teams_of_interest <- teams_of_interest %>%
+  mutate(Gls = ifelse(is.na(Gls), 0, Gls),
+         MP = ifelse(is.na(MP), 1, MP))  # Remplacer les valeurs NA par 1 pour éviter la division par zéro
+
+# Filtrer les données de goalkeeping pour Manchester City, Southampton et Fulham
+goalkeeping_teams_of_interest <- combined_data_goalkeeping_teams %>%
+  filter(Squad %in% c("Manchester City", "Southampton", "Fulham"))
+
+# Mettre à jour les valeurs de la colonne Competition
+goalkeeping_teams_of_interest[2, "Competition"] <- "FA Cup"
+goalkeeping_teams_of_interest[3, "Competition"] <- "FA Cup"
+goalkeeping_teams_of_interest[4, "Competition"] <- "Premier League"
+
+# Filtrer les données de tir pour les équipes d'intérêt
+fa_cup_shooting <- fa_cup_shooting %>%
+  filter(Squad %in% teams)
+
+pl_shooting <- pl_shooting %>%
+  filter(Squad %in% teams)
+
+# Ajouter une colonne pour indiquer la compétition
+fa_cup_shooting <- fa_cup_shooting %>%
+  mutate(Competition = "FA Cup")
+
+pl_shooting <- pl_shooting %>%
+  mutate(Competition = "Premier League")
+
+# Combiner les deux datasets
+combined_shooting <- bind_rows(fa_cup_shooting, pl_shooting)
+
+# Convertir les colonnes Sh/90, SoT/90 et Gls en format numérique
+combined_shooting <- combined_shooting %>%
+  mutate(`Sh/90` = as.numeric(`Sh/90`),
+         `SoT/90` = as.numeric(`SoT/90`),
+         `G/Sh` = as.numeric(`G/Sh`))
+
+avg_shooting <- combined_shooting %>%
+  group_by(Competition) %>%
+  summarise(`Sh/90` = mean(`Sh/90`, na.rm = TRUE),
+            `SoT/90` = mean(`SoT/90`, na.rm = TRUE),
+            `G/Sh` = mean(`G/Sh`, na.rm = TRUE))
+
+# Filtrer les données pour Manchester City, Southampton, et Fulham
+shooting_teams_of_interest <- combined_shooting %>%
+  filter(Squad %in% c("Manchester City", "Southampton", "Fulham"))
+```
+# Analyse
+
+## Visualisation des Statistiques Clés
+
+### Visualisation 1 : Nombre moyen de buts par match selon la compétition
+
+```{r plot1, echo=FALSE}
+ggplot(avg_goals, aes(x = Competition, y = avg_goals, fill = Competition)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  geom_text(aes(label = paste0(round(avg_goals, 2), " buts/match")), position = position_dodge(width = 0.9), vjust = -0.5) +
   labs(title = "Nombre moyen de buts par match selon la compétition",
        x = "Compétition", y = "Nombre moyen de buts par match") +
   scale_fill_manual(values = c("FA Cup" = "blue", "Premier League" = "red")) +
   theme_minimal()
 ```
 
-### Analyse des Résultats
+*Analyse :* La visualisation 1 montre le nombre de buts moyen par match. On voit que dans la FA Cup, il y a plus de buts moyen par match avec un nombre de 1,77 contre 1,37 en Premier League, ce qui provoque une surprise par rapport à l'hypothèse de départ. On peut aller regarder le taux de clean sheets moyen dans les compétitions pour affirmer ou contredire cette première observation.
 
-Les données montrent que la FA Cup a une moyenne de 1,77 buts par match contre 1,37 pour la Premier League. Ce résultat est surprenant et contredit notre hypothèse initiale selon laquelle il y aurait moins de buts en coupe. 
+### Visualisation 2 : Comparaison des pourcentages d'arrêts de tirs entre la FA Cup et la Premier League
 
-#### Hypothèses et Explications
-
-1. **Nature des Adversaires** : En FA Cup, les équipes de Premier League peuvent rencontrer des équipes de divisions inférieures, ce qui pourrait conduire à un nombre plus élevé de buts en raison de la différence de niveau.
-2. **Approche Offensif** : Les équipes peuvent adopter une approche plus offensive en FA Cup pour éviter les prolongations et les tirs au but, ce qui peut résulter en plus de buts marqués.
-3. **Moins de Pression** : Les équipes de Premier League peuvent jouer avec moins de pression en FA Cup, sachant que cette compétition n'affecte pas leur classement en championnat, ce qui pourrait libérer les attaquants.
-
-## Pourcentage d'Arrêts
-
-```{r}
-avg_saves <- data.frame(
-  Competition = c("FA Cup", "Premier League"),
-  AvgSavePercentage = c(61.68, 66.23)
-)
-
-ggplot(avg_saves, aes(x = Competition, y = AvgSavePercentage, fill = Competition)) +
+```{r plot2, echo=FALSE}
+ggplot(avg_saves, aes(x = Competition, y = avg_save_percentage, fill = Competition)) +
   geom_bar(stat = "identity") +
-  geom_text(aes(label = paste0(AvgSavePercentage, " %")), vjust = -0.5) +
-  labs(title = "Pourcentage d'arrêts selon la compétition",
-       x = "Compétition", y = "Pourcentage d'arrêts") +
+  geom_text(aes(label = paste0(round(avg_save_percentage, 2), " %")), position = position_dodge(width = 0.9), vjust = -0.5) +
+  labs(title = "Comparaison des moyennes des pourcentages d'arrêts de tirs entre la FA Cup et la Premier League",
+       x = "Compétition", y = "Moyenne des pourcentages de saves") +
   scale_fill_manual(values = c("FA Cup" = "blue", "Premier League" = "red")) +
   theme_minimal()
 ```
 
-### Analyse des Résultats
+### Visualisation 3 : Comparaison des pourcentages de clean sheets entre la FA Cup et la Premier League
 
-Le pourcentage d'arrêts est légèrement supérieur en Premier League (66,23 %) par rapport à la FA Cup (61,68 %). Cette différence peut être significative lorsqu'elle est examinée en parallèle avec le nombre de buts concédés par match dans chaque compétition. En Premier League, où les équipes ont un pourcentage d'arrêts plus élevé, le nombre moyen de buts concédés par match est en moyenne plus bas (1,37) par rapport à la FA Cup (1,77).Cela suggère que les équipes de Premier League ont une meilleure efficacité défensive, ce qui se traduit par un pourcentage d'arrêts plus élevé et un nombre de buts concédés plus faible par match. En revanche, en FA Cup, où le pourcentage d'arrêts est légèrement inférieur, les équipes ont tendance à concéder plus de buts par match.
-#### Hypothèses et Explications
-
-1. **Niveau de Compétition** : En Premier League, les gardiens affrontent régulièrement des attaquants de haut niveau, ce qui peut les rendre plus performants sur la durée.
-2. **Rotation des Gardiens** : En FA Cup, certaines équipes utilisent leurs gardiens remplaçants, ce qui pourrait expliquer un pourcentage d'arrêts légèrement inférieur.
-3. **Style de Jeu** : Les matchs de coupe peuvent être plus ouverts avec des attaques fréquentes, ce qui peut rendre le travail des gardiens plus difficile.
-
-## Pourcentage de Clean Sheets
-
-```{r}
-avg_cleansheet <- data.frame(
-  Competition = c("FA Cup", "Premier League"),
-  AvgCleanSheetPercentage = c(20.66, 30.74)
-)
-
-ggplot(avg_cleansheet, aes(x = Competition, y = AvgCleanSheetPercentage, fill = Competition)) +
+```{r plot3, echo=FALSE}
+ggplot(avg_cleansheet, aes(x = Competition, y = avg_cleansheet_percentage, fill = Competition)) +
   geom_bar(stat = "identity") +
-  geom_text(aes(label = paste0(AvgCleanSheetPercentage, " %")), vjust = -0.5) +
-  labs(title = "Pourcentage de clean sheets selon la compétition",
-       x = "Compétition", y = "Pourcentage de clean sheets") +
+  geom_text(aes(label = paste0(round(avg_cleansheet_percentage, 2), " %")), position = position_dodge(width = 0.9), vjust = -0.5) +
+  labs(title = "Comparaison des moyennes des pourcentages de cleans sheet entre la FA Cup et la Premier League",
+       x = "Compétition", y = "Moyenne des pourcentages de cleans sheet") +
   scale_fill_manual(values = c("FA Cup" = "blue", "Premier League" = "red")) +
   theme_minimal()
 ```
 
-### Analyse des Résultats
+*Analyse :* Les visualisations 2 et 3 montrent qu'il y a plus d'arrêts de tirs en Premier League qu'en FA Cup (66,23 % contre 61,68 %). De même, pour les clean sheets, la Premier League est plus performante (30,74 % contre 20,66 %). Ces observations confirment les résultats de la visualisation 1 et réfutent notre hypothèse de départ. Pour une analyse plus détaillée, nous examinons les performances de trois clubs de Premier League (Manchester City, Fulham et Southampton) dans les deux compétitions.
 
-En Premier League, le pourcentage de clean sheets est de 30,74 %, tandis qu'en FA Cup, il est de 20,66 %. Cette différence indique que les équipes ont tendance à garder leur cage inviolée plus souvent en Premier League qu'en FA Cup.
+### Visualisation 4, 5 et 6 : Performances des Équipes Spécifiques
 
-Cette observation est cohérente avec le nombre moyen de buts par match dans chaque compétition. En Premier League, où les équipes ont un pourcentage de clean sheets plus élevé, le nombre moyen de buts concédés par match est en moyenne plus bas (1,37) par rapport à la FA Cup (1,77). Cela suggère que les équipes de Premier League ont une meilleure efficacité défensive, ce qui se traduit par un nombre de buts concédés plus faible et donc un pourcentage de clean sheets plus élevé.
-
-#### Hypothèses et Explications
-
-1. **Importance des Matchs** : En Premier League, chaque match compte pour le classement final, ce qui pousse les équipes à être plus défensives pour éviter les buts.
-2. **Adversaires Variés en Coupe** : En FA Cup, les équipes de Premier League affrontent parfois des équipes de divisions inférieures qui peuvent adopter des tactiques très offensives dans l'espoir de créer une surprise.
-3. **Gestion de l'Équipe** : Les équipes de Premier League peuvent être plus conservatrices dans leur gestion défensive au long de la saison, tandis qu'en coupe, elles peuvent prendre plus de risques.
-
-## Performance des Équipes Sélectionnées
-
-### Nombre Moyen de Buts par Match
-
-```{r}
-team_goals <- data.frame(
-  Team = rep(c("Fulham", "Manchester City", "Southampton"), each = 2),
-  Competition = rep(c("FA Cup", "Premier League"), 3),
-  AvgGoals = c(1.8, 1.37, 3.17, 2.42, 1.67, 0.95)
-)
-
-ggplot(team_goals, aes(x = Competition, y = AvgGoals, fill = Team)) +
+```{r plots4, echo=FALSE}
+ggplot(teams_of_interest, aes(x = Competition, y = Gls / MP, fill = Squad)) +
   geom_bar(stat = "identity", position = "dodge") +
-  geom_text(aes(label = paste0(AvgGoals, " buts/match")), position = position_dodge(width = 0.9), vjust = -0.5) +
-  labs(title = "Nombre moyen de buts par match pour Fulham, Manchester City et Southampton selon la compétition",
+  geom_text(aes(label = paste0(round(Gls / MP, 2), " buts/match")), position = position_dodge(width = 0.9), vjust = -0.5) +
+  labs(title = "Nombre moyen de buts par match pour Man City, Fulham et Southampton",
        x = "Compétition", y = "Nombre moyen de buts par match") +
-  scale_fill_manual(values = c("Fulham" = "black", "Manchester City" = "skyblue", "Southampton" = "red")) +
+  scale_fill_manual(values = c("Manchester City" = "skyblue", "Southampton" = "red", "Fulham" = "black")) +
   theme_minimal()
 ```
 
-### Analyse des Résultats
-
-Les résultats montrent des variations significatives entre les compétitions pour les équipes sélectionnées. Par exemple, Manchester City marque en moyenne 3,17 buts par match en FA Cup contre 2,42 en Premier League.
-
-#### Hypothèses et Explications
-
-1. **Différences de Niveau des Adversaires** : Manchester City peut affronter des équipes plus faibles en FA Cup, ce qui se traduit par un plus grand nombre de buts.
-2. **Motivation en Coupe** : Les équipes de bas de tableau comme Southampton peuvent adopter une stratégie plus offensive en FA Cup pour essayer de compenser leur manque de succès en championnat.
-3. **Tactiques et Sélection des Joueurs** : Les équipes peuvent expérimenter différentes formations et donner du temps de jeu à des attaquants supplémentaires en FA Cup.
-
-### Pourcentage d'Arrêts
-
-```{r}
-team_saves <- data.frame(
-  Team = rep(c("Fulham", "Manchester City", "Southampton"), each = 2),
-  Competition = rep(c("FA Cup", "Premier League"), 3),
-  SavePercentage = c(80.8, 76.5, 100, 67.4, 75, 52.7)
-)
-
-ggplot(team_saves, aes(x = Competition, y = SavePercentage, fill = Team)) +
+```{r plots5, echo=FALSE}
+ggplot(goalkeeping_teams_of_interest, aes(x = Competition, y = Arret, fill = Squad)) +
   geom_bar(stat = "identity", position = "dodge") +
-  geom_text(aes(label = paste0(SavePercentage, " %")), position = position_dodge(width = 0.9), vjust = -0.5) +
-  labs(title = "Pourcentage d'arrêts pour Fulham, Manchester City et Southampton selon la compétition",
+  geom_text(aes(label = paste0(round(Arret, 2), " %")), position = position_dodge(width = 0.9), vjust = -0.5) +
+  labs(title = "Pourcentage d'arrêts pour Man City, Fulham et Southampton",
        x = "Compétition", y = "Pourcentage d'arrêts") +
-  scale_fill_manual(values = c("Fulham" = "black", "Manchester City" = "skyblue", "Southampton" = "red")) +
+  scale_fill_manual(values = c("Manchester City" = "skyblue", "Southampton" = "red", "Fulham" = "black")) +
   theme_minimal()
 ```
 
-### Analyse des Résultats
-
-Les pourcentages d'arrêts varient également significativement entre les compétitions pour les équipes sélectionnées. Par exemple, Manchester City affiche un pourcentage d'arrêts de 100 % en FA Cup, contre 67,4 % en Premier League. Cette différence est intéressante à examiner en relation avec le nombre de buts marqués par Manchester City dans chaque compétition. En FA Cup, où Manchester City affiche un pourcentage d'arrêts de 100 %, ils ont également marqué en moyenne 3,17 buts par match. En revanche, en Premier League, où leur pourcentage d'arrêts est de 67,4 %, ils ont marqué en moyenne 2,42 buts par match. Cette corrélation suggère que lorsque Manchester City est plus efficace dans ses arrêts en FA Cup, cela peut potentiellement libérer leur potentiel offensif, conduisant ainsi à un plus grand nombre de buts marqués par match. En revanche, une efficacité réduite dans les arrêts en Premier League peut être associée à une pression défensive accrue, ce qui peut affecter leurs performances offensives.
-
-#### Hypothèses et Explications
-
-1. **Rotation des Gardiens** : Les équipes peuvent utiliser des gardiens remplaçants en FA Cup, ce qui peut entraîner des performances variables.
-2. **Approche Tactique** : Les équipes peuvent adapter leur stratégie en fonction du niveau de l'adversaire et de l'importance du match, ce qui peut influencer le pourcentage d'arrêts.
-3. **Fatigue et Concentration** : La fatigue accumulée au cours de la saison peut affecter la concentration des gardiens en championnat, ce qui peut se traduire par un pourcentage d'arrêts plus faible.
-
-### Pourcentage de Clean Sheets
-
-```{r}
-team_cleansheets <- data.frame(
-  Team = rep(c("Fulham", "Manchester City", "Southampton"), each = 2),
-  Competition = rep(c("FA Cup", "Premier League"), 3),
-  CleanSheetPercentage = c(13.5, 11.7, 13, 15.53, 14, 10.87)
-)
-
-ggplot(team_cleansheets, aes(x = Competition, y = CleanSheetPercentage, fill = Team)) +
+```{r plots6, echo=FALSE}
+ggplot(goalkeeping_teams_of_interest, aes(x = Competition, y = `CS%`, fill = Squad)) +
   geom_bar(stat = "identity", position = "dodge") +
-  geom_text(aes(label = paste0(CleanSheetPercentage, " %")), position = position_dodge(width = 0.9), vjust = -0.5) +
-  labs(title = "Pourcentage de clean sheets pour Fulham, Manchester City et Southampton selon la compétition",
+  geom_text(aes(label = paste0(round(`CS%`, 2), " %")), position = position_dodge(width = 0.9), vjust = -0.5) +
+  labs(title = "Pourcentage de clean sheets pour Man City, Fulham et Southampton",
        x = "Compétition", y = "Pourcentage de clean sheets") +
-  scale_fill_manual(values = c("Fulham" = "black", "Manchester City" = "skyblue", "Southampton" = "red")) +
+  scale_fill_manual(values = c("Manchester City" = "skyblue", "Southampton" = "red", "Fulham" = "black")) +
   theme_minimal()
 ```
 
+*Analyse :* Les visualisations 4, 5 et 6 montrent que les trois équipes (Manchester City, Fulham et Southampton) sont plus performantes en FA Cup en termes de buts marqués, mais le pourcentage d'arrêts de ces équipes est plus élevé en FA Cup, ce qui peut fausser légèrement les résultats. Cette observation est probablement due à l'échantillon limité de 20 équipes. Examinons les tirs pour approfondir l'analyse.
 
+### Visualisation 7 : Nombre de tirs par match selon la compétition
 
-### Nombre Moyen de Tirs par Match
-
-En moyenne, les équipes ont pris plus de tirs par match en FA Cup (13,5) que en Premier League (11,7), ce qui correspond également à un nombre de tirs cadrés par match plus élevé en FA Cup (4,4) par rapport à la Premier League (4,1). Cette tendance suggère une approche plus offensive adoptée en coupe, où les équipes cherchent à marquer rapidement pour éviter les prolongations ou les tirs au but. La différence dans le nombre de tirs peut également refléter la variabilité du niveau des adversaires en FA Cup, où les équipes de divisions inférieures peuvent être plus ouvertes en attaque, offrant ainsi plus d'opportunités de tirs aux équipes de Premier League.En moyenne, les équipes ont marqué plus de buts par match en FA Cup (1,77) que en Premier League (1,37), ce qui suggère une tendance offensive plus prononcée dans cette compétition. Cette observation est cohérente avec le fait que les équipes en FA Cup prennent également plus de tirs par match, ce qui indique une approche plus offensive et une volonté de marquer des buts.
-
-```{r}
-avg_shots <- data.frame(
-  Competition = c("FA Cup", "Premier League"),
-  AvgShots = c(13.5, 11.7)
-)
-
-ggplot(avg_shots, aes(x = Competition, y = AvgShots, fill = Competition)) +
-  geom_bar(stat = "identity") +
-  geom_text(aes(label = AvgShots), vjust = -0.5) +
-  labs(title = "Nombre moyen de tirs par match selon la compétition",
-       x = "Compétition", y = "Nombre moyen de tirs par match") +
+```{r plot7, echo=FALSE}
+ggplot(avg_shooting, aes(x = Competition, y = `Sh/90`, fill = Competition)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  labs(title = "Nombre de tirs par match selon la compétition",
+       x = "Compétition", y = "Nombre de tirs par match") +
   scale_fill_manual(values = c("FA Cup" = "blue", "Premier League" = "red")) +
   theme_minimal()
 ```
 
-### Nombre Moyen de Tirs Cadrés par Match
+*Analyse :* La visualisation 7 montre qu'il y a plus de tirs moyen par match en FA Cup, ce qui indique que les équipes se projettent plus vers l'avant, contrairement à notre hypothèse initiale. Examinons cela de plus près avec les trois équipes spécifiques.
 
-Le nombre moyen de tirs cadrés par match est également plus élevé en FA Cup (4,4) par rapport à la Premier League (4,1). Cette tendance est intéressante à observer, d'autant plus que le nombre moyen de buts par match est également plus élevé en FA Cup (1,77) par rapport à la Premier League (1,37). Cela suggère que les équipes en coupe ont non seulement tendance à cibler plus souvent le but adverse avec leurs tirs, mais aussi qu'elles réussissent à convertir ces occasions en buts à un taux légèrement plus élevé que lors des matchs de championnat. Ces observations soulignent l'importance de la précision des tirs et de l'efficacité offensive dans les matchs de coupe, où chaque occasion peut avoir un impact significatif sur le résultat final.
+### Visualisation 11 : Nombre de tirs par match pour Manchester City, Southampton et Fulham selon la compétition
 
-```{r}
-avg_shots_on_target <- data.frame(
-  Competition = c("FA Cup", "Premier League"),
-  AvgShotsOnTarget = c(4.4, 4.1)
-)
+```{r plot11, echo=FALSE}
+ggplot(shooting_teams_of_interest, aes(x = Competition, y = `Sh/90`, fill = Squad)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  geom_text(aes(label = round(`Sh/90`, 2)), position = position_dodge(width = 0.9), vjust = -0.5) +
+  labs(title = "Nombre de tirs par match pour Manchester City, Southampton et Fulham selon la compétition
 
-ggplot(avg_shots_on_target, aes(x = Competition, y = AvgShotsOnTarget, fill = Competition)) +
-  geom_bar(stat = "identity") +
-  geom_text(aes(label = AvgShotsOnTarget), vjust = -0.5) +
-  labs(title = "Nombre moyen de tirs cadrés par match selon la compétition",
-       x = "Compétition", y = "Nombre moyen de tirs cadrés par match") +
-  scale_fill_manual(values = c("FA Cup" = "blue", "Premier League" = "red")) +
+",
+       x = "Compétition", y = "Nombre de tirs par match") +
+  scale_fill_manual(values = c("Manchester City" = "skyblue", "Southampton" = "red", "Fulham" = "black")) +
   theme_minimal()
 ```
 
-### Conclusion
-
-En incluant le nombre moyen de tirs cadrés par match dans notre analyse, nous avons observé une corrélation plus forte entre les tirs, les tirs cadrés et les arrêts des gardiens. Les équipes qui prennent plus de tirs et les ciblent plus souvent parviennent à mettre davantage de pression sur les gardiens adverses, ce qui réduit leur efficacité globale. Ces observations soulignent l'importance de la qualité des tirs et de la défense dans le déroulement des matchs de football, et soulignent la nécessité pour les équipes de trouver un équilibre entre l'attaque et la défense pour réussir dans différentes compétitions.
-
-
-### Ratio Buts/Tirs
-
-Le ratio buts/tirs est un indicateur important de l'efficacité des équipes à convertir leurs occasions en buts. En comparant la FA Cup et la Premier League, nous pouvons observer comment ce ratio varie selon la compétition.
-
-```{r}
-goal_to_shot_ratio <- data.frame(
-  Competition = c("FA Cup", "Premier League"),
-  GoalToShotRatio = c(0.105, 0.1)
-)
-
-ggplot(goal_to_shot_ratio, aes(x = Competition, y = GoalToShotRatio, fill = Competition)) +
-  geom_bar(stat = "identity") +
-  geom_text(aes(label = GoalToShotRatio), vjust = -0.5) +
-  labs(title = "Ratio Buts/Tirs selon la compétition",
-       x = "Compétition", y = "Ratio Buts/Tirs") +
-  scale_fill_manual(values = c("FA Cup" = "blue", "Premier League" = "red")) +
-  theme_minimal()
-```
-
-### Analyse des Résultats
-
-Le ratio buts/tirs est légèrement plus élevé en FA Cup (0,105) par rapport à la Premier League (0,1), malgré le nombre moyen de buts par match étant plus élevé en FA Cup (1,77) comparé à la Premier League (1,37). Cette observation suggère que les équipes en coupe ont été légèrement plus efficaces pour convertir leurs tirs en buts, malgré un nombre global de buts par match plus élevé. Plusieurs facteurs peuvent expliquer cette tendance, notamment une concentration accrue sur l'attaque dans les matchs à élimination directe, une pression réduite par rapport à la Premier League et la qualité variable des adversaires rencontrés.
-
-
-#### Hypothèses et Explications
-
-L'hypothèse initiale suggère que les matchs de coupe adoptent une approche plus prudente et tactique, ce qui pourrait se traduire par moins de buts par match par rapport aux championnats où les équipes ont une saison entière pour s'adapter et se projeter. 
-
-Cependant, les résultats de l'analyse contredisent partiellement cette hypothèse. Bien que la différence de nombre moyen de buts par match entre la FA Cup et la Premier League ne soit pas aussi significative que prévu, d'autres aspects des performances des équipes varient en fonction de la compétition.
-
-Par exemple, les données révèlent que le pourcentage de clean sheets est plus élevé en Premier League, ce qui indique une meilleure efficacité défensive dans cette compétition où les équipes ont plus de temps pour se préparer et s'adapter tactiquement. De plus, le pourcentage d'arrêts des gardiens est également supérieur en Premier League, suggérant une pression défensive plus importante dans cette compétition.
-
-Ces résultats mettent en lumière les nuances des performances des équipes dans différentes compétitions et soulignent l'importance de considérer plusieurs aspects du jeu pour comprendre pleinement les différences entre les matchs de coupe et les championnats. Bien que l'hypothèse initiale puisse ne pas être entièrement confirmée, l'analyse fournit des insights précieux sur les stratégies et les performances des équipes dans des contextes de compétition différents.
+*Analyse :* La visualisation 11 confirme que les équipes tentent plus de tirs en FA Cup que dans la Premier League, à l'exception de Manchester City. Cette observation suggère que les équipes adoptent une approche plus offensive en FA Cup, ce qui contredit notre hypothèse initiale selon laquelle les équipes seraient plus prudentes en coupe.
 
 # Conclusion
 
-Les analyses approfondies des différences entre les championnats et les coupes ont révélé des variations significatives dans les performances des équipes, à la fois sur le plan offensif et défensif. Bien que certaines conclusions aient contredit notre hypothèse initiale selon laquelle les matchs de coupe se caractériseraient par moins de buts, elles ont également mis en lumière des aspects intéressants du jeu qui méritent d'être explorés plus en détail.
+Cette analyse montre que, contrairement à notre hypothèse initiale, les équipes marquent plus de buts et prennent plus de tirs en FA Cup par rapport à la Premier League. Les pourcentages d'arrêts et de clean sheets sont également plus élevés en Premier League. Cela suggère que les équipes adoptent une approche plus offensive en FA Cup.
 
-Il est clair que la nature des matchs, l'enjeu et les adversaires jouent un rôle crucial dans les stratégies adoptées par les équipes. Par exemple, bien que le nombre moyen de buts par match puisse ne pas différer considérablement entre la FA Cup et la Premier League, d'autres indicateurs tels que le pourcentage de clean sheets et le pourcentage d'arrêts des gardiens varient de manière significative entre les deux compétitions.
+## Ouverture
 
-Ces résultats soulèvent plusieurs questions intrigantes pour de futures recherches. Par exemple, comment les équipes ajustent-elles leurs stratégies tactiques en fonction du format de la compétition et de la qualité de l'adversaire ? Dans quelle mesure la fatigue et la pression influencent-elles les performances des équipes dans des matchs à élimination directe par rapport à une saison entière ?
-
-En outre, cette étude met en évidence la nécessité de considérer plusieurs aspects du jeu pour comprendre pleinement les différences entre les matchs de coupe et les championnats. Il serait intéressant d'explorer davantage l'impact des facteurs extérieurs tels que la météo, les blessures et les enjeux psychologiques sur les performances des équipes dans différentes compétitions.
-
-En conclusion, cette étude fournit une base solide pour une analyse plus approfondie des stratégies et des performances des équipes dans le football professionnel. Les découvertes réalisées ouvrent la voie à de nouvelles investigations pour mieux comprendre les dynamiques complexes qui régissent le monde du football.
-
-```{r}
-# Appliquer la fonction à chaque URL d'équipe de la FA Cup
-fa_cup_team_results_list <- lapply(fa_cup_team_urls, get_fa_cup_team_results)
-
-# Combiner les résultats de la FA Cup
-fa_cup_team_results <- do.call(rbind, fa_cup_team_results_list)
-
-# Collecter les URLs des équipes en Premier League pour la saison 2022-2023
-pl_team_urls <- fb_teams_urls("https://fbref.com/en/comps/9/2022-2023/2022-2023-Premier-League-Stats")
-
-# Fonction pour extraire les résultats de championnat
-get_pl_team_results <- function(team_url) {
-  results <- fb_team_match_results(team_url)
-  results <- results %>%
-    mutate(Team = gsub(".*/", "", team_url),
-           Team = gsub("-Stats", "", Team),
-           Competition = "Premier League",
-           GF = as.numeric(GF),
-           GA = as.numeric(GA)) %>%
-    select(Team, Date, Opponent, Result, Venue, GF, GA, Comp = Competition)
-  return(results)
-}
-
-# Appliquer la fonction aux URLs de Premier League
-pl_team_results_list <- lapply(pl_team_urls, get_pl_team_results)
-
-# Combiner les résultats de la Premier League
-pl_team_results <- do.call(rbind, pl_team_results_list)
-
-# Fusionner les données de la FA Cup et de la Premier League
-all_results <- rbind(fa_cup_team_results, pl_team_results)
-
-# Calculer les moyennes de buts marqués pour chaque compétition
-average_goals <- all_results %>%
-  group_by(Comp) %>%
-  summarise(AverageGoals = mean(GF, na.rm = TRUE))
-
-# Visualisation des moyennes de buts marqués
-ggplot(average_goals, aes(x = Comp, y = AverageGoals, fill = Comp)) +
-  geom_col() +
-  labs(title = "Moyenne des buts marqués par match en FA Cup vs Premier League",
-       x = "Compétition",
-       y = "Moyenne des buts marqués par match") +
-  theme_minimal() +
-  theme(legend.position = "none")
-
-# Afficher les résultats
-print(average_goals)
-```
-
-
-### Interprétation et conclusion
-
-L'analyse montre que le nombre moyen de buts par match diffère entre les compétitions de la FA Cup et de la Premier League. Cette information pourrait suggérer différentes approches tactiques entre les matchs de coupe et de championnat. Par exemple, les équipes pourraient adopter des stratégies plus offensives ou défensives selon l'importance ou le format du match.
-
-### Questions pour approfondir l'analyse
-
-Cette observation initiale mène à plusieurs questions intéressantes pour des recherches futures :
-
-- Comment les styles de jeu diffèrent-ils entre les matchs de coupe et de championnat au niveau des équipes individuelles ?
-- Y a-t-il une corrélation entre la fréquence des changements de joueurs et les performances dans les matchs de coupe par rapport au championnat ?
-- Quel est l'impact de la pression des matchs à élimination directe sur les performances des équipes en termes de buts marqués et encaissés ?
+Pour approfondir cette analyse, il serait intéressant de considérer d'autres facteurs tels que l'état du terrain et le moment des matchs (partie de la saison). Ces éléments pourraient influencer les performances des équipes et offrir une compréhension plus complète des différences entre les compétitions de coupe et de championnat.
