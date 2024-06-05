@@ -46,7 +46,7 @@ df <- data.frame(
   nb_matchs_par_equipe = unlist(nb_matchs_par_equipe),
   nb_blessures_par_ligue = unlist(nb_blessures_par_ligue)
 )
-
+print(nb_blessures_par_ligue)
 #   graphique à points montrant la corrélation entre le nombre de matchs et le nombre de blessures
 ggplot(df, aes(x = nb_matchs_par_equipe, y = nb_blessures_par_ligue, color = ligue)) +
   geom_point() +
@@ -70,7 +70,10 @@ nb_days <- end_dates - start_dates
 print(nb_days)
 # Calculer le nombre moyen de jours entre chaque match pour chaque ligue
 nb_moyen_intervalle_match <- nb_days / unlist(nb_matchs_par_equipe)
+print(nb_moyen_intervalle_match)
 
+nb_moyen_intervalle_match <- as.numeric(nb_days / unlist(nb_matchs_par_equipe))
+print(nb_moyen_intervalle_match)
 # Ajouter les résultats à la data frame
 df <- data.frame(
   ligue = liguesa,
@@ -87,5 +90,42 @@ ggplot(df, aes(x = nb_moyen_intervalle_match, y = nb_blessures_par_ligue, color 
   theme_minimal()
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# utilisation des données brut qui date de la premiere pre'sentation car les blessuures sont les blessures en direct
+print(df)
+nb_blessures_par_ligue_new <- c(70, 37, 60, 62, 28)
+nb_matchs_par_equipe_old<- c(35, 33, 34, 31, 31)
+nb_moyen_intervalle_match_old<-nb_moyen_intervalle_match <- nb_days / unlist(nb_matchs_par_equipe_old)
+
+ggplot(df, aes(x = nb_matchs_par_equipe_old, y = nb_blessures_par_ligue_new, color = ligue, shape = ligue)) +
+  geom_point(size = 3) +  # increase the size of the points
+  geom_smooth(method = "lm", se = FALSE) +
+  labs(x = "Nombre de matchs par équipe", y = "Nombre de blessures", title = "Relation nombre de matchs et blessures ") +
+  theme_minimal() +
+  scale_color_manual(values = c("ENG" = "red", "ESP" = "blue", "ITA" = "green", "GER" = "black", "FRA" = "orange")) +  # set the colors
+  scale_shape_manual(values = c("ENG" = 16, "ESP" = 17, "ITA" = 15, "GER" = 18, "FRA" = 19))  # set the shapes
+
+ggplot(df, aes(x = nb_moyen_intervalle_match_old, y = nb_blessures_par_ligue_new, color = ligue, shape = ligue)) +
+  geom_point(size = 3) +  # increase the size of the points
+  geom_smooth(method = "lm", se = FALSE) +
+  labs(x = "Nombre moyen de jours entre chaque match", y = "Nombre de blessures", title = "Relation delai  matchs et blessures") +
+  theme_minimal() +
+  scale_color_manual(values = c("ENG" = "red", "ESP" = "blue", "ITA" = "green", "GER" = "black", "FRA" = "orange")) +  # set the colors
+  scale_shape_manual(values = c("ENG" = 16, "ESP" = 17, "ITA" = 15, "GER" = 18, "FRA" = 19))  # set the shapes
 
 
