@@ -1381,9 +1381,33 @@ ggplot(shooting_teams_of_interest, aes(x = Competition, y = `Sh/90`, fill = Squa
 
 *Analyse :* La visualisation 11 confirme que les équipes tentent plus de tirs en FA Cup que dans la Premier League, à l'exception de Manchester City. Cette observation suggère que les équipes adoptent une approche plus offensive en FA Cup, ce qui contredit notre hypothèse initiale selon laquelle les équipes seraient plus prudentes en coupe.
 
+# Powerbi
+Une question qui pourrait se poser est de savoir si les joueurs de la Premier League ont tendance à rester dans cette ligue tout au long de leur carrière, car elle a la réputation d'être assez fermée. Pour répondre à cette question, nous avons rassemblé diverses données sur les joueurs de la Premier League dans un fichier CSV.
+
+Les données comprennent le nom de l'équipe (team_name), la ligue (league), le pays (country), l'âge du joueur (player_age), sa nationalité (player_nationality) et son poste (player_position). Nous avons également inclus des informations sur le club précédent du joueur (club_2), sa ligue précédente (league_2) et son pays précédent (country_2).
+
+Il convient de préciser que club_2, league_2 et country_2 font référence au club, à la ligue et au pays où le joueur a joué précédemment.
+*Graph :*
+
+Pour essayer de répondre à cette question, nous avons créé plusieurs graphiques :
+<p align="center">
+  <img src="PowerBi/Pbix.PNG" alt="Origines des joeurs de PL">
+</p>
+Graphique 1 (en haut à gauche) : une heatmap qui montre les différents clubs précédents des joueurs de la Premier League.
+Graphique 2 (en haut à droite) : un graphique qui montre la nationalité des joueurs de la Premier League.
+Graphique 3 (en bas à droite) : un histogramme qui montre le nombre de joueurs par nationalité dans la Premier League.
+Nous avons également créé un tableau qui montre le nombre de nationalités différentes dans la Premier League.
+Enfin, nous avons créé deux graphiques de sélection qui nous permettent d'affiner les résultats des trois premiers graphiques et de répondre à des questions précises comme : "Quelles sont les origines des défenseurs droits d'Arsenal et de Manchester City ?".
+
+*Analyse :*
+On constate que globalement, il y a une très grande majorité de joueurs d'origine anglaise dans la Premier League. De même, une grande majorité de joueurs de la Premier League a déjà joué dans un club anglais, ce qui tend à confirmer l'idée que la Premier League est une ligue "conservatrice".
+
+En conclusion, on peut dire que les Anglais sont très attachés à leur championnat et qu'ils ont tendance à favoriser les joueurs locaux.
+
 # Conclusion
 
 Cette analyse montre que, contrairement à notre hypothèse initiale, les équipes marquent plus de buts et prennent plus de tirs en FA Cup par rapport à la Premier League. Les pourcentages d'arrêts et de clean sheets sont également plus élevés en Premier League. Cela suggère que les équipes adoptent une approche plus offensive en FA Cup.
+
 
 ## Ouverture
 
