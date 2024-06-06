@@ -794,20 +794,21 @@ Comme un joueur peut avoir joué pour plusieurs clubs au cours de sa carrière, 
 players_stats_df <- do.call(rbind, players_stats_list)
 
 ```
-
-
+Pour le deuxième graphique, j'ai d'abord calculé la fréquence de blessure en pourcentage, puis j'ai créé un histogramme pour représenter les résultats.
 ### Graphique
 <p align="center">
   <img src="graph/InjuriesCloud_PlPLayers.png" alt="Texte alternatif" style="display: block; margin: auto;">
   Cette visualisation nous montre les blessures les plus récurrentes avec un double encodage pour représenter la fréquence, la taille et la couleur.
   Ce graphique a été réalisé à partir de données recensant 1000 blessures de joueurs ayant évolué en Premier League.
+  <img src="graph/injuriesTop5.png" alt="Texte alternatif" style="display: block; margin: auto;">
+  Cette visualisation nous montre les 5 les plus récurrentes en terme de pourcentage.
 </p>
 
 ### Analyse des graphiques
 Les résultats confirment nos attentes, avec comme top 3 des blessures les plus récurrentes : en premier, les adducteurs, suivis des genoux, puis des chevilles.
 Cette observation est logique étant donné que le football de haut niveau exerce une pression particulière sur certains muscles et articulations.
 Nous remarquons également l'impact de la crise du COVID-19, qui a réussi à figurer parmi les blessures les plus récurrentes, bien que son impact ait été de courte durée dans les rapports de blessures  (avant la suspension du championnat).
-
+La deuxième visualisation nous permet de préciser les résultats de la première, en montrant que l'écart entre les blessures les plus fréquentes est moins important qu'il n'y paraissait dans le nuage de mots, notamment entre la première et la deuxième blessure les plus courantes.
 
 ### **Le nombre de blessures est-il lié au nombre de match joué ou le championnat joue une plus grosse partie (stéréotype de championnat + physique que d'autres )**
 (traité par Ahmed)
