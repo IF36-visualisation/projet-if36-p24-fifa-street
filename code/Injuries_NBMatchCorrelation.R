@@ -86,7 +86,7 @@ df <- data.frame(
 ggplot(df, aes(x = nb_moyen_intervalle_match, y = nb_blessures_par_ligue, color = ligue)) +
   geom_point() +
   geom_smooth(method = "lm", se = FALSE) +
-  labs(x = "Nombre moyen de jours entre chaque match", y = "Nombre de blessures", title = "Relation delai  matchs et blessures") +
+  labs(x = "Nombre moyen de jours entre chaque match", y = "Nombre de blessures", title = "Relation délai  matchs et blessures") +
   theme_minimal()
 
 
@@ -106,7 +106,7 @@ ggplot(df, aes(x = nb_moyen_intervalle_match, y = nb_blessures_par_ligue, color 
 
 
 
-# utilisation des données brut qui date de la premiere pre'sentation car les blessuures sont les blessures en direct
+# utilisation des données brut qui date de la premiere presentation(4 mai) car les blessuures sont les blessures en direct
 print(df)
 nb_blessures_par_ligue_new <- c(70, 37, 60, 62, 28)
 nb_matchs_par_equipe_old<- c(35, 33, 34, 31, 31)
@@ -123,7 +123,7 @@ ggplot(df, aes(x = nb_matchs_par_equipe_old, y = nb_blessures_par_ligue_new, col
 ggplot(df, aes(x = nb_moyen_intervalle_match_old, y = nb_blessures_par_ligue_new, color = ligue, shape = ligue)) +
   geom_point(size = 3) +  # increase the size of the points
   geom_smooth(method = "lm", se = FALSE) +
-  labs(x = "Nombre moyen de jours entre chaque match", y = "Nombre de blessures", title = "Relation delai  matchs et blessures") +
+  labs(x = "Nombre moyen de jours entre chaque match", y = "Nombre de blessures", title = "Relation délai  matchs et blessures") +
   theme_minimal() +
   scale_color_manual(values = c("ENG" = "red", "ESP" = "blue", "ITA" = "green", "GER" = "black", "FRA" = "orange")) +  # set the colors
   scale_shape_manual(values = c("ENG" = 16, "ESP" = 17, "ITA" = 15, "GER" = 18, "FRA" = 19))  # set the shapes
