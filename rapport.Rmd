@@ -2,8 +2,8 @@
 title: "Analyse de la Premier League"
 author: "Groupe Fifa Street"
 output:
-  html_document: default
   pdf_document: default
+  html_document: default
 ---
 
 # Introduction
