@@ -690,7 +690,11 @@ ggplot(team_wages, aes(x = Note, y = AnnualWageEUR, shape = Groupe_poste, color 
     legend.direction = "horizontal",
     legend.key.size = unit(1.5, "lines")
   )
+```
 
+Nous pouvons également utiliser des donuts chart avec la médiane pour les salaires, comparées aux postes et aux notes. On voit une plus grande différence par rapport aux notes des joueurs, mais également avec les postes. 
+
+```{r}
 median_wages <- team_wages %>%
   group_by(Groupe_poste) %>%
   summarise(MedianWageEUR = median(AnnualWageEUR, na.rm = TRUE))
