@@ -1,9 +1,13 @@
-iinstall.packages("worldfootballR")
+install.packages("worldfootballR")
 
 # Chargement du package worldfootballR
 library(worldfootballR)
 
 #Load data
+#man_city_url <- "https://fbref.com/en/squads/b8fd03ef/Manchester-City-Stats"
+#man_city_wages <- fb_squad_wages(team_urls = man_city_url)
+
+#write.csv(man_city_wages, "/Users/aminelazouzi/Documents/man_city_wages.csv", row.names = FALSE)
 
 teams_urls <- list(
   man_city = "https://fbref.com/en/squads/b8fd03ef/Manchester-City-Stats",
@@ -229,7 +233,7 @@ team_wages <- team_wages %>%
 team_wages <- team_wages %>%
   mutate(Nation = recode(Nation, "ENG" = "UK"))
 
-# Visualisation : Comparaison des salaires annuels des joueurs de Manchester City en fonction des notes et des postes
+# Visualisation : Comparaison des salaires annuels des joueurs en fonction des notes et des postes
 ggplot(team_wages, aes(x = Note, y = AnnualWageEUR, shape = Groupe_poste, color = Team)) +
   geom_point(size = 4, alpha = 3) +
   labs(title = "Relation entre les salaires annuels, les notes et les postes des joueurs de PL",
@@ -254,6 +258,58 @@ ggplot(team_wages, aes(x = Note, y = AnnualWageEUR, shape = Groupe_poste, color 
     legend.direction = "horizontal",
     legend.key.size = unit(1.5, "lines")
   )
+
+median_wages <- team_wages %>%
+  group_by(Groupe_poste) %>%
+  summarise(MedianWageEUR = median(AnnualWageEUR, na.rm = TRUE))
+
+# Créer une colonne pour les labels
+median_wages$label <- paste0(median_wages$Groupe_poste, "\n", scales::comma(median_wages$MedianWageEUR))
+
+# Créer le donut chart
+ggplot(median_wages, aes(x = 2, y = MedianWageEUR, fill = Groupe_poste)) +
+  geom_bar(stat = "identity", width = 1, color = "white") +
+  coord_polar(theta = "y", start = 0) +
+  xlim(0.5, 2.5) +
+  theme_void() +
+  theme(
+    plot.title = element_text(face = "bold", hjust = 0.5, size = 20),
+    legend.title = element_text(face = "bold", size = 14),
+    legend.text = element_text(size = 12),
+    legend.position = "right"
+  ) +
+  geom_text(aes(label = label), position = position_stack(vjust = 0.5)) +
+  labs(title = "Médiane des rémunérations annuelles par groupe de poste")
+
+median_wages_by_note <- team_wages %>%
+  filter(Note >= 6 & Note < 10) %>%
+  mutate(Note_tranche = case_when(
+    Note >= 6 & Note < 6.5 ~ "6 - 6.5",
+    Note >= 6.5 & Note < 7 ~ "6.5 - 7",
+    Note >= 7 & Note < 7.5 ~ "7 - 7.5",
+    Note >= 7.5 ~ ">= 7.5"
+  )) %>%
+  group_by(Note_tranche) %>%
+  summarise(MedianWageEUR = median(AnnualWageEUR, na.rm = TRUE))
+
+# Créer une colonne pour les labels
+median_wages_by_note$label <- paste0(median_wages_by_note$Note_tranche, "\n", scales::comma(median_wages_by_note$MedianWageEUR))
+
+# Créer le donut chart
+ggplot(median_wages_by_note, aes(x = 2, y = MedianWageEUR, fill = Note_tranche)) +
+  geom_bar(stat = "identity", width = 1, color = "white") +
+  coord_polar(theta = "y", start = 0) +
+  xlim(0.5, 2.5) +
+  theme_void() +
+  theme(
+    plot.title = element_text(face = "bold", hjust = 0.5, size = 20),
+    legend.title = element_text(face = "bold", size = 14),
+    legend.text = element_text(size = 12),
+    legend.position = "right"
+  ) +
+  geom_text(aes(label = label), position = position_stack(vjust = 0.5)) +
+  labs(title = "Médiane des rémunérations annuelles par tranche de notes")
+
 
 
 
