@@ -424,6 +424,14 @@ Pour mieux analyser les données, nous avons recodé les postes des joueurs en d
 Cette séquence de code applique la fonction case_when() pour chaque ligne du dataframe team_wages. Selon les valeurs de la colonne Pos (qui représente les postes des joueurs), cette fonction affecte un nouveau groupe (Groupe_poste) à chaque joueur en fonction de son poste d'origine. Les postes sont reclassés en fonction des critères définis, et les joueurs sont ainsi regroupés de manière cohérente pour une analyse plus approfondie.
 
 ```{r}
+# Combine all team wages into one dataframe
+team_wages <- bind_rows(
+  man_city_wages %>% mutate(Team = "Manchester City"),
+  arsenal_wages %>% mutate(Team = "Arsenal"),
+  brighton_wages %>% mutate(Team = "Brighton"),
+  everton_wages %>% mutate(Team = "Everton"),
+  sheffield_utd_wages %>% mutate(Team = "Sheffield United")
+)
 # Recoder les postes en nouveaux groupes
 team_wages <- team_wages %>%
   mutate(Groupe_poste = case_when(
@@ -622,14 +630,7 @@ all_notes_df <- bind_rows(
   mutate(notes_df_sheffield, Team = "Sheffield United"),
   mutate(notes_df_everton, Team = "Everton")
 )
-# Combine all team wages into one dataframe
-team_wages <- bind_rows(
-  man_city_wages %>% mutate(Team = "Manchester City"),
-  arsenal_wages %>% mutate(Team = "Arsenal"),
-  brighton_wages %>% mutate(Team = "Brighton"),
-  everton_wages %>% mutate(Team = "Everton"),
-  sheffield_utd_wages %>% mutate(Team = "Sheffield United")
-)
+
 
 ```
 Après avoir ajouté toutes les notes dans un seul DataFrame ('all_notes_df'), nous avons ajoutés la colonne "Note" à team_wages.
