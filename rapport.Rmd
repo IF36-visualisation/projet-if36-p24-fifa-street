@@ -5,7 +5,9 @@ output:
   html_document: default
   pdf_document: default
 ---
-
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
+```
 # Introduction
 
 Nous avons décidé d'orienter notre projet sur la Premier League, qui est la première division de football en Angleterre. La Premier League fait partie des 5 grands championnats avec la Ligue 1 (France), la Liga (Espagne), la Bundesliga (Allemagne) et la Serie A (Italie).
@@ -844,9 +846,6 @@ En conclusion, ces observations soulignent l'importance du repos entre les match
 
 ### **Déterminer le profil de l'équipe parfaite (possession par exemple)**
 (traité par nassim)
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
-```
 
 # Introduction
 
