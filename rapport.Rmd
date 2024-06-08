@@ -159,7 +159,7 @@ Une fois de plus, cette liste n'est pas exhaustive, mais cela donne une idée de
 
 Nous allons à présent vous présenter les différentes questions que nous nous sommes posées sur le championnat. Pour chacune de ces questions, nous allons vous expliquer comment nous allons y répondre et quelles données nous allons utiliser pour cela.
 
-**Quelles sont les différences entre les 5 premières équipes de chaque championnats ? (traité par Ewen)**
+**Quelles sont les différences entre les 5 premières équipes de chaque championnats ?**
 
 Pour répondre à cette question, nous allons nous concentrer sur les 5 premières équipes de chaque championnat pour voir s'il y a des différences significatives entre elles. Nous allons nous intéresser à des statistiques comme la possession de balle (obtenu avec le `stat_type="possession"`), le nombre de passes réussies (avec `stat_type="passing"`),puis le nombre de tirs et le nombre de buts marqués (`stat_type="attack"`).
 
@@ -169,7 +169,7 @@ Pour représenter et mettre en relation les données, nous allons utiliser plusi
 
 Pour répondre à cette question, nous utiliserons deux requêtes. La première nous donnera le nombre de matchs joués, éventuellement accompagné d'un calcul du temps de jeu. Pour des raisons de clarté et de compréhension, nous sélectionnerons probablement les 100 joueurs les plus blessés en utilisant la méthode `tm_player_injury_history()` et en filtrant sur la somme de la différence entre injured_until et injured_since.
 
-**Quelles sont les blessures les plus fréquentes pour les joueurs de Premier League ? (traitée par Ahmed)**
+**Quelles sont les blessures les plus fréquentes pour les joueurs de Premier League ?**
 Nous récupérerons les blessures via tm_player_injury_history, qui prend en paramètre un player_url de Transfermarkt. Nous regarderons donc les blessures de tous les joueurs en filtrant sur les joueurs de PL.
 Un nuage de mots serait bien pour représenter la répartition. . 
 
@@ -177,15 +177,15 @@ Un nuage de mots serait bien pour représenter la répartition. .
 
 Nous examinerons les meilleurs buteurs des championnats et leurs caractéristiques (physiques, temps de jeu, blessures, etc.) pour trouver la meilleure corrélation. Nous pourrons également créer une carte thermique (heatmap) avec PowerBI (ou avec R) sur les origines de ces joueurs en utilisant la méthode `tm_player_bio()`.
 
-**Déterminer le profil de l'équipe parfaite (possession par exemple) (traité par Nassim)**
+**Déterminer le profil de l'équipe parfaite (possession par exemple) **
 
 Nous analyserons les statistiques des meilleures équipes et les comparerons à celles des équipes moins performantes pour déterminer les caractéristiques d'une équipe parfaite, telles que la possession de balle,nombre de buts moyens encaissés... On utilisera `fb_team_match_log_stats()` pour recuperer tout les matchs et faire des moyennes sur leurs matchs .
 
-**Quelle est la corrélation entre la valeur marchande des joueurs et leurs notes / postes ? (traité par Amin)**
+**Quelle est la corrélation entre la valeur marchande des joueurs et leurs notes / postes ? **
 
 Nous étudierons la corrélation entre la valeur marchande des joueurs et son poste ainsi que la note qui lui est attribué par les journalistes. Pour ce faire, nous utiliserons la méthode mentionnée précédemment dans la section "À l'échelle des joueurs".
 
-**Quelles sont les différences entre les championnats et les coupes ? (traité par Nassim)**
+**Quelles sont les différences entre les championnats et les coupes ? **
 
 Il existe plusieurs différences entre les championnats et les coupes. Nous pourrions les distinguer en examinant différents aspects tels que le nombre moyen de buts marqués par match ou les performances moyennes des joueurs en coupe par rapport au championnat. Par exemple, en utilisant la méthode `fb_player_scouting_report()`, nous pouvons spécifier le championnat comme paramètre et obtenir des retours standard pour analyser ces différences.
 
@@ -194,7 +194,6 @@ Il existe plusieurs différences entre les championnats et les coupes. Nous pour
 
 ### Quelles sont les différences entre les 5 premières équipes de chaque championnats ? 
 
-(traité par Ewen)
 
 Pour répondre à cette question, nous allons dans un premier temps effectuer une analyse pour la première League. Nous allons se baser sur des données concernant la saison 2021-2022, et observer les différentes statistiques des équipes durant cette saison, afin d'observer d'éventuels lien entre ces statistiques et la position des équipes dans le classement.
 
@@ -352,7 +351,6 @@ Cependant, nous avons aussi pu remarquer que beaucoup de caractéristiques qui s
 Cela nous amène donc à penser qu'au delà du nombre de buts et de touches, c'est surtout le cumul d'une multitude d'actions faites par les joueurs durant un match, des actions qui sont difficilement représentables par des chiffres, et qui sont pourtant  décisives pour différencier une équipe d'une autre.
 ### **Analyse de la relation entre les salaires, les notes et les postes des joueurs de Manchester City**
 
-(traitée par Amin)
 
 Dans cette partie, nous explorons la relation entre les salaires annuels, les notes des joueurs et leurs postes au sein de l'équipe de Manchester City pour la saison 2023-2024.
 On peut supposer que les salaires seront d'autant plus élevées que les performances du joueurs sont bonnes (notes élevées), nous allons vérifier cela. 
@@ -757,8 +755,6 @@ L'analyse révèle une corrélation claire entre les notes des joueurs et leurs 
 
 ### **Quelles sont les blessures les plus fréquentes pour les joueurs de Premier League ?**
 
-(traité par Ahmed)
-
 Dans cette analyse, nous chercherons à identifier les types de blessures les plus courantes et les parties du corps les plus affectées chez les joueurs professionnels,
 en mettant particulièrement l'accent sur les joueurs de Premier League.
 Nous pourrions nous attendre à ce que les blessures aux chevilles, aux genoux et aux adducteurs soient parmi les plus fréquentes.
@@ -849,7 +845,6 @@ Cependant, la Bundesliga se distingue en ayant un bon temps de repos mais un nom
 En conclusion, ces observations soulignent l'importance du repos entre les matchs dans la prévention des blessures, mais elles soulèvent également d'autres questions sur les facteurs influençant le nombre de blessures dans le football professionnel car le repos n'étant pas l'indice absolu . On pourrait donc se demander quels sont ces autres indices ?
 
 ### **Déterminer le profil de l'équipe parfaite (possession par exemple)**
-(traité par nassim)
 
 
 ## Introduction
