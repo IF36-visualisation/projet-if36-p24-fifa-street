@@ -881,14 +881,14 @@ Dans l'imaginaire collectif des fans de football, la Premier League a une réput
 <p align="center">
   <img src="graph/RelationNbMatch_NbBlessures.png" alt="Relation entre le nombre de matchs par équipe en championnat et le nombre de blessures">
     <div style="width: 100%; border: 1px solid #ccc; padding: 10px; margin-top: 10px;">
-  Sur ce graphique, l'axe des abscisses représente le nombre de matchs par équipe en championnat, tandis que l'axe des ordonnées représente le nombre de blessures. Nous observons une relation linéaire entre le nombre de matchs et le nombre de blessures, sauf pour la Ligue 1 qui semble être une exception à cette tendance.</div>
+  Sur ce graphique, l'axe des abscisses représente le nombre de matchs par équipe en championnat, tandis que l'axe des ordonnées représente le nombre de blessures. Nous observons une relation linéaire entre le nombre de matchs et le nombre de blessures, sauf pour la bundesliga (Allemagne) qui semble être une exception à cette tendance.</div>
 </p>
 
 
 
 ### Analyse des graphiques
 
-Les graphiques montrent clairement des tendances. Nous constatons presque une relation linéaire entre le nombre de matchs et les blessures, à l'exception de la Ligue 1. Cela confirme l'idée que certains championnats peuvent être plus sujets aux blessures en raison de leur intensité de matchs.
+Les graphiques montrent clairement des tendances. Nous constatons presque une relation linéaire entre le nombre de matchs et les blessures, à l'exception de la bundesliga.. Cela confirme l'idée que certains championnats peuvent être plus sujets aux blessures en raison de leur intensité de matchs.
 
 En ce qui concerne la relation entre le délai entre chaque match et les blessures, nous observons que les délais sont souvent très proches, mais nous remarquons deux extrêmes. La Premier League a le plus grand nombre de blessures avec le moins de temps de repos, tandis que la Ligue 1 a le nombre de blessures le plus bas avec le temps de repos le plus long. Cela suggère que plus une équipe a de temps de repos, moins elle est exposée aux blessures.
 
